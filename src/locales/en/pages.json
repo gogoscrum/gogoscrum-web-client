@@ -1,0 +1,790 @@
+{
+  "meta": {
+    "keywords": "free,scrum,agile,backlog,board,software,bug,issue,sprint,project",
+    "description": "Keep track of everything on sprint board, drag and drop to update task status, report and track bugs, view sprint burn-down chart, share files and documents - all features needed by an agile team, free for everyone with unlimited number of projects and team members",
+    "title": "gogoscrum - Lightweight free agile tool"
+  },
+  "common": {
+    "slogan": "Lightweight Scrum tool for agile team",
+    "empty": "No data",
+    "close": "Close",
+    "create": "Create",
+    "edit": "Edit",
+    "copy": "Duplicate",
+    "refresh": "Refresh",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "upload": "Upload",
+    "download": "Download",
+    "save": "Save",
+    "ok": "OK",
+    "to": "to",
+    "actions": "Actions",
+    "move": "Move to",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "rename": "Rename",
+    "uploading": "Uploading",
+    "more": "More",
+    "pageSize": "Page size",
+    "msg": {
+      "formValidationFail": "Please fill out all required fields",
+      "h5NotSupported": "Mobile not supported so far, please switch to PC",
+      "shortcutKeys": "Esc to cancel, Ctrl + Enter to submit",
+      "uploadFailed": "Upload failed"
+    }
+  },
+  "homepage": {
+    "header": {
+      "signin": "Sign in",
+      "signup": "Sign up"
+    },
+    "start": "Start Now",
+    "intro": "Keep track of everything on sprint board, drag and drop to update task status, report and track bugs, view sprint burn-down chart, share files and documents - all features needed by an agile team, free for everyone with unlimited number of projects and team members",
+    "board": {
+      "title": "Sprint Board",
+      "intro": "Keep all project members on the same page, pick up tasks and drag to update task status"
+    },
+    "issue": {
+      "title": "Tracking Issues",
+      "intro": "Manage user stories, tasks and bugs with tags, attachments, links and comments"
+    },
+    "backlog": {
+      "title": "Product Backlog",
+      "intro": "Sort issues by priority and size, do first things first"
+    },
+    "file": {
+      "title": "Sharing Files",
+      "intro": "Create folders and upload files to share with the team"
+    },
+    "doc": {
+      "title": "Documents",
+      "intro": "Record important information and then team members can check up at anytime"
+    },
+    "chart": {
+      "title": "Various Charts",
+      "intro": "Show Burndown chart by story point, Velocity and Cumulative flow chart of each sprint"
+    },
+    "startnow": {
+      "title": "Start to use gogoscrum now",
+      "intro": "Ease scrum team's work by this easy-to-use scrum tool"
+    },
+    "footer": {
+      "company": "Copyright © Hangzhou Shimi Network Technology"
+    }
+  },
+  "signin": {
+    "title": "Sign In",
+    "username": "User name",
+    "password": "Password",
+    "btn": "Sign in",
+    "rememberme": "Remember me in 10 days",
+    "signup": "Sign up",
+    "signinwith": "Or sign in with",
+    "msg": {
+      "missingUsername": "Please input your user name",
+      "missingPassword": "Please input your password",
+      "badCrendential": "Wrong user name or password"
+    },
+    "loginWithWeChart": "Scan with WeChat"
+  },
+  "signup": {
+    "title": "Sign Up",
+    "username": "Please input your user name",
+    "password": "Please input your password",
+    "repeat": "Please repeat the password",
+    "btn": "Sign Up",
+    "alreadyHasAccount": "Already have an account?",
+    "signin": "Sign in",
+    "signupwith": "Or sign up with",
+    "msg": {
+      "pwdNotTheSame": "Repeated password is not the same",
+      "missingUsername": "Please input your user name",
+      "missingPassword": "Please input your password",
+      "invalidUsername": "4-16 letters or numbers",
+      "invalidPassword": "8-20 characters, should contains both letters and numbers",
+      "success": "Account created, welcome to gogoscrum"
+    }
+  },
+  "baseLayout": {
+    "header": {
+      "project": {
+        "placeholder": "Select project",
+        "showAll": "View all my projects"
+      },
+      "sprint": {
+        "placeholder": "Select sprint"
+      },
+      "newProject": "New project",
+      "newSprint": "New sprint",
+      "listSprints": "Edit sprints",
+      "projectMember": "Project members",
+      "fullScreen": "Full screen",
+      "filter": "Filter",
+      "theme": {
+        "title": "Board theme",
+        "classic": "Classic",
+        "clean": "Clean",
+        "sticky-note": "Sticky notes",
+        "miniMode": "Mini card",
+        "dark": "Dark mode"
+      },
+      "editProject": "Edit project",
+      "editSprint": "Edit sprint",
+      "backlog": "Backlog",
+      "issues": "Issues",
+      "files": "Files",
+      "docs": "Documents",
+      "burndown": "Burndown chart",
+      "projectDetails": "Project details",
+      "myProjects": "My projects",
+      "profile": "My account",
+      "signout": "Sign out",
+      "filterPopover": {
+        "mineOnly": "Only show my tasks",
+        "dueTimePast": "Issues past due date",
+        "clear": "Clear filter"
+      }
+    },
+    "body": {
+      "firstProject": "Come on to create your first project",
+      "newProject": "New Project"
+    }
+  },
+  "projectLayout": {
+    "returnToBoard": "Back to board",
+    "menu": {
+      "sprint": "Sprints",
+      "backlog": "Backlog",
+      "issue": "Issues",
+      "file": "Files",
+      "doc": "Documents",
+      "charts": "Charts",
+      "burndown": "Burndown",
+      "velocity": "Velocity",
+      "cumulative": "Cumulative Flow",
+      "setting": "Settings",
+      "projectDetails": "Project details",
+      "component": "Components",
+      "tag": "Tags",
+      "more": "More",
+      "invitation": "Invitations"
+    }
+  },
+  "board": {
+    "group": {
+      "dragToMove": "Drag to move this group",
+      "issueCount": "{issueCount} issues",
+      "pointCount": "{pointCount} story points",
+      "newIssue": "New issue",
+      "rename": "Rename",
+      "releaseNotes": "Release notes",
+      "sortBy": "Sort by",
+      "moveAll": "Move all",
+      "expandAll": "Expand all",
+      "collapseAll": "Collapse all",
+      "new": "New group"
+    },
+    "release": {
+      "dialogTitle": "Release notes",
+      "pageTitle": "Release notes of {sprintName} ({releaseDate})",
+      "feature": "New",
+      "enhance": "Enhancement",
+      "fix": "Fixed",
+      "copy": "Copy",
+      "copied": "Rlease notes copied to clipboard"
+    },
+    "msg": {
+      "issueDeleted": "Issue deleted",
+      "issueCopied": "Issue copied",
+      "socketMsg": {
+        "issueChanged": "{nickname} just {action} issue <span class=\"issue-code\">{code}</span>",
+        "issueSeqChanged": "{nickname} updated issues order of {group}",
+        "groupChanged": "{nickname} just {action} group of {name}",
+        "groupSeqChanged": "{nickname} updated order of groups"
+      }
+    }
+  },
+  "issueFastEdit": {
+    "namePlaceholder": "Please input issue title",
+    "msg": {
+      "created": "Issue created"
+    }
+  },
+  "issueRow": {
+    "storyPoint": "{points} story points",
+    "assignee": "Assigned to {assignee}"
+  },
+  "issueCard": {
+    "assignee": "Assign to",
+    "assignToMe": "Assign to me",
+    "unassign": "Unassign",
+    "move": "Move to",
+    "dueTime": "Issue due date",
+    "dueTimePast": "Past due date",
+    "dueTimeAlmost": "Due in less than 24 hours",
+    "links": "{count} linked issues",
+    "files": "{count} attachments",
+    "comments": "{count} comments",
+    "points": "{count} story points",
+    "msg": {
+      "delIssueConfirmTitle": "Delete issue",
+      "delIssueConfirmMsg": "You are about to delete the issue, which cannot be recovered. Are you sure to proceed?"
+    }
+  },
+  "issueEdit": {
+    "titleEdit": "Edit issue",
+    "titleNew": "New issue",
+    "copyCode": "Copy issue code",
+    "name": "Name",
+    "namePlaceholder": "Please input issue title",
+    "remark": "Description",
+    "remarkPlaceholder": "Please describe the issue in more detail",
+    "assignee": "Assigned to",
+    "createdBy": "Reported by",
+    "createdTime": "Created at",
+    "assigneePlaceholder": "Select assignee",
+    "status": "Status",
+    "statusPlaceholder": "Select status",
+    "issueType": "Type",
+    "issueTypePlaceholder": "Select type",
+    "sprint": "Sprint",
+    "sprintPlaceholder": "Select sprint",
+    "priority": "Priority",
+    "priorityPlaceholder": "Select priority",
+    "storyPoints": "Story point",
+    "storyPointsPlaceholder": "Select story point",
+    "estimatedHours": "Est. hours",
+    "actualHours": "Actual hours",
+    "hoursPlaceholder": "Please input hours",
+    "tag": "Tags",
+    "dueTime": "Due date",
+    "dueTimePlaceholder": "Select date and time",
+    "component": "Component",
+    "componentPlaceholder": "Select component",
+    "tagPlaceholder": "Select or create tags",
+    "newTag": "New tag ...",
+    "files": "Attachments",
+    "uploaderPlacehoder": "Drop file here or click to select file",
+    "uploaderPasteHere": "{ctrlKey} + V to upload from clipboard",
+    "uploaderFieldTip": "Drop or select file to upload, wait for 2 seconds to upload from clipboard",
+    "links": "Linked issues",
+    "addLink": "Add link",
+    "delLink": "Delete link",
+    "issueSelectorPlaceholder": "Search issue by code or title",
+    "issueSelectorNoMatch": "No matched result",
+    "comments": "Comments",
+    "commentPlaceholder": "Please input comment",
+    "ctrlEnter": "Ctrl + Enter to submit",
+    "addComment": "Add comment",
+    "history": "History",
+    "details": "Details",
+    "msg": {
+      "issueCodeCopied": "Issue code copied to clipboard",
+      "missingName": "Please input issue title",
+      "invalidName": "Issue title cannot be longer than 500 letters",
+      "missingType": "Please select issue type",
+      "delIssueConfirmTitle": "Delete issue",
+      "delIssueConfirmMsg": "You are about to delete the issue, which cannot be recovered. Are you sure to proceed?",
+      "issueUpdated": "Issue updated",
+      "issueCreated": "Issue created",
+      "issueDeleted": "Issue deleted",
+      "fileSizeLimit": "File size cannot be larger than 100M",
+      "delFileConfirmTitle": "Delete file",
+      "delFileConfirmMsg": "You are about to delete the file, which cannot be recovered. Are you sure to proceed?",
+      "fileDeleted": "File deleted",
+      "delCommentConfirmTitle": "Delete comment",
+      "delCommentConfirmMsg": "You are about to delete the comment, which cannot be recovered. Are you sure to proceed?",
+      "commentDeleted": "Comment deleted",
+      "commentUpdated": "Comment updated",
+      "commentCreated": "Comment added",
+      "missingComment": "Please input comment",
+      "linkCreated": "Issue linked",
+      "unlinkConfirmTitle": "Delete link",
+      "unlinkConfirmMsg": "You are about to delete the link, which cannot be recovered. Are you sure to proceed?",
+      "linkDeleted": "Link deleted",
+      "invalidHours": "Please input a number",
+      "tooManyFilesPasted": "Please paste less than 5 files at a time"
+    }
+  },
+  "issueFinder": {
+    "noMatch": "No matched issues",
+    "tooManyMatches": "Too many matches, please refine the search"
+  },
+  "issueGroupEdit": {
+    "titleEdit": "Edit group",
+    "titleNew": "New group",
+    "name": "Name",
+    "msg": {
+      "nameMissing": "Please input group name",
+      "nameInvalid": "Group name should be 1-40 letters",
+      "delConfirmTitle": "Delete group",
+      "delConfirmMsg": "You are about to delete the group, issues in this group will be moved to the TODO list. This action cannot be recovered. Are you sure to proceed?",
+      "editSuccess": "Group updated",
+      "createSuccess": "Group created",
+      "deleteSuccess": "Group deleted"
+    }
+  },
+  "editProject": {
+    "titleEdit": "Edit project",
+    "titleNew": "New project",
+    "titleDetails": "Project details",
+    "name": "Name",
+    "code": "Code",
+    "codeTips": "3-6 letters in upper case, this will be used to generate issue code, e.g. input GGSM as the project code and the first issue code will be GGSM-1",
+    "avatar": "Avatar",
+    "uploadAvatar": "Upload",
+    "changeAvatar": "Change",
+    "description": "Description",
+    "duration": "Duration",
+    "to": "To",
+    "timeTracking": "Time tracking",
+    "timeTrackingDesc": "Enable time estimation and tracking for issues",
+    "owner": "Owner",
+    "status": "Status",
+    "active": "Active",
+    "msg": {
+      "nameMissing": "Please input project name",
+      "nameInvalid": "Project name should be 1-40 letters",
+      "codeMissing": "Please input project code",
+      "codeInvalid": "Project code should be 3-6 letters",
+      "delConfirmTitle": "Delete project",
+      "delConfirmMsg": "You are about to delete the project, which cannot be recovered. Are you sure to proceed?",
+      "delSuccess": "Project deleted",
+      "editSuccess": "Project updated",
+      "createSuccess": "Project created",
+      "avatarUpdated": "Project avatar updated",
+      "avatarTooLarge": "Avatar size cannot be larger than 1M",
+      "delAvatarConfirmTitle": "Delete project avatar",
+      "delAvatarConfirmMsg": "You are about to delete project avatar, which cannot be recovered. Are you sure to proceed?",
+      "delAvatarSuccess": "Project avatar deleted"
+    }
+  },
+  "transferProject": {
+    "dialogTitle": "Transfer project",
+    "owner": "Owner",
+    "ownerPlaceholder": "Please select new owner",
+    "quit": "Quit this project after transfer",
+    "msg": {
+      "ownerMissing": "Please select the new owner",
+      "transferConfirmTitle": "Transfer confirm",
+      "transferConfirmMsg": "You are about to transfer project \"{projectName}\" to \"{newOwnerName}\". You will not be able to manage this project after transfer. Are you sure to proceed?",
+      "transferSuccess": "Project transferred",
+      "transferAndQuitSuccess": "Project transferred and you've quit the project"
+    }
+  },
+  "editSprint": {
+    "titleEdit": "Edit sprint",
+    "titleNew": "New sprint",
+    "name": "Name",
+    "timeRange": "Duration",
+    "startTime": "Start date",
+    "endTime": "End date",
+    "timeRangeTips": "Suggest 1 week for short-term project and 2 weeks for long-term project.",
+    "goal": "Sprint goal",
+    "msg": {
+      "nameMissing": "Please input sprint name",
+      "nameInvalid": "Sprint name should be 1-40 letters",
+      "editSuccess": "Sprint updated",
+      "createSuccess": "Sprint created",
+      "delConfirmTitle": "Delete sprint",
+      "delConfirmMsg": "You are about to delete sprint, which cannot be recovered. All issues in the sprint will be moved into backlog. Are you sure to proceed?",
+      "delSuccess": "Sprint deleted"
+    }
+  },
+  "tagEdit": {
+    "titleEdit": "Edit tag",
+    "titleNew": "New tag",
+    "name": "Name",
+    "color": "Color",
+    "preview": "Preview",
+    "msg": {
+      "nameMissing": "Please input tag name",
+      "nameInvalid": "Tag name should be less than 20 letters",
+      "editSuccess": "Tag updated",
+      "createSuccess": "Tag created"
+    }
+  },
+  "projectMember": {
+    "title": "Project members",
+    "invite": "Invite new member",
+    "onlyOwnerCanInvite": "Only project owner can invite new member",
+    "noProjectSelected": "No project selected",
+    "owner": "Owner",
+    "developer": "Developer",
+    "guest": "Guest",
+    "setting": "Setting",
+    "remove": "Remove",
+    "setAsGuest": "Set as guest",
+    "setAsDeveloper": "Set as developer",
+    "quitProject": "Quit project",
+    "quitConfirmTitle": "Quit project",
+    "quitConfirmMsg": "You are about to quit project \"{projectName}\". You will not be able to access this project after quit, are you sure to proceed?",
+    "quitSuccess": "Successfully quit \"{projectName}\""
+  },
+  "userPicker": {
+    "tabSelectUser": "Select users",
+    "searchPlaceholder": "Search by name",
+    "tabShare": "Send invitation",
+    "inviteAsGuest": "Join as guest",
+    "inviteAsDeveloper": "Join as developer",
+    "expiry": "Invitation expires after {expiry}",
+    "neverExpiry": "Invitation will never expire",
+    "copyLink": "Copy invitation",
+    "threeDays": "In 3 days",
+    "sevenDays": "In 7 days",
+    "thirtyDays": "In 30 days",
+    "neverExpire": "Never expires",
+    "msg": {
+      "cannotRemoveOwner": "Product owner cannot be removed",
+      "invitationMsg": "{currentUser} invited you to join project \"{projectName}\": {url}, ",
+      "expire": "this invitation will expire after {expiry}",
+      "neverExpire": "this invitation will never expire",
+      "linkCopied": "Invitation copied"
+    },
+    "invitationValidity": "Expiration"
+  },
+  "sprintList": {
+    "header": {
+      "new": "New sprint",
+      "count": "{count} sprints"
+    },
+    "list": {
+      "name": "Name",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "progress": "Progress",
+      "progressTooltip": "Finished {doneIssueCount} of {totalIssueCount}",
+      "status": "Status",
+      "emptyMsg": "No sprint in the project"
+    },
+    "msg": {
+      "delConfirmTitle": "Delete sprint",
+      "delConfirmMsg": "You are about to delete sprint \"{sprintName}\", which cannot be recovered. All issues in the sprint will be moved into backlog. Are you sure to proceed?",
+      "delSuccess": "Sprint deleted"
+    }
+  },
+  "backlog": {
+    "header": {
+      "new": "New issue",
+      "count": "{count} issues",
+      "search": "Search"
+    },
+    "list": {
+      "name": "Name",
+      "noSprint": "No sprint in project",
+      "emptyMsg": "No issue in backlog"
+    },
+    "msg": {
+      "issueCopied": "Issue \"{issueName}\" copied",
+      "issueMoved": "Issue moved into \"{sprintName}\"",
+      "delConfirmTitle": "Delete issue",
+      "delConfirmMsg": "You are about to delete issue \"{issueName}\", which cannot be recovered. Are you sure to proceed?",
+      "delSuccess": "Issue deleted"
+    }
+  },
+  "burndown": {
+    "title": "Sprint burndown chart",
+    "placeholder": "Select sprint",
+    "actual": "Actual",
+    "reference": "Reference",
+    "chartByIssue": "By # of issues",
+    "chartByPoint": "By story points",
+    "whatIsBurndownChart": "What is burndown chart?",
+    "burndownExplained": "Burndown chart shows the completed work per day against the projected rate of completion for the current sprint. Burndown chart is useful for predicting if all of the work will be completed by the end of the sprint."
+  },
+  "velocityChart": {
+    "title": "Sprint velocity chart",
+    "whatIsVelocityChart": "What is velocity chart?",
+    "velocityExplained": "The main purpose of the velocity chart is to overview how much work has been delivered by each sprint. It will help you to have a clear view on future perspectives and on the workload of your team."
+  },
+  "cumulativeFlowChart": {
+    "title": "Sprint cumulative flow diagram",
+    "whatIsCumulative": "What is cumulative flow diagram?",
+    "cumulativeExplained": "A cumulative flow diagram is an area graph that depicts the quantity of work in a given state, showing arrivals, time in queue, quantity in queue, and departure."
+  },
+  "issueList": {
+    "header": {
+      "new": "New issue",
+      "export": "Export",
+      "expandFilter": "Show filter",
+      "collapseFilter": "Hide filter",
+      "count": "{count} issues",
+      "issueType": "Issu type",
+      "priority": "Priority",
+      "sprint": "Sprint",
+      "status": "Status",
+      "component": "Component",
+      "owner": "Owner",
+      "tag": "Tag",
+      "search": "Search",
+      "clearFilter": "Clear filter",
+      "saveFilter": "Save"
+    },
+    "list": {
+      "name": "Name",
+      "assignee": "Assigned to",
+      "assignToMe": "Assign to me",
+      "unassign": "Unassign",
+      "emptyMsg": "No issue in project"
+    },
+    "msg": {
+      "issueCopied": "Issue \"{issueName}\" copied",
+      "assigned": "Issue \"{issueCode}\" assigned to \"{userNickname}\"",
+      "unassigned": "Unassigned issue  \"{issueCode}\"",
+      "delConfirmTitle": "Delete issue",
+      "delConfirmMsg": "You are about to delete issue \"{issueName}\", which cannot be recovered. Are you sure to proceed?",
+      "delSuccess": "Issue deleted"
+    }
+  },
+  "issueFilter": {
+    "allIssues": "All issues",
+    "actions": {
+      "rename": "Rename",
+      "copy": "Duplicate",
+      "delete": "Delete",
+      "saveAs": "Save as..."
+    },
+    "edit": {
+      "titleNew": "New filter",
+      "titleEdit": "Edit filter",
+      "name": "Name"
+    },
+    "msg": {
+      "nameMissing": "Please input filter name",
+      "filterSaved": "Issue filter saved",
+      "filterUpdated": "Issue filter updated",
+      "filterCopied": "Issue filter copied",
+      "filterDeleted": "Issue filter deleted",
+      "delConfirmTitle": "Delete filter",
+      "delConfirmMsg": "You are about to delete issue filter \"{name}\", which cannot be recovered. Are you sure to proceed?"
+    }
+  },
+  "fileList": {
+    "files": "Files",
+    "file": "File",
+    "folder": "Folder",
+    "header": {
+      "newFolder": "New folder",
+      "uploadFile": "Upload file",
+      "matchedResults": "{count} matched results",
+      "folderOrFiles": "{count} folders or files",
+      "search": "Search"
+    },
+    "list": {
+      "name": "Name",
+      "size": "Size",
+      "creator": "Created by",
+      "creatorTip": "Created by {nickname}",
+      "createdTime": "Created time",
+      "noFileInProject": "No file in project",
+      "noFileInFolder": "No file in folder"
+    },
+    "msg": {
+      "fileMoved": "File moved",
+      "newFolderName": "New folder",
+      "fileSaved": "File saved",
+      "delConfirmTitle": "Delete {type}",
+      "delFileConfirmMsg": "You are about to delete file \"{name}\", which cannot be recovered. Are you sure to proceed?",
+      "delFolderConfirmMsg": "You are about to delete folder \"{name}\" and all sub-folders and files it contains. This operation cannot be recovered. Are you sure to proceed?",
+      "delSuccess": "{type} deleted",
+      "fileSizeLimit": "File size cannot be larger than 100M",
+      "tooManyFilesToUpload": "You can only upload up to 5 files at a time",
+      "fileUploaded": "File uploaded"
+    }
+  },
+  "docList": {
+    "header": {
+      "new": "New Document",
+      "matchedResults": "{count} matched results",
+      "docCount": "{count} documents",
+      "search": "Search"
+    },
+    "list": {
+      "name": "Name",
+      "creator": "Created by",
+      "creatorTip": "Created by {nickname}",
+      "createdTime": "Created time",
+      "noDocInProject": "No document in project"
+    },
+    "msg": {
+      "delConfirmTitle": "Delete document",
+      "delConfirmMsg": "You are about to delete document \"{name}\", which cannot be recovered. Are you sure to proceed?",
+      "delSuccess": "Document deleted"
+    }
+  },
+  "docView": {
+    "header": {
+      "back": "Back",
+      "edit": "Edit",
+      "lastEdit": "Last modified by {updatedBy} at {updatedTime}"
+    },
+    "titlePlaceholder": "Title",
+    "defaultTitle": "Untitled document",
+    "breadcrumbRoot": "Documents",
+    "docSaved": "Document saved",
+    "lastSavedTip": "Last saved at {updatedTime}",
+    "intoFullScreen": "Edit in full screen",
+    "exitFullScreen": "Exit full screen"
+  },
+  "tagList": {
+    "header": {
+      "new": "New tag",
+      "tagCount": "{count} tags",
+      "search": "Search"
+    },
+    "list": {
+      "name": "Name",
+      "creator": "Created by",
+      "creatorTip": "Created by {nickname}",
+      "createdTime": "Created time",
+      "updatedTime": "Updated time",
+      "noTagInProject": "No tag in project"
+    },
+    "msg": {
+      "delConfirmTitle": "Delete tag",
+      "delConfirmMsg": "You are about to delete tag \"{name}\", which cannot be recovered. Are you sure to proceed?",
+      "delSuccess": "Tag deleted"
+    }
+  },
+  "invitationList": {
+    "header": {
+      "new": "Invite member",
+      "invitationCount": "{count} invitations",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "search": "Search"
+    },
+    "list": {
+      "code": "Code",
+      "invitationType": "Type",
+      "validDays": "Days",
+      "creator": "Creator",
+      "creatorTip": "Created by {nickname}",
+      "createdTime": "Created time",
+      "expireTime": "Expire time",
+      "joinCount": "Joined",
+      "status": "Status",
+      "noInvitationInProject": "No invitation record",
+      "active": "Active",
+      "expired": "Expired",
+      "disabled": "Disabled",
+      "neverExpire": "Never expire",
+      "actions": {
+        "copyUrl": "Copy Invitation",
+        "disable": "Disable",
+        "enable": "Enable"
+      }
+    },
+    "msg": {
+      "disableConfirmTitle": "Disable invitation",
+      "disableConfirmMsg": "You are about to disable invitation \"{code}\", user will not be able to join project via the invitation after disabled, are you sure to proceed?",
+      "disableSuccess": "Invitation disabled",
+      "enableSuccess": "Invitation enabled"
+    }
+  },
+  "invitedMemberList": {
+    "title": "Members joined via invitation",
+    "header": {
+      "name": "Name",
+      "role": "Role",
+      "joinedTime": "Joined time",
+      "registeredTime": "Registered time"
+    }
+  },
+  "projectList": {
+    "header": {
+      "new": "New project",
+      "projectCount": "{count} projects",
+      "search": "Search project"
+    },
+    "list": {
+      "name": "Name",
+      "owner": "Owner",
+      "ownerTip": "Owner {nickname}",
+      "details": "Details",
+      "transfer": "Transfer",
+      "quit": "Quit",
+      "archive": "Archive",
+      "archived": "Archived",
+      "unarchive": "Unarchive",
+      "noProject": "You havn't created or joined any project"
+    },
+    "msg": {
+      "archiveSuccess": "Project \"{projectName}\" archived",
+      "unarchiveSuccess": "Project \"{projectName}\" unarchived",
+      "delConfirmTitle": "Delete project",
+      "delConfirmMsg": "You are about to delete project \"{projectName}\", which cannot be recovered. Are you sure to proceed?",
+      "delSuccess": "Project \"{projectName}\" deleted"
+    }
+  },
+  "componentList": {
+    "header": {
+      "new": "New component",
+      "expand": "Expand all",
+      "collapse": "Collapse all"
+    },
+    "list": {
+      "name": "Name",
+      "creator": "Created by",
+      "creatorTip": "Created by {nickname} at {createdTime}",
+      "newSub": "Sub-component",
+      "emptyMsg": "No component in project"
+    },
+    "edit": {
+      "titleNew": "New component",
+      "titleEdit": "Edit component",
+      "name": "name"
+    },
+    "msg": {
+      "delConfirmTitle": "Delete component",
+      "delConfirmMsg": "You are about to delete component \"{name}\", which cannot be recovered. Issues belonged to this component will be moved into its parent component. Are you sure to proceed?",
+      "delSuccess": "Component \"{name}\" deleted",
+      "nameMissing": "Please input component name",
+      "updateSuccess": "Component updated",
+      "createSuccess": "Component created"
+    }
+  },
+  "invitationRedirect": {
+    "joining": "Joining project...",
+    "joinSucess": "Successfully joined project \"{projectName}\""
+  },
+  "userInfo": {
+    "title": "My account",
+    "profile": {
+      "title": "User Profile",
+      "username": "Username",
+      "usernameNotEditable": "Username cannot be modified",
+      "usernameTip": "4-16 letters or numbers, there's only one chance to set you username, please be careful.",
+      "avatar": "Avatar",
+      "nickname": "Nickname"
+    },
+    "password": {
+      "title": "Password",
+      "oldPwd": "Old password",
+      "newPwd": "New password",
+      "repeat": "Repeat"
+    },
+    "msg": {
+      "wrongOldPwd": "Old password is wrong",
+      "pwdNotSame": "The repeated password is not the same",
+      "missingUsername": "Please input username",
+      "invalidUsername": "4-16 letters or numbers",
+      "missingNickname": "Please input nickname",
+      "invalidNickname": "Less thant 16 letters",
+      "missingOldPwd": "Please input old passowrd",
+      "missingNewPwd": "Please input new passowrd",
+      "invalidPwd": "8-20 characters, should contains both letters and numbers",
+      "repeatPwd": "Please repeat the password",
+      "profileUpdated": "User profile updated",
+      "pwdUpdated": "Password updated, please re-signin",
+      "pwdUpdateFail": "Failed to update password",
+      "avatarTooLarge": "Avatar size cannot be larger than 1M",
+      "avatarUpdated": "User avatar updated",
+      "delAvatarConfirmTitle": "Delete user avatar",
+      "delAvatarConfirmMsg": "You are about to delete user avatar, which cannot be recovered. Are you sure to proceed?",
+      "delAvatarSuccess": "User avatar deleted"
+    }
+  }
+}

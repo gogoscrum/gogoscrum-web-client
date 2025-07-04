@@ -1,0 +1,92 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3446042 */
+  src: url('./fonts/iconfont.woff2?t=1668741026695') format('woff2'),
+       url('./fonts/iconfont.woff?t=1668741026695') format('woff'),
+       url('./fonts/iconfont.ttf?t=1668741026695') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-arrow-up:before {
+  content: "\ed53";
+}
+
+.iconfont-arrow-down:before {
+  content: "\ed54";
+}
+
+.icon-skin:before {
+  content: "\e73c";
+}
+
+.icon-Exitfullscreenminimizeshrink:before {
+  content: "\e9cd";
+}
+
+.icon-full-screen:before {
+  content: "\ed50";
+}
+
+.icon-FullscreenExit:before {
+  content: "\e620";
+}
+
+.icon-earth:before {
+  content: "\e8f9";
+}
+
+.icon-full-screen-cancel:before {
+  content: "\e7bc";
+}
+
+.icon-exit-fullscreen:before {
+  content: "\e628";
+}
+
+.icon-full_screen_full:before {
+  content: "\e641";
+}
+
+.icon-check:before {
+  content: "\e680";
+}
+
+.icon-bookmark:before {
+  content: "\e604";
+}
+
+.icon-ico-user-group-off:before {
+  content: "\e613";
+}
+
+.icon-peoplelist:before {
+  content: "\e7be";
+}
+
+.icon-filter:before {
+  content: "\e60f";
+}
+
+.icon-huangguan:before {
+  content: "\e601";
+}
+
+.icon-leader:before {
+  content: "\e82b";
+}
+
+.icon-bug:before {
+  content: "\e952";
+}
+
+.icon-language:before {
+  content: "\e60b";
+}
+
+

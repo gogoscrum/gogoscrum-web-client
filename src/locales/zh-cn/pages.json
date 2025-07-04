@@ -1,0 +1,790 @@
+{
+  "meta": {
+    "keywords": "免费,scrum,agile,backlog,敏捷,看板,软件开发,bug管理,任务,迭代",
+    "description": "轻量级Scrum敏捷管理工具，从代办事项列表到迭代任务看板、故事点估算、Bug跟踪和燃尽图报表，轻松管理Scrum敏捷开发流程的所有环节。",
+    "title": "gogoscrum - 轻量级免费Scrum敏捷项目管理工具"
+  },
+  "common": {
+    "slogan": "轻量级免费敏捷项目管理工具",
+    "empty": "暂无数据",
+    "close": "关闭",
+    "create": "创建",
+    "edit": "修改",
+    "copy": "复制",
+    "refresh": "刷新",
+    "delete": "删除",
+    "cancel": "取消",
+    "upload": "上传",
+    "download": "下载",
+    "save": "保存",
+    "ok": "确定",
+    "to": "至",
+    "actions": "操作",
+    "move": "移至",
+    "expand": "展开",
+    "collapse": "收起",
+    "rename": "重命名",
+    "uploading": "正在上传",
+    "more": "更多",
+    "pageSize": "每页条数",
+    "msg": {
+      "formValidationFail": "请填写必要的表单信息",
+      "h5NotSupported": "目前暂不支持手机端看板，请切换至电脑端查看",
+      "shortcutKeys": "Esc放弃编辑, Ctrl + 回车键快捷提交",
+      "uploadFailed": "文件上传失败"
+    }
+  },
+  "homepage": {
+    "header": {
+      "signin": "登录",
+      "signup": "注册"
+    },
+    "start": "开始使用",
+    "intro": "从代办事项列表到迭代任务看板、故事点估算、Bug跟踪、项目文件管理和燃尽图报表，轻松管理Scrum敏捷软件开发流程的所有环节，个人和企业均可免费使用，项目数量和成员数量无限制。",
+    "board": {
+      "title": "迭代看板",
+      "intro": "以看板为协作核心，领取任务、拖动更新状态、开展每日站会，团队成员随时保持信息同步。"
+    },
+    "issue": {
+      "title": "任务管理",
+      "intro": "任务故事点估算、添加标签、上传截图或附件、关联到其它任务、添加评论、任务变更历史记录一目了然。"
+    },
+    "backlog": {
+      "title": "代办列表",
+      "intro": "按照优先级和故事点数自动排序，轻松梳理项目需求和任务。"
+    },
+    "file": {
+      "title": "文件管理",
+      "intro": "创建文件夹并上传文件，统一管理项目中的各类文档资料。"
+    },
+    "doc": {
+      "title": "项目资料",
+      "intro": "记录项目中的重要信息，以便团队成员随时查阅。"
+    },
+    "chart": {
+      "title": "统计图表",
+      "intro": "迭代燃尽图、速率图和累积流图，一眼便知项目进展是否符合预期。"
+    },
+    "startnow": {
+      "title": "现在就开始使用 gogoscrum",
+      "intro": "以开发团队为中心的Scrum工具，协助Scrum团队轻松高效完成工作。"
+    },
+    "footer": {
+      "company": "版权所有 © 杭州拾米网络科技有限公司"
+    }
+  },
+  "signin": {
+    "title": "用户登录",
+    "username": "用户名",
+    "password": "密码",
+    "btn": "登录",
+    "rememberme": "10天内免登录",
+    "signup": "注册",
+    "signinwith": "以其它方式快捷登录",
+    "msg": {
+      "missingUsername": "请输入用户名",
+      "missingPassword": "请输入密码",
+      "badCrendential": "用户名或者密码错误"
+    },
+    "loginWithWeChart": "微信扫一扫登录"
+  },
+  "signup": {
+    "title": "用户注册",
+    "username": "输入用户名",
+    "password": "输入密码",
+    "repeat": "确认密码",
+    "btn": "立即注册",
+    "alreadyHasAccount": "已有账号？",
+    "signin": "去登录",
+    "signupwith": "以其它方式快捷注册",
+    "msg": {
+      "pwdNotTheSame": "两次输入密码不一致",
+      "missingUsername": "请输入用户名",
+      "missingPassword": "请输入密码",
+      "invalidUsername": "用户名长度4-16个字符，大小写字母或下划线",
+      "invalidPassword": "密码长度为8-20个字符，至少包含字母和数字",
+      "success": "注册成功，欢迎使用gogoscrum"
+    }
+  },
+  "baseLayout": {
+    "header": {
+      "project": {
+        "placeholder": "请选择项目",
+        "showAll": "我的全部项目"
+      },
+      "sprint": {
+        "placeholder": "请选择迭代"
+      },
+      "newProject": "新建项目",
+      "newSprint": "新建迭代",
+      "listSprints": "管理迭代",
+      "projectMember": "项目成员",
+      "fullScreen": "全屏显示",
+      "filter": "筛选",
+      "theme": {
+        "title": "看板样式",
+        "classic": "经典",
+        "clean": "简洁",
+        "sticky-note": "彩色贴纸",
+        "miniMode": "迷你卡片",
+        "dark": "黑暗模式"
+      },
+      "editProject": "修改项目",
+      "editSprint": "修改迭代",
+      "backlog": "代办列表",
+      "issues": "全部任务",
+      "files": "文件",
+      "docs": "文档",
+      "burndown": "燃尽图",
+      "projectDetails": "项目详情",
+      "myProjects": "我的项目",
+      "profile": "个人设置",
+      "signout": "退出登录",
+      "filterPopover": {
+        "mineOnly": "只显示我的任务",
+        "dueTimePast": "已截止的任务",
+        "clear": "清空过滤条件"
+      }
+    },
+    "body": {
+      "firstProject": "快来创建你的第一个项目吧",
+      "newProject": "新建项目"
+    }
+  },
+  "projectLayout": {
+    "returnToBoard": "返回看板",
+    "menu": {
+      "sprint": "迭代",
+      "backlog": "代办列表",
+      "issue": "任务",
+      "file": "文件",
+      "doc": "文档",
+      "charts": "图表",
+      "burndown": "燃尽图",
+      "velocity": "速率图",
+      "cumulative": "累积流图",
+      "setting": "设置",
+      "projectDetails": "项目详情",
+      "component": "功能模块",
+      "tag": "标签",
+      "more": "更多",
+      "invitation": "邀请记录"
+    }
+  },
+  "board": {
+    "group": {
+      "dragToMove": "拖动对列表排序",
+      "issueCount": "{issueCount} 个任务",
+      "pointCount": "{pointCount} 个故事点",
+      "newIssue": "新建任务",
+      "rename": "重命名",
+      "releaseNotes": "生成发布日志",
+      "sortBy": "排序",
+      "moveAll": "全部移至",
+      "expandAll": "全部展开",
+      "collapseAll": "全部收起",
+      "new": "新建列表"
+    },
+    "release": {
+      "dialogTitle": "发布日志",
+      "pageTitle": "{sprintName}发布日志 ({releaseDate})",
+      "feature": "新增",
+      "enhance": "优化",
+      "fix": "修复",
+      "copy": "复制",
+      "copied": "发布日志已复制到剪贴板"
+    },
+    "msg": {
+      "issueDeleted": "任务删除成功",
+      "issueCopied": "任务复制成功",
+      "socketMsg": {
+        "issueChanged": "{nickname} 刚刚{action}了任务 <span class=\"issue-code\">{code}</span>",
+        "issueSeqChanged": "{nickname} 更新了 “{group}” 中的任务顺序",
+        "groupChanged": "{nickname} 刚刚{action}了列表 “{name}”",
+        "groupSeqChanged": "{nickname} 更新了列表顺序"
+      }
+    }
+  },
+  "issueFastEdit": {
+    "namePlaceholder": "输入任务标题创建新任务",
+    "msg": {
+      "created": "任务创建成功"
+    }
+  },
+  "issueRow": {
+    "storyPoint": "{points} 个故事点",
+    "assignee": "执行者：{assignee}"
+  },
+  "issueCard": {
+    "assignee": "执行者",
+    "assignToMe": "分配给我",
+    "unassign": "移除执行者",
+    "move": "移动至",
+    "dueTime": "任务截止时间",
+    "dueTimePast": "已超过截止时间",
+    "dueTimeAlmost": "截止时间小于24小时",
+    "links": "{count} 个关联任务",
+    "files": "{count} 个附件",
+    "comments": "{count} 条评论",
+    "points": "{count} 个故事点",
+    "msg": {
+      "delIssueConfirmTitle": "删除任务",
+      "delIssueConfirmMsg": "您即将删除任务，任务删除后无法恢复，是否继续？"
+    }
+  },
+  "issueEdit": {
+    "titleEdit": "修改任务",
+    "titleNew": "新建任务",
+    "copyCode": "复制任务编号",
+    "name": "名称",
+    "namePlaceholder": "请输入任务标题",
+    "remark": "描述",
+    "remarkPlaceholder": "请输入任务描述",
+    "assignee": "执行者",
+    "createdBy": "创建者",
+    "createdTime": "创建时间",
+    "assigneePlaceholder": "选择任务执行者",
+    "status": "状态",
+    "statusPlaceholder": "设置任务状态",
+    "issueType": "类型",
+    "issueTypePlaceholder": "设置任务类型",
+    "sprint": "迭代",
+    "sprintPlaceholder": "设置迭代",
+    "priority": "优先级",
+    "priorityPlaceholder": "设置任务优先级",
+    "storyPoints": "故事点",
+    "storyPointsPlaceholder": "选择故事点数",
+    "estimatedHours": "预估工时",
+    "actualHours": "实际工时",
+    "hoursPlaceholder": "请输入工时",
+    "tag": "标签",
+    "dueTime": "截止时间",
+    "dueTimePlaceholder": "选择日期和时间",
+    "component": "功能模块",
+    "componentPlaceholder": "选择功能模块",
+    "tagPlaceholder": "请选择或创建标签",
+    "newTag": "新建标签 ...",
+    "files": "附件",
+    "uploaderPlacehoder": "将文件拖到此处，或点击选择文件",
+    "uploaderPasteHere": "按{ctrlKey} + V键可以直接粘贴文件上传",
+    "uploaderFieldTip": "拖放或选择文件上传，等待2秒可直接粘贴上传",
+    "links": "关联任务",
+    "addLink": "添加关联",
+    "delLink": "解除关联",
+    "issueSelectorPlaceholder": "输入关键字搜索相关任务",
+    "issueSelectorNoMatch": "无匹配结果",
+    "comments": "评论",
+    "commentPlaceholder": "请输入评论内容",
+    "ctrlEnter": "Ctrl + 回车键快捷提交",
+    "addComment": "添加评论",
+    "history": "历史",
+    "details": "详情",
+    "msg": {
+      "issueCodeCopied": "任务编号已复制到剪贴板",
+      "missingName": "请输入任务标题",
+      "invalidName": "名称长度不超过500个字符",
+      "missingType": "请选择任务类型",
+      "delIssueConfirmTitle": "删除任务",
+      "delIssueConfirmMsg": "您即将删除任务，任务删除后无法恢复，是否继续？",
+      "issueUpdated": "任务修改成功",
+      "issueCreated": "任务添加成功",
+      "issueDeleted": "任务删除成功",
+      "fileSizeLimit": "文件大小不能超过100M",
+      "delFileConfirmTitle": "删除附件",
+      "delFileConfirmMsg": "您即将删除附件，附件删除后无法恢复，是否继续？",
+      "fileDeleted": "附件删除成功",
+      "delCommentConfirmTitle": "删除评论",
+      "delCommentConfirmMsg": "您即将删除评论，评论删除后无法恢复，是否继续？",
+      "commentDeleted": "评论删除成功",
+      "commentUpdated": "评论修改成功",
+      "commentCreated": "评论添加成功",
+      "missingComment": "请填写评论内容",
+      "linkCreated": "任务关联成功",
+      "unlinkConfirmTitle": "解除关联",
+      "unlinkConfirmMsg": "您即将解除任务之间的关联，是否继续？",
+      "linkDeleted": "解除任务关联成功",
+      "invalidHours": "工时必须为数字",
+      "tooManyFilesPasted": "一次粘贴不能超过5个文件"
+    }
+  },
+  "issueFinder": {
+    "noMatch": "没有匹配的结果",
+    "tooManyMatches": "匹配结果过多，请细化搜索条件"
+  },
+  "issueGroupEdit": {
+    "titleEdit": "修改列表",
+    "titleNew": "新建列表",
+    "name": "名称",
+    "msg": {
+      "nameMissing": "请输入列表名称",
+      "nameInvalid": "列表名称长度为1-40个字符",
+      "delConfirmTitle": "删除列表",
+      "delConfirmMsg": "您即将删除列表，列表中的任务将被移至待处理列，列表删除后无法恢复，是否继续？",
+      "editSuccess": "列表更新成功",
+      "createSuccess": "列表创建成功",
+      "deleteSuccess": "列表删除成功"
+    }
+  },
+  "editProject": {
+    "titleEdit": "修改项目",
+    "titleNew": "新建项目",
+    "titleDetails": "项目详情",
+    "name": "名称",
+    "code": "代码",
+    "codeTips": "3-6个大写字母，用于生成任务唯一代码，例如项目代码为\"GGSM\"，则该项目下的第一个任务代码为\"GGSM-1\"",
+    "avatar": "头像",
+    "uploadAvatar": "上传",
+    "changeAvatar": "修改",
+    "description": "描述",
+    "duration": "起止时间",
+    "to": "至",
+    "timeTracking": "任务工时",
+    "timeTrackingDesc": "启用工时预估和工时记录",
+    "owner": "所有者",
+    "status": "状态",
+    "active": "正常",
+    "msg": {
+      "nameMissing": "请输入项目名称",
+      "nameInvalid": "项目名称长度为1-40个字符",
+      "codeMissing": "请输入项目代码",
+      "codeInvalid": "项目代码长度为3-6个字母",
+      "delConfirmTitle": "删除项目",
+      "delConfirmMsg": "您即将删除项目 <strong class=\"red\">\"{projectName}\"</strong>，项目删除后无法恢复，是否继续？",
+      "delSuccess": "项目删除成功",
+      "editSuccess": "项目更新成功",
+      "createSuccess": "项目创建成功",
+      "avatarUpdated": "项目头像更新成功",
+      "avatarTooLarge": "头像文件大小不能超过1M",
+      "delAvatarConfirmTitle": "删除项目头像",
+      "delAvatarConfirmMsg": "您即将删除项目头像，删除后无法恢复，是否继续？",
+      "delAvatarSuccess": "项目头像删除成功"
+    }
+  },
+  "transferProject": {
+    "dialogTitle": "移交项目",
+    "owner": "所有者",
+    "ownerPlaceholder": "请选择新的所有者",
+    "quit": "移交后退出该项目",
+    "msg": {
+      "ownerMissing": "请选择新的项目所有者",
+      "transferConfirmTitle": "确认移交",
+      "transferConfirmMsg": "您正在将项目 “{projectName}” 移交给 “{newOwnerName}”，项目移交后您将不再拥有该项目的管理权限，是否继续？",
+      "transferSuccess": "项目移交成功",
+      "transferAndQuitSuccess": "项目移交成功并已退出该项目"
+    }
+  },
+  "editSprint": {
+    "titleEdit": "修改迭代",
+    "titleNew": "创建迭代",
+    "name": "迭代名称",
+    "timeRange": "起止时间",
+    "startTime": "开始日期",
+    "endTime": "结束日期",
+    "timeRangeTips": "短期项目（少于2个月）建议每周一个迭代，长期项目建议每两周一个迭代",
+    "goal": "迭代目标",
+    "msg": {
+      "nameMissing": "请输入迭代标题",
+      "nameInvalid": "迭代名称长度为1-100个字符",
+      "editSuccess": "迭代更新成功",
+      "createSuccess": "迭代创建成功",
+      "delConfirmTitle": "删除迭代",
+      "delConfirmMsg": "您即将删除迭代，迭代删除后无法恢复，该迭代中的所有任务将被移至项目代办列表中，是否继续？",
+      "delSuccess": "迭代删除成功"
+    }
+  },
+  "tagEdit": {
+    "titleEdit": "修改标签",
+    "titleNew": "创建标签",
+    "name": "名称",
+    "color": "颜色",
+    "preview": "预览",
+    "msg": {
+      "nameMissing": "请输入标签名称",
+      "nameInvalid": "长度不超过20个字符",
+      "editSuccess": "标签更新成功",
+      "createSuccess": "标签创建成功"
+    }
+  },
+  "projectMember": {
+    "title": "项目成员",
+    "invite": "邀请成员",
+    "onlyOwnerCanInvite": "仅项目所有者可以邀请新成员",
+    "noProjectSelected": "未选中项目",
+    "owner": "所有者",
+    "developer": "成员",
+    "guest": "访客",
+    "setting": "设置",
+    "remove": "移除",
+    "setAsGuest": "设为访客",
+    "setAsDeveloper": "设为成员",
+    "quitProject": "退出项目",
+    "quitConfirmTitle": "退出项目",
+    "quitConfirmMsg": "您即将退出项目“{projectName}”，退出后将无法继续访问该项目，是否继续？",
+    "quitSuccess": "您已退出“{projectName}”项目"
+  },
+  "userPicker": {
+    "tabSelectUser": "选择用户",
+    "searchPlaceholder": "搜索用户名或昵称",
+    "tabShare": "分享链接",
+    "inviteAsGuest": "邀请为访客",
+    "inviteAsDeveloper": "邀请为成员",
+    "expiry": "链接有效期至 {expiry}",
+    "neverExpiry": "链接永久有效期",
+    "copyLink": "复制链接",
+    "threeDays": "3天",
+    "sevenDays": "7天",
+    "thirtyDays": "30天",
+    "neverExpire": "永久",
+    "msg": {
+      "cannotRemoveOwner": "项目所有者无法移除",
+      "invitationMsg": "{currentUser} 邀请你加入“{projectName}”项目：{url}，",
+      "expire": "链接有效期至 {expiry}",
+      "neverExpire": "链接永久有效",
+      "linkCopied": "链接复制成功"
+    },
+    "invitationValidity": "有效天数"
+  },
+  "sprintList": {
+    "header": {
+      "new": "新建迭代",
+      "count": "{count} 个迭代"
+    },
+    "list": {
+      "name": "迭代名称",
+      "startDate": "开始日期",
+      "endDate": "结束日期",
+      "progress": "进度",
+      "progressTooltip": "已完成{doneIssueCount}/{totalIssueCount}",
+      "status": "状态",
+      "emptyMsg": "项目中还没有任何迭代"
+    },
+    "msg": {
+      "delConfirmTitle": "删除迭代",
+      "delConfirmMsg": "您即将删除迭代 \"{sprintName}\"，迭代删除后无法恢复，该迭代中的所有任务将被移至项目代办列表中，是否继续？",
+      "delSuccess": "迭代删除成功"
+    }
+  },
+  "backlog": {
+    "header": {
+      "new": "新建任务",
+      "count": "{count} 个任务",
+      "search": "查找任务"
+    },
+    "list": {
+      "name": "名称",
+      "noSprint": "项目中无迭代",
+      "emptyMsg": "代办列表中还没有任何任务"
+    },
+    "msg": {
+      "issueCopied": "任务 \"{issueName}\" 复制成功",
+      "issueMoved": "任务已移入 \"{sprintName}\"",
+      "delConfirmTitle": "删除任务",
+      "delConfirmMsg": "您即将删除任务 \"{issueName}\"，任务删除后无法恢复，是否继续？",
+      "delSuccess": "任务删除成功"
+    }
+  },
+  "burndown": {
+    "title": "迭代燃尽图",
+    "placeholder": "选择迭代",
+    "actual": "实际",
+    "reference": "参考",
+    "chartByIssue": "按任务数量",
+    "chartByPoint": "按故事点数",
+    "whatIsBurndownChart": "什么是燃尽图？",
+    "burndownExplained": "燃尽图（Burndown Chart）表示在迭代中的每天结束时，迭代所剩余工作量的数量。横轴表示迭代中的日期，纵轴表示任务数量或故事点数。通过燃尽图可以快速了解迭代中的任务是否按照时间的推进而逐步完成。到迭代结束时，应完成全部的任务。"
+  },
+  "velocityChart": {
+    "title": "迭代速率图",
+    "whatIsVelocityChart": "什么是速率图？",
+    "velocityExplained": "速率图（Velocity Chart）表示团队在每个迭代中所完成的任务数量或故事点数。通过速率图可以了解团队的生产效率，即平均每个迭代大约能够完成多少工作量。在做迭代计划时，可参考该数值安排迭代中的任务数量。"
+  },
+  "cumulativeFlowChart": {
+    "title": "迭代累积流图",
+    "whatIsCumulative": "什么是累积流图？",
+    "cumulativeExplained": "累积流图（Cumulative flow diagram）表示迭代中的任务状态随时间而变化的情况，可用于跟踪和预测项目的进展情况，也可以借助累积流程图识别潜在的问题和风险。"
+  },
+  "issueList": {
+    "header": {
+      "new": "新建任务",
+      "export": "导出",
+      "expandFilter": "展开过滤",
+      "collapseFilter": "收起过滤",
+      "count": "{count} 个任务",
+      "issueType": "类型",
+      "priority": "优先级",
+      "sprint": "迭代",
+      "status": "状态",
+      "component": "功能模块",
+      "owner": "执行者",
+      "tag": "标签",
+      "search": "查找任务",
+      "clearFilter": "清空过滤",
+      "saveFilter": "保存"
+    },
+    "list": {
+      "name": "名称",
+      "assignee": "执行者",
+      "assignToMe": "分配给我",
+      "unassign": "移除执行者",
+      "emptyMsg": "项目中还没有任何任务"
+    },
+    "msg": {
+      "issueCopied": "任务 \"{issueName}\" 复制成功",
+      "assigned": "任务 \"{issueCode}\" 的执行者更新为 \"{userNickname}\"",
+      "unassigned": "已移除任务 \"{issueCode}\" 的执行者",
+      "delConfirmTitle": "删除任务",
+      "delConfirmMsg": "您即将删除任务 \"{issueName}\"，任务删除后无法恢复，是否继续？",
+      "delSuccess": "任务删除成功"
+    }
+  },
+  "issueFilter": {
+    "allIssues": "全部任务",
+    "actions": {
+      "rename": "重命名",
+      "copy": "复制",
+      "delete": "删除",
+      "saveAs": "另存为..."
+    },
+    "edit": {
+      "titleNew": "创建过滤",
+      "titleEdit": "修改过滤",
+      "name": "名称"
+    },
+    "msg": {
+      "nameMissing": "请输入过滤器名称",
+      "filterSaved": "过滤条件保存成功",
+      "filterUpdated": "过滤条件更新成功",
+      "filterCopied": "过滤条件复制成功",
+      "filterDeleted": "过滤条件已删除",
+      "delConfirmTitle": "删除过滤条件",
+      "delConfirmMsg": "您即将删除过滤条件 \"{name}\"，删除后无法恢复，是否继续？"
+    }
+  },
+  "fileList": {
+    "files": "文件",
+    "file": "文件",
+    "folder": "文件夹",
+    "header": {
+      "newFolder": "新建文件夹",
+      "uploadFile": "上传文件",
+      "matchedResults": "{count} 个符合条件的结果",
+      "folderOrFiles": "{count} 个文件和文件夹",
+      "search": "查找文件"
+    },
+    "list": {
+      "name": "名称",
+      "size": "大小",
+      "creator": "创建者",
+      "creatorTip": "创建者: {nickname}",
+      "createdTime": "创建时间",
+      "noFileInProject": "项目中还没有任何文件",
+      "noFileInFolder": "文件夹中还没有任何内容"
+    },
+    "msg": {
+      "fileMoved": "文件移动成功",
+      "newFolderName": "新文件夹",
+      "fileSaved": "文件保存成功",
+      "delConfirmTitle": "删除{type}",
+      "delFileConfirmMsg": "您即将删除文件 \"{name}\"，文件删除后无法恢复，是否继续？",
+      "delFolderConfirmMsg": "您即将删除文件夹 \"{name}\" 及其所包含的所有内容，删除后无法恢复，是否继续？",
+      "delSuccess": "{type}删除成功",
+      "fileSizeLimit": "文件大小不能超过100M",
+      "tooManyFilesToUpload": "一次上传不能超过5个文件",
+      "fileUploaded": "文件上传成功"
+    }
+  },
+  "docList": {
+    "header": {
+      "new": "新建文档",
+      "matchedResults": "{count} 个符合条件的结果",
+      "docCount": "{count} 个文档",
+      "search": "查找文档"
+    },
+    "list": {
+      "name": "名称",
+      "creator": "创建者",
+      "creatorTip": "创建者: {nickname}",
+      "createdTime": "创建时间",
+      "noDocInProject": "项目中还没有任何文档"
+    },
+    "msg": {
+      "delConfirmTitle": "删除文档",
+      "delConfirmMsg": "您即将删除文档 \"{name}\"，删除后无法恢复，是否继续？",
+      "delSuccess": "文档删除成功"
+    }
+  },
+  "docView": {
+    "header": {
+      "back": "返回列表",
+      "edit": "编辑文档",
+      "lastEdit": "{updatedBy} 最后修改于 {updatedTime}"
+    },
+    "titlePlaceholder": "标题",
+    "defaultTitle": "未命名文档",
+    "breadcrumbRoot": "文档",
+    "docSaved": "文档保存成功",
+    "lastSavedTip": "最后保存于 {updatedTime}",
+    "intoFullScreen": "全屏编辑",
+    "exitFullScreen": "退出全屏"
+  },
+  "tagList": {
+    "header": {
+      "new": "新建标签",
+      "tagCount": "{count} 个标签",
+      "search": "查找标签"
+    },
+    "list": {
+      "name": "名称",
+      "creator": "创建者",
+      "creatorTip": "创建者: {nickname}",
+      "createdTime": "创建时间",
+      "updatedTime": "更新时间",
+      "noTagInProject": "项目中还没有任何标签"
+    },
+    "msg": {
+      "delConfirmTitle": "删除标签",
+      "delConfirmMsg": "您即将删除标签 \"{name}\"，删除后无法恢复，是否继续？",
+      "delSuccess": "标签删除成功"
+    }
+  },
+  "invitationList": {
+    "header": {
+      "new": "新建邀请",
+      "invitationCount": "{count} 条邀请记录",
+      "status": "状态",
+      "active": "有效",
+      "inactive": "失效",
+      "search": "查找邀请"
+    },
+    "list": {
+      "code": "邀请码",
+      "invitationType": "类型",
+      "validDays": "有效天数",
+      "creator": "创建者",
+      "creatorTip": "创建者: {nickname}",
+      "createdTime": "创建时间",
+      "expireTime": "过期时间",
+      "joinCount": "加入数",
+      "status": "状态",
+      "noInvitationInProject": "项目中还没有任何邀请记录",
+      "active": "有效",
+      "expired": "已过期",
+      "disabled": "已作废",
+      "neverExpire": "永久有效",
+      "actions": {
+        "copyUrl": "复制邀请",
+        "disable": "作废",
+        "enable": "激活"
+      }
+    },
+    "msg": {
+      "disableConfirmTitle": "作废邀请",
+      "disableConfirmMsg": "您即将作废项目邀请 \"{code}\"，作废后用户将无法再通过邀请链接加入项目，是否继续？",
+      "disableSuccess": "邀请已作废",
+      "enableSuccess": "邀请已激活"
+    }
+  },
+  "invitedMemberList": {
+    "title": "加入成员列表",
+    "header": {
+      "name": "昵称",
+      "role": "角色",
+      "joinedTime": "加入时间",
+      "registeredTime": "注册时间"
+    }
+  },
+  "projectList": {
+    "header": {
+      "new": "新建项目",
+      "projectCount": "{count} 个项目",
+      "search": "查找项目"
+    },
+    "list": {
+      "name": "名称",
+      "owner": "所有者",
+      "ownerTip": "所有者: {nickname}",
+      "details": "详情",
+      "transfer": "移交",
+      "quit": "退出",
+      "archive": "归档",
+      "archived": "已归档",
+      "unarchive": "取消归档",
+      "noProject": "你还没有创建或加入任何项目"
+    },
+    "msg": {
+      "archiveSuccess": "项目 \"{projectName}\" 归档成功",
+      "unarchiveSuccess": "项目 \"{projectName}\" 取消归档成功",
+      "delConfirmTitle": "删除项目",
+      "delConfirmMsg": "您即将删除项目 <strong class=\"red\">\"{projectName}\"</strong>，项目删除后无法恢复，是否继续？",
+      "delSuccess": "项目 \"{projectName}\" 删除成功"
+    }
+  },
+  "componentList": {
+    "header": {
+      "new": "新建模块",
+      "expand": "全部展开",
+      "collapse": "全部收起"
+    },
+    "list": {
+      "name": "名称",
+      "creator": "创建者",
+      "creatorTip": "{nickname} 创建于 {createdTime}",
+      "newSub": "子模块",
+      "emptyMsg": "项目中还没有任何功能模块"
+    },
+    "edit": {
+      "titleNew": "新建模块",
+      "titleEdit": "修改模块",
+      "name": "名称"
+    },
+    "msg": {
+      "delConfirmTitle": "删除模块",
+      "delConfirmMsg": "您即将删除模块 \"{name}\"，删除后无法恢复。该模块下的任务将被移动到父模块下，是否继续？",
+      "delSuccess": "模块 \"{name}\" 删除成功",
+      "nameMissing": "请填写模块名称",
+      "updateSuccess": "模块更新成功",
+      "createSuccess": "模块新建成功"
+    }
+  },
+  "invitationRedirect": {
+    "joining": "正在加入项目",
+    "joinSucess": "成功加入 \"{projectName}\" 项目"
+  },
+  "userInfo": {
+    "title": "个人设置",
+    "profile": {
+      "title": "用户信息",
+      "username": "用户名",
+      "usernameNotEditable": "用户名不可更改",
+      "usernameTip": "用户名长度4-16个字符，大小写字母或下划线。用户名仅限修改一次，请谨慎操作。",
+      "avatar": "头像",
+      "nickname": "昵称"
+    },
+    "password": {
+      "title": "修改密码",
+      "oldPwd": "旧密码",
+      "newPwd": "新密码",
+      "repeat": "确认密码"
+    },
+    "msg": {
+      "wrongOldPwd": "旧密码错误",
+      "pwdNotSame": "两次输入的新密码不一致",
+      "missingUsername": "请输入用户名",
+      "invalidUsername": "用户名长度4-16个字符，大小写字母或下划线",
+      "missingNickname": "昵称不能为空",
+      "invalidNickname": "昵称长度最长16个字符，可以包括大小写字母或下划线，中文以及emoji",
+      "missingOldPwd": "请输入旧密码",
+      "missingNewPwd": "请输入新密码",
+      "invalidPwd": "密码长度为8-20个字符，至少包含字母和数字",
+      "repeatPwd": "请再输一遍新密码",
+      "profileUpdated": "用户信息更新成功",
+      "pwdUpdated": "密码修改成功，请重新登录",
+      "pwdUpdateFail": "密码修改失败",
+      "avatarTooLarge": "头像文件大小不能超过1M",
+      "avatarUpdated": "用户头像更新成功",
+      "delAvatarConfirmTitle": "删除用户头像",
+      "delAvatarConfirmMsg": "您即将删除用户头像，删除后无法恢复，是否继续？",
+      "delAvatarSuccess": "用户头像删除成功"
+    }
+  }
+}

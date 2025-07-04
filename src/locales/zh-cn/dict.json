@@ -1,0 +1,45 @@
+{
+  "issueTypes": {
+    "REQUIREMENT": "需求",
+    "TASK": "任务",
+    "BUG": "缺陷"
+  },
+  "sprintStatuses": {
+    "TO_DO": "未开始",
+    "IN_PROGRESS": "进行中",
+    "DONE": "已结束"
+  },
+  "issuePriorities": {
+    "CRITICAL": "紧急",
+    "MAJOR": "重要",
+    "NORMAL": "普通",
+    "LOW": "较低",
+    "TRIVIAL": "最低"
+  },
+  "historyActionTypes": {
+    "CREATE": "创建",
+    "UPDATE": "更新",
+    "DELETE": "删除"
+  },
+  "invitationTypes": {
+    "DEVELOPER": "成员",
+    "GUEST": "访客"
+  },
+  "eventActionTypes": {
+    "CREATE": "新建",
+    "UPDATE": "更新",
+    "DELETE": "删除"
+  },
+  "issueSortTypes": {
+    "PRIORITY": "优先级",
+    "TYPE": "任务类型",
+    "CREATED_TIME": "创建时间",
+    "STORY_POINT": "故事点数",
+    "ASSIGNEE": "执行者"
+  },
+  "projectMemberRoles": {
+    "OWNER": "所有者",
+    "DEVELOPER": "成员",
+    "GUEST": "访客"
+  }
+}

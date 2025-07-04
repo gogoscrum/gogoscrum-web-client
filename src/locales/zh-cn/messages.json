@@ -1,0 +1,22 @@
+{
+  "errorMessages": {
+    "defaultErrorMessage": "出错啦～！请稍后重试或联系管理员",
+    "networkError": "网络错误，请检查网络连接",
+    "400": "请求参数错误",
+    "401": "登录已失效",
+    "403": "无访问权限",
+    "404": "请求的资源不存在，可能是参数错误或已被删除",
+    "409": "资源冲突，数据已存在",
+    "429": "请求超出上限",
+    "500": "服务器出现错误，请稍后重试或联系管理员",
+    "502": "无法连接服务器，请稍后重试或联系管理员",
+    "wrongPassword": "密码验证失败",
+    "duplicatedUsername": "用户名已存在",
+    "duplicatedGroup": "项目中已存在相同名称的任务列表",
+    "duplicatedTag": "标签名称已存在",
+    "noPermissionToOperate": "无操作权限",
+    "backlogCannotBeDeleted": "Backlog不可以删除",
+    "invalidInvitation": "无效的邀请，或邀请已过期",
+    "alreadyInProject": "您已经是项目成员了，无需重复加入"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "errorMessages": {
+    "defaultErrorMessage": "Something went wrong, please try again later or contact the admin",
+    "networkError": "Network error, please check your network connection",
+    "400": "Invalid request",
+    "401": "Session expired, please signin again",
+    "403": "No permission to access",
+    "404": "The request resource does not exist",
+    "409": "Data already exists",
+    "429": "Too many request",
+    "500": "Internal error occurred, please try again later or contact the admin",
+    "502": "Cannot connect to server, please try again later or contact the admin",
+    "wrongPassword": "Password validation failed",
+    "duplicatedUsername": "Username already exists",
+    "duplicatedGroup": "Isse group name already exists",
+    "duplicatedTag": "Tag name already exists",
+    "noPermissionToOperate": "No permission to operate",
+    "backlogCannotBeDeleted": "Backlog cannot be deleted",
+    "invalidInvitation": "Invalid or expired invitation",
+    "alreadyInProject": "You are alreay in the project"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "issueTypes": {
+    "REQUIREMENT": "Feature",
+    "TASK": "Task",
+    "BUG": "Bug"
+  },
+  "sprintStatuses": {
+    "TO_DO": "Not started",
+    "IN_PROGRESS": "In progress",
+    "DONE": "Completed"
+  },
+  "issuePriorities": {
+    "CRITICAL": "Critical",
+    "MAJOR": "Major",
+    "NORMAL": "Normal",
+    "LOW": "Low",
+    "TRIVIAL": "Trivial"
+  },
+  "historyActionTypes": {
+    "CREATE": "Created",
+    "UPDATE": "Updated",
+    "DELETE": "Deleted"
+  },
+  "invitationTypes": {
+    "DEVELOPER": "Developer",
+    "GUEST": "Guest"
+  },
+  "eventActionTypes": {
+    "CREATE": "created",
+    "UPDATE": "updated",
+    "DELETE": "deleted"
+  },
+  "issueSortTypes": {
+    "PRIORITY": "Priority",
+    "TYPE": "Issue type",
+    "CREATED_TIME": "Created time",
+    "STORY_POINT": "Story point",
+    "ASSIGNEE": "Assignee"
+  },
+  "projectMemberRoles": {
+    "OWNER": "Owner",
+    "DEVELOPER": "Developer",
+    "GUEST": "Guest"
+  }
+}
