@@ -1,11 +1,11 @@
 {
   "meta": {
     "keywords": "免费,scrum,agile,backlog,敏捷,看板,软件开发,bug管理,任务,迭代",
-    "description": "轻量级Scrum敏捷管理工具，从代办事项列表到迭代任务看板、故事点估算、Bug跟踪和燃尽图报表，轻松管理Scrum敏捷开发流程的所有环节。",
-    "title": "gogoscrum - 轻量级免费Scrum敏捷项目管理工具"
+    "description": "开源轻量级Scrum敏捷管理工具，从代办事项列表到迭代任务看板、故事点估算、Bug跟踪和燃尽图报表，轻松管理Scrum敏捷开发流程的所有环节。",
+    "title": "gogoscrum - 开源轻量级免费Scrum敏捷项目管理工具"
   },
   "common": {
-    "slogan": "轻量级免费敏捷项目管理工具",
+    "slogan": "开源轻量级敏捷项目管理工具",
     "empty": "暂无数据",
     "close": "关闭",
     "create": "创建",
