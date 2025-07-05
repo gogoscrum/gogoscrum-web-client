@@ -11,6 +11,14 @@
         <div class="link-item">
           <router-link :to="{ name: 'Register' }">{{ $t('homepage.header.signup') }}</router-link>
         </div>
+        <a href="https://github.com/gogoscrum/gogoscrum-rest-service" target="_blank" class="github-badge">
+          <el-image src="https://img.shields.io/github/stars/gogoscrum/gogoscrum-rest-service?style=flat&logo=github">
+            <template #error>
+              <!-- Cannot access Github, just don't show the badge. -->
+              <span></span>
+            </template>
+          </el-image>
+        </a>
         <LanguageSelector class="link-item" @languageChanged="languageChanged" />
       </div>
     </div>
@@ -239,6 +247,7 @@ export default {
     .links-container {
       display: flex;
       align-items: center;
+      align-content: center;
 
       @media only screen and (max-width: 520px) {
         margin: 0 auto;
@@ -253,6 +262,17 @@ export default {
 
         &:hover {
           background-color: #e7f5f3;
+        }
+      }
+
+      .github-badge {
+        display: flex;
+        align-items: center;
+        margin-left: 16px;
+
+        img {
+          width: 20px;
+          height: 20px;
         }
       }
     }
