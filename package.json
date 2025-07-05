@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "docker": "vite build --mode docker && rm -r ../docker/gogoscrum-web-client/dist && cp -r dist/ ../docker/gogoscrum-web-client/dist"
+    "docker": "vite build --mode docker && rm -r ../gogoscrum-docker/gogoscrum-web-client/dist && cp -r dist/ ../gogoscrum-docker/gogoscrum-web-client/dist"
   },
   "dependencies": {
     "@element-plus/icons-vue": "2.3.1",
