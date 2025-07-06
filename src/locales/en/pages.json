@@ -2,10 +2,10 @@
   "meta": {
     "keywords": "free,scrum,agile,backlog,board,software,bug,issue,sprint,project",
     "description": "Keep track of everything on sprint board, drag and drop to update task status, report and track bugs, view sprint burn-down chart, share files and documents - all features needed by an agile team, free for everyone with unlimited number of projects and team members",
-    "title": "gogoscrum - Lightweight free agile tool"
+    "title": "gogoscrum - Lightweight Open-Source Scrum Tool"
   },
   "common": {
-    "slogan": "Lightweight Scrum tool for agile team",
+    "slogan": "Lightweight Open-Source Scrum Tool",
     "empty": "No data",
     "close": "Close",
     "create": "Create",
