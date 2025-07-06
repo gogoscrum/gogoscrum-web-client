@@ -89,7 +89,7 @@
                     }}</span>
                   </div>
                   <div v-if="sprintItem.startDate" class="form-field-tip sprint-date-range-row">
-                    <span
+                    <span class="mr-16px"
                       >{{ sprintItem.startDateFormatted || sprintItem.startDate }} ~
                       {{ sprintItem.endDateFormatted || sprintItem.endDate }}</span
                     >
