@@ -54,14 +54,32 @@
             resize="none"
             class="issue-title-input"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('issueEdit.remark')" prop="description">
-          <el-input
-            v-model="editIssue.description"
-            :placeholder="$t('issueEdit.remarkPlaceholder')"
-            :autosize="{ minRows: 1 }"
-            maxlength="1000"
-            type="textarea"
-            resize="none"></el-input>
+        <el-form-item :label="$t('issueEdit.remark')" prop="description" class="desc-row">
+          <div v-if="editIssue.description?.length && !editingDesc" class="flex relative">
+            <vue-markdown
+              :options="{ html: true, linkify: true, breaks: true }"
+              :source="editIssue.description"
+              class="desc-md" />
+            <div class="action-btn flex items-center" @click="editDesc">
+              <el-icon class="mr-1"><Edit /></el-icon>
+              {{ $t('common.edit') }}
+            </div>
+          </div>
+          <template v-else>
+            <el-input
+              ref="issueDescInput"
+              v-model="editIssue.description"
+              :placeholder="$t('issueEdit.remarkPlaceholder')"
+              :autosize="{ minRows: 1 }"
+              maxlength="1000"
+              type="textarea"
+              resize="none"
+              @focus="editingDesc = true"
+              @blur="editingDesc = false"></el-input>
+            <div v-if="editingDesc" class="form-field-tip w-full">
+              {{ $t('issueEdit.markdownSupported') }}
+            </div>
+          </template>
         </el-form-item>
         <el-row v-if="editIssueId">
           <el-col :xs="24" :sm="12">
@@ -568,6 +586,7 @@ import OfficeViewer from '@/components/common/OfficeViewer.vue'
 import PdfViewer from '@/components/common/PdfViewer.vue'
 import TagEdit from '@/components/tag/TagEdit.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
+import VueMarkdown from 'vue-markdown-render'
 import { ElMessageBox, ElMessage } from 'element-plus'
 export default {
   name: 'IssueEdit',
@@ -582,7 +601,8 @@ export default {
     StatusTag,
     PriorityIcon,
     OfficeViewer,
-    PdfViewer
+    PdfViewer,
+    VueMarkdown
   },
   props: {
     editIssueId: {
@@ -645,6 +665,7 @@ export default {
       },
       imgPreviewSrcList: [],
       showCommentInput: false,
+      editingDesc: false,
       editingComment: null,
       commentContent: '',
       issueGroups: [],
@@ -767,6 +788,15 @@ export default {
           this.tags = res.data.results
         })
       }
+    },
+    editDesc() {
+      this.editingDesc = true
+      this.$nextTick(() => {
+        document.querySelector('.issue-title-input').scrollIntoView({ behavior: 'smooth' })
+        setTimeout(() => {
+          this.$refs.issueDescInput.focus()
+        }, 500)
+      })
     },
     newTag() {
       this.editingTag = true
@@ -1247,6 +1277,44 @@ export default {
     font-weight: 500;
     color: #999999;
   }
+
+  .desc-row {
+    .el-form-item__content > div {
+      width: 100%;
+      .desc-md {
+        // flex-grow: 1;
+        overflow: auto;
+        padding: 5px 11px;
+        line-height: 1.5;
+
+        :first-child {
+          margin-top: 0;
+        }
+        :last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      .action-btn {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        visibility: hidden;
+        background-color: #e7f5f3;
+        color: var(--el-color-primary);
+        backdrop-filter: blur(3px);
+      }
+
+      &:hover {
+        .action-btn {
+          visibility: visible;
+          &:hover {
+            background-color: #d1f2ec;
+          }
+        }
+      }
+    }
+  }
 }
 
 .tag-select-popover {
@@ -1611,11 +1679,12 @@ export default {
     font-size: 12px;
     color: #999999;
     font-weight: 450;
+    white-space: nowrap;
+    border-radius: 4px;
 
     &:hover {
       color: var(--el-color-primary);
       background-color: #e7f5f3;
-      border-radius: 4px;
     }
   }
 
@@ -1633,10 +1702,6 @@ export default {
     display: flex;
     align-items: center;
     cursor: pointer;
-
-    // .el-icon {
-    //   margin-right: 3px;
-    // }
   }
 }
 

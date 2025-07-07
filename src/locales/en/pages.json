@@ -240,6 +240,7 @@
     "namePlaceholder": "Please input issue title",
     "remark": "Description",
     "remarkPlaceholder": "Please describe the issue in more detail",
+    "markdownSupported": "Markdown syntax is supported",
     "assignee": "Assigned to",
     "createdBy": "Reported by",
     "createdTime": "Created at",

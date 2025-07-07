@@ -31,7 +31,8 @@
     "vue-i18n": "11.1.2",
     "vue-pdf-embed": "2.1.2",
     "vue-router": "4.5.1",
-    "vuedraggable": "4.1.0"
+    "vuedraggable": "4.1.0",
+    "vue-markdown-render": "2.2.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.2.3",

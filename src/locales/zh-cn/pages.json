@@ -240,6 +240,7 @@
     "namePlaceholder": "请输入任务标题",
     "remark": "描述",
     "remarkPlaceholder": "请输入任务描述",
+    "markdownSupported": "支持Markdown语法",
     "assignee": "执行者",
     "createdBy": "创建者",
     "createdTime": "创建时间",
