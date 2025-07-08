@@ -320,7 +320,7 @@
       "nameMissing": "请输入列表名称",
       "nameInvalid": "列表名称长度为1-40个字符",
       "delConfirmTitle": "删除列表",
-      "delConfirmMsg": "您即将删除列表，列表中的任务将被移至待处理列，列表删除后无法恢复，是否继续？",
+      "delConfirmMsg": "您即将删除列表 <strong class=\"red\">\"{groupName}\"</strong>，列表中的任务将被移至待处理列，列表删除后无法恢复，是否继续？",
       "editSuccess": "列表更新成功",
       "createSuccess": "列表创建成功",
       "deleteSuccess": "列表删除成功"

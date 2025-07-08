@@ -320,7 +320,7 @@
       "nameMissing": "Please input group name",
       "nameInvalid": "Group name should be 1-40 letters",
       "delConfirmTitle": "Delete group",
-      "delConfirmMsg": "You are about to delete the group, issues in this group will be moved to the TODO list. This action cannot be recovered. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete the group  <strong class=\"red\">\"{groupName}\"</strong>, issues in this group will be moved to the TODO list. This action cannot be reversed. Are you sure to proceed?",
       "editSuccess": "Group updated",
       "createSuccess": "Group created",
       "deleteSuccess": "Group deleted"

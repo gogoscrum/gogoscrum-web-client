@@ -109,7 +109,7 @@
                       </el-dropdown>
                     </el-dropdown-item>
                     <el-dropdown-item
-                      v-if="element.deletable"
+                      v-if="!element.builtIn"
                       icon="Delete"
                       @click.native="deleteIssueGroup(element, index)">
                       {{ $t('common.delete') }}
@@ -903,10 +903,15 @@ export default {
       })
     },
     deleteIssueGroup(issueGroup, index) {
-      ElMessageBox.confirm(this.$t('issueGroupEdit.msg.delConfirmMsg'), this.$t('issueGroupEdit.msg.delConfirmTitle'), {
-        type: 'warning',
-        draggable: true
-      }).then(() => {
+      ElMessageBox.confirm(
+        this.$t('issueGroupEdit.msg.delConfirmMsg', { groupName: issueGroup.label }),
+        this.$t('issueGroupEdit.msg.delConfirmTitle'),
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true,
+          draggable: true
+        }
+      ).then(() => {
         issueGroupApi.delete(issueGroup.id).then(() => {
           this.issueGroupDeleted(issueGroup)
         })
