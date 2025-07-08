@@ -604,17 +604,22 @@ export default {
         this.$t('issueList.msg.delConfirmTitle'),
         {
           type: 'warning',
+          dangerouslyUseHTMLString: true,
           draggable: true
         }
-      ).then(() => {
-        issueApi.delete(row.id).then((response) => {
-          this.issues.splice(index, 1)
-          this.totalElements--
-          ElMessage.success({
-            message: this.$t('issueList.msg.delSuccess')
+      )
+        .then(() => {
+          issueApi.delete(row.id).then((response) => {
+            this.issues.splice(index, 1)
+            this.totalElements--
+            ElMessage.success({
+              message: this.$t('issueList.msg.delSuccess')
+            })
           })
         })
-      })
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     }
   }
 }

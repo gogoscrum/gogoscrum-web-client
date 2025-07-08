@@ -182,10 +182,15 @@ export default {
       })
     },
     deleteSprint() {
-      ElMessageBox.confirm(this.$t('editSprint.msg.delConfirmMsg'), this.$t('editSprint.msg.delConfirmTitle'), {
-        type: 'warning',
-        draggable: true
-      })
+      ElMessageBox.confirm(
+        this.$t('editSprint.msg.delConfirmMsg', { sprintName: this.sprintForm.name }),
+        this.$t('editSprint.msg.delConfirmTitle'),
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true,
+          draggable: true
+        }
+      )
         .then(() => {
           this.deleting = true
           sprintApi

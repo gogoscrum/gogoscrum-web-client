@@ -233,16 +233,21 @@ export default {
         this.$t('tagList.msg.delConfirmTitle'),
         {
           type: 'warning',
+          dangerouslyUseHTMLString: true,
           draggable: true
         }
-      ).then(() => {
-        tagApi.delete(row.id).then((response) => {
-          this.tags.splice(index, 1)
-          ElMessage.success({
-            message: this.$t('tagList.msg.delSuccess')
+      )
+        .then(() => {
+          tagApi.delete(row.id).then((response) => {
+            this.tags.splice(index, 1)
+            ElMessage.success({
+              message: this.$t('tagList.msg.delSuccess')
+            })
           })
         })
-      })
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     }
   }
 }

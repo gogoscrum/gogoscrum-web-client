@@ -156,17 +156,21 @@ export default {
           dangerouslyUseHTMLString: true,
           draggable: true
         }
-      ).then(() => {
-        componentApi.delete(row.id).then((res) => {
-          this.removeFromTree(row)
+      )
+        .then(() => {
+          componentApi.delete(row.id).then((res) => {
+            this.removeFromTree(row)
 
-          ElMessage.success({
-            message: this.$t('componentList.msg.delSuccess', {
-              name: row.name
+            ElMessage.success({
+              message: this.$t('componentList.msg.delSuccess', {
+                name: row.name
+              })
             })
           })
         })
-      })
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     },
     removeFromTree(component) {
       let index = null

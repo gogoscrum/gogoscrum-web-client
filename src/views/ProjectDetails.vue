@@ -362,19 +362,23 @@ export default {
           dangerouslyUseHTMLString: true,
           draggable: true
         }
-      ).then(() => {
-        projectApi.delete(this.projectId).then((res) => {
-          ElMessage.success({
-            message: this.$t('projectList.msg.delSuccess', {
-              projectName: this.project.name
+      )
+        .then(() => {
+          projectApi.delete(this.projectId).then((res) => {
+            ElMessage.success({
+              message: this.$t('projectList.msg.delSuccess', {
+                projectName: this.project.name
+              })
+            })
+            this.$bus.$emit('projectDeleted', this.project)
+            this.$router.push({
+              name: 'MyProjects'
             })
           })
-          this.$bus.$emit('projectDeleted', this.project)
-          this.$router.push({
-            name: 'MyProjects'
-          })
         })
-      })
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     }
   }
 }

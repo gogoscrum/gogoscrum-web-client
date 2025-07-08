@@ -229,7 +229,7 @@
     "points": "{count} story points",
     "msg": {
       "delIssueConfirmTitle": "Delete issue",
-      "delIssueConfirmMsg": "You are about to delete the issue, which cannot be recovered. Are you sure to proceed?"
+      "delIssueConfirmMsg": "You are about to delete issue <strong class=\"red\">\"{issueName}\"</strong>, which cannot be recovered. Are you sure to proceed?"
     }
   },
   "issueEdit": {
@@ -286,7 +286,7 @@
       "invalidName": "Issue title cannot be longer than 500 letters",
       "missingType": "Please select issue type",
       "delIssueConfirmTitle": "Delete issue",
-      "delIssueConfirmMsg": "You are about to delete the issue, which cannot be recovered. Are you sure to proceed?",
+      "delIssueConfirmMsg": "You are about to delete issue <strong class=\"red\">\"{issueName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
       "issueUpdated": "Issue updated",
       "issueCreated": "Issue created",
       "issueDeleted": "Issue deleted",
@@ -350,7 +350,7 @@
       "codeMissing": "Please input project code",
       "codeInvalid": "Project code should be 3-6 letters",
       "delConfirmTitle": "Delete project",
-      "delConfirmMsg": "You are about to delete the project, which cannot be recovered. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete project <strong class=\"red\">\"{projectName}\"</strong>, all data in the project will be removed after deletion and cannot be recovered. Are you sure to proceed?",
       "delSuccess": "Project deleted",
       "editSuccess": "Project updated",
       "createSuccess": "Project created",
@@ -369,7 +369,7 @@
     "msg": {
       "ownerMissing": "Please select the new owner",
       "transferConfirmTitle": "Transfer confirm",
-      "transferConfirmMsg": "You are about to transfer project \"{projectName}\" to \"{newOwnerName}\". You will not be able to manage this project after transfer. Are you sure to proceed?",
+      "transferConfirmMsg": "You are about to transfer project <strong class=\"red\">\"{projectName}\"</strong> to <strong>{newOwnerName}</strong>. You will not be able to manage this project after transfer. Are you sure to proceed?",
       "transferSuccess": "Project transferred",
       "transferAndQuitSuccess": "Project transferred and you've quit the project"
     }
@@ -389,7 +389,7 @@
       "editSuccess": "Sprint updated",
       "createSuccess": "Sprint created",
       "delConfirmTitle": "Delete sprint",
-      "delConfirmMsg": "You are about to delete sprint, which cannot be recovered. All issues in the sprint will be moved into backlog. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete sprint <strong class=\"red\">\"{sprintName}\"</strong>, which cannot be recovered. All issues in the sprint will be moved into backlog. Are you sure to proceed?",
       "delSuccess": "Sprint deleted"
     }
   },
@@ -461,7 +461,7 @@
     },
     "msg": {
       "delConfirmTitle": "Delete sprint",
-      "delConfirmMsg": "You are about to delete sprint \"{sprintName}\", which cannot be recovered. All issues in the sprint will be moved into backlog. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete sprint <strong class=\"red\">\"{sprintName}\"</strong>, which cannot be recovered. All issues in the sprint will be moved into backlog. Are you sure to proceed?",
       "delSuccess": "Sprint deleted"
     }
   },
@@ -480,7 +480,7 @@
       "issueCopied": "Issue \"{issueName}\" copied",
       "issueMoved": "Issue moved into \"{sprintName}\"",
       "delConfirmTitle": "Delete issue",
-      "delConfirmMsg": "You are about to delete issue \"{issueName}\", which cannot be recovered. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete issue <strong class=\"red\">\"{issueName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
       "delSuccess": "Issue deleted"
     }
   },
@@ -534,7 +534,7 @@
       "assigned": "Issue \"{issueCode}\" assigned to \"{userNickname}\"",
       "unassigned": "Unassigned issue  \"{issueCode}\"",
       "delConfirmTitle": "Delete issue",
-      "delConfirmMsg": "You are about to delete issue \"{issueName}\", which cannot be recovered. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete issue <strong class=\"red\">\"{issueName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
       "delSuccess": "Issue deleted"
     }
   },
@@ -558,7 +558,7 @@
       "filterCopied": "Issue filter copied",
       "filterDeleted": "Issue filter deleted",
       "delConfirmTitle": "Delete filter",
-      "delConfirmMsg": "You are about to delete issue filter \"{name}\", which cannot be recovered. Are you sure to proceed?"
+      "delConfirmMsg": "You are about to delete issue filter <strong class=\"red\">\"{name}\"</strong>, which cannot be recovered. Are you sure to proceed?"
     }
   },
   "fileList": {
@@ -586,8 +586,8 @@
       "newFolderName": "New folder",
       "fileSaved": "File saved",
       "delConfirmTitle": "Delete {type}",
-      "delFileConfirmMsg": "You are about to delete file \"{name}\", which cannot be recovered. Are you sure to proceed?",
-      "delFolderConfirmMsg": "You are about to delete folder \"{name}\" and all sub-folders and files it contains. This operation cannot be recovered. Are you sure to proceed?",
+      "delFileConfirmMsg": "You are about to delete file <strong class=\"red\">\"{name}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+      "delFolderConfirmMsg": "You are about to delete folder <strong class=\"red\">\"{name}\"</strong> and all sub-folders and files it contains. This operation cannot be recovered. Are you sure to proceed?",
       "delSuccess": "{type} deleted",
       "fileSizeLimit": "File size cannot be larger than 100M",
       "tooManyFilesToUpload": "You can only upload up to 5 files at a time",
@@ -610,7 +610,7 @@
     },
     "msg": {
       "delConfirmTitle": "Delete document",
-      "delConfirmMsg": "You are about to delete document \"{name}\", which cannot be recovered. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete document <strong class=\"red\">\"{name}\"</strong>, which cannot be recovered. Are you sure to proceed?",
       "delSuccess": "Document deleted"
     }
   },
@@ -644,7 +644,7 @@
     },
     "msg": {
       "delConfirmTitle": "Delete tag",
-      "delConfirmMsg": "You are about to delete tag \"{name}\", which cannot be recovered. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete tag <strong class=\"red\">\"{name}\"</strong>, which cannot be recovered. Are you sure to proceed?",
       "delSuccess": "Tag deleted"
     }
   },
@@ -680,7 +680,7 @@
     },
     "msg": {
       "disableConfirmTitle": "Disable invitation",
-      "disableConfirmMsg": "You are about to disable invitation \"{code}\", user will not be able to join project via the invitation after disabled, are you sure to proceed?",
+      "disableConfirmMsg": "You are about to disable invitation <strong>\"{code}\"</strong>, user will not be able to join project via the invitation after disabled, are you sure to proceed?",
       "disableSuccess": "Invitation disabled",
       "enableSuccess": "Invitation enabled"
     }
@@ -716,7 +716,7 @@
       "archiveSuccess": "Project \"{projectName}\" archived",
       "unarchiveSuccess": "Project \"{projectName}\" unarchived",
       "delConfirmTitle": "Delete project",
-      "delConfirmMsg": "You are about to delete project \"{projectName}\", which cannot be recovered. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete project <strong class=\"red\">\"{projectName}\"</strong>, all data in the project will be removed after deletion and cannot be recovered. Are you sure to proceed?",
       "delSuccess": "Project \"{projectName}\" deleted"
     }
   },
@@ -740,7 +740,7 @@
     },
     "msg": {
       "delConfirmTitle": "Delete component",
-      "delConfirmMsg": "You are about to delete component \"{name}\", which cannot be recovered. Issues belonged to this component will be moved into its parent component. Are you sure to proceed?",
+      "delConfirmMsg": "You are about to delete component  <strong class=\"red\">\"{name}\"</strong>, which cannot be recovered. Issues belonged to this component will be moved into its parent component. Are you sure to proceed?",
       "delSuccess": "Component \"{name}\" deleted",
       "nameMissing": "Please input component name",
       "updateSuccess": "Component updated",

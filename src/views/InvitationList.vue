@@ -284,17 +284,22 @@ export default {
         this.$t('invitationList.msg.disableConfirmTitle'),
         {
           type: 'warning',
+          dangerouslyUseHTMLString: true,
           draggable: true
         }
-      ).then(() => {
-        invitationApi.disable(row.projectId, row.id).then((response) => {
-          this.formatInvitation(response.data)
-          this.invitations.splice(index, 1, response.data)
-          ElMessage.success({
-            message: this.$t('invitationList.msg.disableSuccess')
+      )
+        .then(() => {
+          invitationApi.disable(row.projectId, row.id).then((response) => {
+            this.formatInvitation(response.data)
+            this.invitations.splice(index, 1, response.data)
+            ElMessage.success({
+              message: this.$t('invitationList.msg.disableSuccess')
+            })
           })
         })
-      })
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     },
     enableInvitation: function (index, row) {
       invitationApi.enable(row.projectId, row.id).then((response) => {

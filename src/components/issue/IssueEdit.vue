@@ -923,10 +923,15 @@ export default {
       }
     },
     deleteIssue() {
-      ElMessageBox.confirm(this.$t('issueEdit.msg.delIssueConfirmMsg'), this.$t('issueEdit.msg.delIssueConfirmTitle'), {
-        type: 'warning',
-        draggable: true
-      })
+      ElMessageBox.confirm(
+        this.$t('issueEdit.msg.delIssueConfirmMsg', { issueName: this.editIssue.name }),
+        this.$t('issueEdit.msg.delIssueConfirmTitle'),
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true,
+          draggable: true
+        }
+      )
         .then(() => {
           this.deleting = true
           issueApi
@@ -942,7 +947,9 @@ export default {
               this.deleting = false
             })
         })
-        .catch(() => {})
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     },
     saveIssue() {
       if (this.showCommentInput && this.editingComment && this.commentContent) {

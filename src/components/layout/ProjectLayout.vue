@@ -309,6 +309,7 @@ export default {
         this.$t('issueFilter.msg.delConfirmTitle'),
         {
           type: 'warning',
+          dangerouslyUseHTMLString: true,
           draggable: true
         }
       ).then(() => {

@@ -118,27 +118,32 @@ export default {
             this.$t('transferProject.msg.transferConfirmTitle'),
             {
               type: 'warning',
+              dangerouslyUseHTMLString: true,
               draggable: true
             }
-          ).then(() => {
-            projectApi
-              .transferTo(this.project.id, this.transferProjectForm.owner.id, this.transferProjectForm.quit)
-              .then((res) => {
-                ElMessage.success({
-                  message: this.transferProjectForm.quit
-                    ? this.$t('transferProject.msg.transferAndQuitSuccess')
-                    : this.$t('transferProject.msg.transferSuccess')
+          )
+            .then(() => {
+              projectApi
+                .transferTo(this.project.id, this.transferProjectForm.owner.id, this.transferProjectForm.quit)
+                .then((res) => {
+                  ElMessage.success({
+                    message: this.transferProjectForm.quit
+                      ? this.$t('transferProject.msg.transferAndQuitSuccess')
+                      : this.$t('transferProject.msg.transferSuccess')
+                  })
+
+                  if (this.transferProjectForm.quit) {
+                    this.$emit('projectQuit', res.data)
+                  } else {
+                    this.$emit('projectSaved', res.data)
+                  }
+
+                  this.dialogVisible = false
                 })
-
-                if (this.transferProjectForm.quit) {
-                  this.$emit('projectQuit', res.data)
-                } else {
-                  this.$emit('projectSaved', res.data)
-                }
-
-                this.dialogVisible = false
-              })
-          })
+            })
+            .catch((err) => {
+              // Cancelled, do nothing
+            })
         }
       })
     }

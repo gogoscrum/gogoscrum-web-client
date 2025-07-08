@@ -275,16 +275,23 @@ export default {
       })
     },
     deleteIssue() {
-      ElMessageBox.confirm(this.$t('issueCard.msg.delIssueConfirmMsg'), this.$t('issueCard.msg.delIssueConfirmTitle'), {
-        type: 'warning',
-        draggable: true
-      })
+      ElMessageBox.confirm(
+        this.$t('issueCard.msg.delIssueConfirmMsg', { issueName: this.issue.name }),
+        this.$t('issueCard.msg.delIssueConfirmTitle'),
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true,
+          draggable: true
+        }
+      )
         .then(() => {
           issueApi.delete(this.issue.id).then(() => {
             this.issueDeleted(this.issue)
           })
         })
-        .catch(() => {})
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     },
     assignIssueToUser(user) {
       this.issue.owner = user

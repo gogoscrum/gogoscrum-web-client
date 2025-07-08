@@ -261,6 +261,7 @@ export default {
         this.$t('backlog.msg.delConfirmTitle'),
         {
           type: 'warning',
+          dangerouslyUseHTMLString: true,
           draggable: true
         }
       )

@@ -19,7 +19,7 @@
           plain
           size="default"
           @click="deleteIssueGroup"
-          v-if="issueGroup.id && issueGroup.deletable"
+          v-if="issueGroup.id && !issueGroup.builtIn"
           >{{ $t('common.delete') }}</el-button
         >
         <el-button size="default" @click="issueGroupDialogVisible = false">{{ $t('common.cancel') }}</el-button>
@@ -81,10 +81,15 @@ export default {
   mounted() {},
   methods: {
     deleteIssueGroup() {
-      ElMessageBox.confirm(this.$t('issueGroupEdit.msg.delConfirmMsg'), this.$t('issueGroupEdit.msg.delConfirmTitle'), {
-        type: 'warning',
-        draggable: true
-      }).then(() => {
+      ElMessageBox.confirm(
+        this.$t('issueGroupEdit.msg.delConfirmMsg', { groupName: this.issueGroup.label }),
+        this.$t('issueGroupEdit.msg.delConfirmTitle'),
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true,
+          draggable: true
+        }
+      ).then(() => {
         issueGroupApi.delete(this.issueGroup.id).then(() => {
           this.$emit('issueGroupDeleted', this.issueGroup)
           this.issueGroupDialogVisible = false

@@ -493,15 +493,20 @@ export default {
 
       ElMessageBox.confirm(confirmMsg, this.$t('fileList.msg.delConfirmTitle', { type: type }), {
         type: 'warning',
+        dangerouslyUseHTMLString: true,
         draggable: true
-      }).then(() => {
-        fileApi.delete(row.id).then((response) => {
-          this.files.splice(index, 1)
-          ElMessage.success({
-            message: this.$t('fileList.msg.delSuccess', { type: type })
+      })
+        .then(() => {
+          fileApi.delete(row.id).then((response) => {
+            this.files.splice(index, 1)
+            ElMessage.success({
+              message: this.$t('fileList.msg.delSuccess', { type: type })
+            })
           })
         })
-      })
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     },
     fileClicked(file) {
       if (file.folder) {

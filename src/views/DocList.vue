@@ -217,6 +217,7 @@ export default {
         this.$t('docList.msg.delConfirmTitle'),
         {
           type: 'warning',
+          dangerouslyUseHTMLString: true,
           draggable: true
         }
       )
@@ -228,7 +229,9 @@ export default {
             })
           })
         })
-        .catch(() => {})
+        .catch(() => {
+          // Cancelled, do nothing
+        })
     }
   }
 }

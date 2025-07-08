@@ -911,11 +911,15 @@ export default {
           dangerouslyUseHTMLString: true,
           draggable: true
         }
-      ).then(() => {
-        issueGroupApi.delete(issueGroup.id).then(() => {
-          this.issueGroupDeleted(issueGroup)
+      )
+        .then(() => {
+          issueGroupApi.delete(issueGroup.id).then(() => {
+            this.issueGroupDeleted(issueGroup)
+          })
         })
-      })
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     },
     issueGroupDeleted(deletedGroup) {
       let index = utils.indexInArray(this.issueGroups, deletedGroup.id)

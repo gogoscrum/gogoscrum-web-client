@@ -297,16 +297,20 @@ export default {
           dangerouslyUseHTMLString: true,
           draggable: true
         }
-      ).then(() => {
-        projectApi.delete(row.id).then((res) => {
-          ElMessage.success({
-            message: this.$t('projectList.msg.delSuccess', {
-              projectName: row.name
+      )
+        .then(() => {
+          projectApi.delete(row.id).then((res) => {
+            ElMessage.success({
+              message: this.$t('projectList.msg.delSuccess', {
+                projectName: row.name
+              })
             })
+            this.projectDeleted(row)
           })
-          this.projectDeleted(row)
         })
-      })
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     },
     quitProject(row) {
       ElMessageBox.confirm(

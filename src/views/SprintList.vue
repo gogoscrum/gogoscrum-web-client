@@ -251,6 +251,7 @@ export default {
         this.$t('sprintList.msg.delConfirmTitle'),
         {
           type: 'warning',
+          dangerouslyUseHTMLString: true,
           draggable: true
         }
       )

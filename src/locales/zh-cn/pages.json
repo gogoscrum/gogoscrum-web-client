@@ -229,7 +229,7 @@
     "points": "{count} 个故事点",
     "msg": {
       "delIssueConfirmTitle": "删除任务",
-      "delIssueConfirmMsg": "您即将删除任务，任务删除后无法恢复，是否继续？"
+      "delIssueConfirmMsg": "您即将删除任务 <strong class=\"red\">\"{issueName}\"</strong>，任务删除后无法恢复，是否继续？"
     }
   },
   "issueEdit": {
@@ -286,7 +286,7 @@
       "invalidName": "名称长度不超过500个字符",
       "missingType": "请选择任务类型",
       "delIssueConfirmTitle": "删除任务",
-      "delIssueConfirmMsg": "您即将删除任务，任务删除后无法恢复，是否继续？",
+      "delIssueConfirmMsg": "您即将删除任务 <strong class=\"red\">\"{issueName}\"</strong>，任务删除后无法恢复，是否继续？",
       "issueUpdated": "任务修改成功",
       "issueCreated": "任务添加成功",
       "issueDeleted": "任务删除成功",
@@ -350,7 +350,7 @@
       "codeMissing": "请输入项目代码",
       "codeInvalid": "项目代码长度为3-6个字母",
       "delConfirmTitle": "删除项目",
-      "delConfirmMsg": "您即将删除项目 <strong class=\"red\">\"{projectName}\"</strong>，项目删除后无法恢复，是否继续？",
+      "delConfirmMsg": "您即将删除项目 <strong class=\"red\">\"{projectName}\"</strong>，删除后该项目下的所有数据将被清除，并且不可恢复，是否继续？",
       "delSuccess": "项目删除成功",
       "editSuccess": "项目更新成功",
       "createSuccess": "项目创建成功",
@@ -369,7 +369,7 @@
     "msg": {
       "ownerMissing": "请选择新的项目所有者",
       "transferConfirmTitle": "确认移交",
-      "transferConfirmMsg": "您正在将项目 “{projectName}” 移交给 “{newOwnerName}”，项目移交后您将不再拥有该项目的管理权限，是否继续？",
+      "transferConfirmMsg": "您正在将项目 <strong class=\"red\">“{projectName}”</strong> 移交给 <strong>{newOwnerName}</strong>，项目移交后您将不再拥有该项目的管理权限，是否继续？",
       "transferSuccess": "项目移交成功",
       "transferAndQuitSuccess": "项目移交成功并已退出该项目"
     }
@@ -389,7 +389,7 @@
       "editSuccess": "迭代更新成功",
       "createSuccess": "迭代创建成功",
       "delConfirmTitle": "删除迭代",
-      "delConfirmMsg": "您即将删除迭代，迭代删除后无法恢复，该迭代中的所有任务将被移至项目待办列表中，是否继续？",
+      "delConfirmMsg": "您即将删除迭代 <strong class=\"red\">\"{sprintName}\"</strong>，迭代删除后无法恢复，该迭代中的所有任务将被移至项目待办列表中，是否继续？",
       "delSuccess": "迭代删除成功"
     }
   },
@@ -461,7 +461,7 @@
     },
     "msg": {
       "delConfirmTitle": "删除迭代",
-      "delConfirmMsg": "您即将删除迭代 \"{sprintName}\"，迭代删除后无法恢复，该迭代中的所有任务将被移至项目待办列表中，是否继续？",
+      "delConfirmMsg": "您即将删除迭代 <strong class=\"red\">\"{sprintName}\"</strong>，迭代删除后无法恢复，该迭代中的所有任务将被移至项目待办列表中，是否继续？",
       "delSuccess": "迭代删除成功"
     }
   },
@@ -480,7 +480,7 @@
       "issueCopied": "任务 \"{issueName}\" 复制成功",
       "issueMoved": "任务已移入 \"{sprintName}\"",
       "delConfirmTitle": "删除任务",
-      "delConfirmMsg": "您即将删除任务 \"{issueName}\"，任务删除后无法恢复，是否继续？",
+      "delConfirmMsg": "您即将删除任务 <strong class=\"red\">\"{issueName}\"</strong>，任务删除后无法恢复，是否继续？",
       "delSuccess": "任务删除成功"
     }
   },
@@ -534,7 +534,7 @@
       "assigned": "任务 \"{issueCode}\" 的执行者更新为 \"{userNickname}\"",
       "unassigned": "已移除任务 \"{issueCode}\" 的执行者",
       "delConfirmTitle": "删除任务",
-      "delConfirmMsg": "您即将删除任务 \"{issueName}\"，任务删除后无法恢复，是否继续？",
+      "delConfirmMsg": "您即将删除任务 <strong class=\"red\">\"{issueName}\"</strong>，任务删除后无法恢复，是否继续？",
       "delSuccess": "任务删除成功"
     }
   },
@@ -558,7 +558,7 @@
       "filterCopied": "过滤条件复制成功",
       "filterDeleted": "过滤条件已删除",
       "delConfirmTitle": "删除过滤条件",
-      "delConfirmMsg": "您即将删除过滤条件 \"{name}\"，删除后无法恢复，是否继续？"
+      "delConfirmMsg": "您即将删除过滤条件 <strong class=\"red\">\"{name}\"</strong>，删除后无法恢复，是否继续？"
     }
   },
   "fileList": {
@@ -586,8 +586,8 @@
       "newFolderName": "新文件夹",
       "fileSaved": "文件保存成功",
       "delConfirmTitle": "删除{type}",
-      "delFileConfirmMsg": "您即将删除文件 \"{name}\"，文件删除后无法恢复，是否继续？",
-      "delFolderConfirmMsg": "您即将删除文件夹 \"{name}\" 及其所包含的所有内容，删除后无法恢复，是否继续？",
+      "delFileConfirmMsg": "您即将删除文件 <strong class=\"red\">\"{name}\"</strong>，文件删除后无法恢复，是否继续？",
+      "delFolderConfirmMsg": "您即将删除文件夹 <strong class=\"red\">\"{name}\"</strong> 及其所包含的所有内容，删除后无法恢复，是否继续？",
       "delSuccess": "{type}删除成功",
       "fileSizeLimit": "文件大小不能超过100M",
       "tooManyFilesToUpload": "一次上传不能超过5个文件",
@@ -610,7 +610,7 @@
     },
     "msg": {
       "delConfirmTitle": "删除文档",
-      "delConfirmMsg": "您即将删除文档 \"{name}\"，删除后无法恢复，是否继续？",
+      "delConfirmMsg": "您即将删除文档 <strong class=\"red\">\"{name}\"</strong>，删除后无法恢复，是否继续？",
       "delSuccess": "文档删除成功"
     }
   },
@@ -644,7 +644,7 @@
     },
     "msg": {
       "delConfirmTitle": "删除标签",
-      "delConfirmMsg": "您即将删除标签 \"{name}\"，删除后无法恢复，是否继续？",
+      "delConfirmMsg": "您即将删除标签 <strong class=\"red\">\"{name}\"</strong>，删除后无法恢复，是否继续？",
       "delSuccess": "标签删除成功"
     }
   },
@@ -680,7 +680,7 @@
     },
     "msg": {
       "disableConfirmTitle": "作废邀请",
-      "disableConfirmMsg": "您即将作废项目邀请 \"{code}\"，作废后用户将无法再通过邀请链接加入项目，是否继续？",
+      "disableConfirmMsg": "您即将作废项目邀请 <strong>\"{code}\"</strong>，作废后用户将无法再通过邀请链接加入项目，是否继续？",
       "disableSuccess": "邀请已作废",
       "enableSuccess": "邀请已激活"
     }
@@ -716,7 +716,7 @@
       "archiveSuccess": "项目 \"{projectName}\" 归档成功",
       "unarchiveSuccess": "项目 \"{projectName}\" 取消归档成功",
       "delConfirmTitle": "删除项目",
-      "delConfirmMsg": "您即将删除项目 <strong class=\"red\">\"{projectName}\"</strong>，项目删除后无法恢复，是否继续？",
+      "delConfirmMsg": "您即将删除项目 <strong class=\"red\">\"{projectName}\"</strong>，删除后该项目下的所有数据将被清除，并且不可恢复，是否继续？",
       "delSuccess": "项目 \"{projectName}\" 删除成功"
     }
   },
@@ -740,7 +740,7 @@
     },
     "msg": {
       "delConfirmTitle": "删除模块",
-      "delConfirmMsg": "您即将删除模块 \"{name}\"，删除后无法恢复。该模块下的任务将被移动到父模块下，是否继续？",
+      "delConfirmMsg": "您即将删除模块 <strong class=\"red\">\"{name}\"</strong>，删除后无法恢复。该模块下的任务将被移动到父模块下，是否继续？",
       "delSuccess": "模块 \"{name}\" 删除成功",
       "nameMissing": "请填写模块名称",
       "updateSuccess": "模块更新成功",
