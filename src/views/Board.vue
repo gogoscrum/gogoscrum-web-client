@@ -197,7 +197,7 @@
           {{
             $t('board.release.pageTitle', {
               sprintName: sprint.name,
-              releaseDate: sprint.endDate || new Date().toLocaleDateString()
+              releaseDate: sprint.endDateFormatted || new Date().toLocaleDateString()
             })
           }}
         </div>
@@ -415,6 +415,14 @@ export default {
       this.loading = true
       sprintApi.getById(this.sprintId).then((res) => {
         this.sprint = res.data
+
+        // Format sprint dates
+        if (this.sprint.startDate) {
+          this.sprint.startDateFormatted = dayjs(this.sprint.startDate).format('YYYY-MM-DD')
+        }
+        if (this.sprint.endDate) {
+          this.sprint.endDateFormatted = dayjs(this.sprint.endDate).format('YYYY-MM-DD')
+        }
 
         // Cache the original sprint issue list for when filter is cleared
         this.allIssues = this.sprint.issues
