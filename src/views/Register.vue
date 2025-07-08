@@ -53,7 +53,7 @@
     <el-dialog v-model="termsOfServiceDialogVisible" width="860px" top="3vh">
       <div class="terms-of-service-popup">
         <div class="title">gogoscrum 用户服务条款</div>
-        <vue-markdown :source="privacyPolicyDocMap[lang]" />
+        <vue-markdown :source="termsOfServiceDocMap[lang]" />
       </div>
     </el-dialog>
   </div>
@@ -64,8 +64,8 @@ import { userApi } from '@/api/user.js'
 import utils from '@/utils/util.js'
 import { ElMessage } from 'element-plus'
 import VueMarkdown from 'vue-markdown-render'
-import PrivacyPolicyZhCNDoc from '@/assets/docs/privacy-policy.zh-CN.md?raw'
-import PrivacyPolicyDoc from '@/assets/docs/privacy-policy.md?raw'
+import TermsOfServiceZhCNDoc from '@/assets/docs/terms-of-service.zh-CN.md?raw'
+import TermsOfServiceDoc from '@/assets/docs/terms-of-service.md?raw'
 
 export default {
   name: 'Register',
@@ -123,9 +123,9 @@ export default {
         ]
       },
       submitting: false,
-      privacyPolicyDocMap: {
-        cn: PrivacyPolicyZhCNDoc,
-        en: PrivacyPolicyDoc
+      termsOfServiceDocMap: {
+        cn: TermsOfServiceZhCNDoc,
+        en: TermsOfServiceDoc
       }
     }
   },
