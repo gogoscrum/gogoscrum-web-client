@@ -29,7 +29,7 @@ export default {
     return {
       isInMobile: utils.isInMobile(),
       dialogVisible: true,
-      srcPrefix: 'https://view.officeapps.live.com/op/embed.aspx?src='
+      srcPrefix: 'https://view.officeapps.live.com/op/view.aspx?src='
     }
   },
   created() {},

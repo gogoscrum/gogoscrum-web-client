@@ -151,6 +151,18 @@ const formatAndCaclSprintStatus = (sprint) => {
   return sprint
 }
 
+const isLocalhost = (url) => {
+  const hostname = new URL(url).hostname
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]'
+}
+
+const toFullUrl = (path) => {
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path
+  }
+  return `${window.location.origin}${path}`
+}
+
 export default {
   indexInArray,
   toggleFullscreen,
@@ -163,5 +175,7 @@ export default {
   loadLastViewedBoardId,
   getLastViewedOrDefaultSprint,
   formatCreateUpdateTime,
-  formatAndCaclSprintStatus
+  formatAndCaclSprintStatus,
+  isLocalhost,
+  toFullUrl
 }

@@ -512,12 +512,18 @@ export default {
         this.videoPlaying = file
         this.videoDialogVisible = true
       } else if (file.type == 'WORD' || file.type == 'PPT' || file.type == 'EXCEL') {
-        if (file.url.startsWith('http')) {
-          this.officeFile = file
-        } else {
-          this.downloadFile(file)
-          console.warn('Office file URL is not valid, downloading instead:', file.url)
-        }
+        // For Office files, we cannot preview them for now, so we download them instead
+        this.downloadFile(file)
+
+        // TODO: Implement Office file preview
+        // const fullUrl = utils.toFullUrl(file.url)
+        // console.log('Office file URL:', fullUrl)
+        // if (utils.isLocalhost(fullUrl)) {
+        //   this.downloadFile(file)
+        //   console.warn('Local file cannot preview, downloading instead:', file.url)
+        // } else {
+        //   this.officeFile = file
+        // }
       } else if (file.type == 'PDF') {
         this.pdfFile = file
       } else {
