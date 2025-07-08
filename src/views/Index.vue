@@ -12,7 +12,8 @@
           <router-link :to="{ name: 'Register' }">{{ $t('homepage.header.signup') }}</router-link>
         </div>
         <a href="https://github.com/gogoscrum/gogoscrum-rest-service" target="_blank" class="github-badge">
-          <el-image src="https://img.shields.io/github/stars/gogoscrum/gogoscrum-rest-service?style=flat&logo=github">
+          <el-image
+            src="https://img.shields.io/github/stars/gogoscrum/gogoscrum-rest-service?style=flat&logo=github&color=0d9c89">
             <template #error>
               <!-- Cannot access Github, just don't show the badge. -->
               <span></span>

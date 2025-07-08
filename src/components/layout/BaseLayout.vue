@@ -111,6 +111,15 @@
         </el-dropdown>
       </div>
       <div class="right-links">
+        <a href="https://github.com/gogoscrum/gogoscrum-rest-service" target="_blank" class="github-badge">
+          <el-image
+            src="https://img.shields.io/github/stars/gogoscrum/gogoscrum-rest-service?style=flat&logo=github&color=0d9c89">
+            <template #error>
+              <!-- Cannot access Github, just don't show the badge. -->
+              <span></span>
+            </template>
+          </el-image>
+        </a>
         <el-dropdown trigger="click" @command="operatingCommand" placement="bottom">
           <span class="create-new-icon selector">
             <el-icon><CirclePlus /></el-icon>
@@ -913,6 +922,17 @@ export default {
 
       .el-divider {
         margin: 0 12px;
+      }
+
+      .github-badge {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+
+        img {
+          width: 20px;
+          height: 20px;
+        }
       }
 
       .create-new-icon {
