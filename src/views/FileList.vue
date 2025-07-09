@@ -117,8 +117,13 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="sizeFormatted" :label="$t('fileList.list.size')" min-width="50"> </el-table-column>
-        <el-table-column v-if="!isInMobile" :label="$t('fileList.list.creator')" min-width="40">
+        <el-table-column prop="sizeFormatted" :label="$t('fileList.list.size')" min-width="50" align="right">
+        </el-table-column>
+        <el-table-column
+          v-if="!isInMobile"
+          :label="$t('fileList.list.creator')"
+          min-width="40"
+          class-name="owner-column">
           <template #default="scope">
             <el-tooltip
               v-if="scope.row.createdBy"
@@ -652,8 +657,11 @@ export default {
 <style lang="less">
 .project-files-page {
   .file-row {
-    .cell {
-      display: flex;
+    .owner-column {
+      .cell {
+        display: flex;
+        margin-left: 20px;
+      }
     }
 
     .icon-name-container {
