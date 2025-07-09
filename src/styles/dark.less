@@ -11,6 +11,10 @@ html.dark {
   --el-text-color-regular: #dddddd;
   --el-bg-color: #242424;
 
+  .el-table {
+    --el-table-border: 1px solid #303030;
+  }
+
   body {
     color: #dddddd;
   }
@@ -59,18 +63,11 @@ html.dark {
     }
   }
 
-  .big-board-body:not(.sticky-note) {
+  .big-board-body:not(.sticky-note),
+  .issue-row-container {
     .story-point-tag {
-      color: #999999 !important;
+      color: #b0b0b0 !important;
       background-color: #444444 !important;
-    }
-  }
-
-  .issue-group-column {
-    .column-header {
-      .story-point-tag {
-        background-color: #ffffff20 !important;
-      }
     }
   }
 
@@ -261,6 +258,10 @@ html.dark {
 
   .big-board-body:not(.sticky-note) {
     .issue-card-wrapper {
+      .avatar-type-point-priority {
+        color: #cccccc;
+      }
+
       .more-icon {
         &:hover {
           background-color: #363636 !important;

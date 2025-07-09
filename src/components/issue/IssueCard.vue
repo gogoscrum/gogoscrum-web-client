@@ -452,7 +452,7 @@ export default {
       display: flex;
       align-items: center;
       font-size: 12px;
-      color: #bbbbbb;
+      color: #797979;
       margin-top: 6px;
 
       .issue-avatar {
@@ -460,7 +460,7 @@ export default {
       }
 
       .issue-type {
-        width: 20px;
+        width: 18px;
 
         .box-card-font-letf {
           font-size: 12px;
@@ -468,7 +468,8 @@ export default {
       }
 
       .issue-code {
-        width: 70px;
+        width: 72px;
+        font-weight: 500;
       }
 
       .issue-priority {
@@ -488,7 +489,7 @@ export default {
       }
 
       .issue-point {
-        width: 34px;
+        width: 38px;
         display: flex;
       }
     }
