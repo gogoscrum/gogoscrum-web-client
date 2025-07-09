@@ -97,6 +97,9 @@
     "alreadyHasAccount": "Already have an account?",
     "signin": "Sign in",
     "signupwith": "Or sign up with",
+    "agreeTerms": "By signing up, you agree to our",
+    "termsOfService": "Terms of Service",
+    "termsDialogTitle": "gogoscrum User Service Terms",
     "msg": {
       "pwdNotTheSame": "Repeated password is not the same",
       "missingUsername": "Please input your user name",

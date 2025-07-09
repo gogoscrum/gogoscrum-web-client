@@ -97,6 +97,9 @@
     "alreadyHasAccount": "已有账号？",
     "signin": "去登录",
     "signupwith": "以其它方式快捷注册",
+    "agreeTerms": "注册即表示同意",
+    "termsOfService": "《用户服务条款》",
+    "termsDialogTitle": "gogoscrum 用户服务条款",
     "msg": {
       "pwdNotTheSame": "两次输入密码不一致",
       "missingUsername": "请输入用户名",

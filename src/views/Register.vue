@@ -37,14 +37,13 @@
         >
       </el-form-item>
       <el-form-item class="higher-row">
-        <div class="terms-and-login small-text">
+        <div class="terms-and-login small-text w-full">
           <div class="terms">
-            <template v-if="lang === 'cn'">
-              <span>注册即表示同意</span><a @click="termsOfServiceDialogVisible = true">《用户服务条款》</a>
-            </template>
+            <span>{{ $t('signup.agreeTerms') }}</span>
+            <a @click="termsOfServiceDialogVisible = true" class="ml-1">{{ $t('signup.termsOfService') }}</a>
           </div>
-          <div>
-            <span v-if="lang !== 'cn'">{{ $t('signup.alreadyHasAccount') }}</span>
+          <div class="flex justify-between">
+            <span>{{ $t('signup.alreadyHasAccount') }}</span>
             <a class="signin-link" @click="goLogin">{{ $t('signup.signin') }}</a>
           </div>
         </div>
@@ -52,7 +51,7 @@
     </el-form>
     <el-dialog v-model="termsOfServiceDialogVisible" width="860px" top="3vh">
       <div class="terms-of-service-popup">
-        <div class="title">gogoscrum 用户服务条款</div>
+        <div class="title">{{ $t('signup.termsDialogTitle') }}</div>
         <vue-markdown :source="termsOfServiceDocMap[lang]" />
       </div>
     </el-dialog>
@@ -208,9 +207,14 @@ export default {
     }
 
     .terms-and-login {
-      display: flex;
-      justify-content: space-between;
       width: 100%;
+
+      .terms {
+        line-height: 1.5;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
 
       .signin-link {
         margin-left: 5px;
