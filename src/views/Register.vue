@@ -64,8 +64,8 @@ import { userApi } from '@/api/user.js'
 import utils from '@/utils/util.js'
 import { ElMessage } from 'element-plus'
 import VueMarkdown from 'vue-markdown-render'
-import TermsOfServiceZhCNDoc from '@/assets/docs/terms-of-service.zh-CN.md?raw'
-import TermsOfServiceDoc from '@/assets/docs/terms-of-service.md?raw'
+import cnTermsOfServiceDoc from '@/locales/zh-cn/terms-of-service.md?raw'
+import enTermsOfServiceDoc from '@/locales/en/terms-of-service.md?raw'
 
 export default {
   name: 'Register',
@@ -124,8 +124,8 @@ export default {
       },
       submitting: false,
       termsOfServiceDocMap: {
-        cn: TermsOfServiceZhCNDoc,
-        en: TermsOfServiceDoc
+        cn: cnTermsOfServiceDoc,
+        en: enTermsOfServiceDoc
       }
     }
   },
