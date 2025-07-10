@@ -2,14 +2,13 @@
   <div class="burndown-chart-page page">
     <div class="header">
       <el-radio-group v-model="chartType" @change="chartTypeChanged">
-        <el-radio label="STATUS">{{ $t('burndown.chartByIssue') }}</el-radio>
-        <el-radio label="POINT">{{ $t('burndown.chartByPoint') }}</el-radio>
+        <el-radio value="STATUS">{{ $t('burndown.chartByIssue') }}</el-radio>
+        <el-radio value="POINT">{{ $t('burndown.chartByPoint') }}</el-radio>
       </el-radio-group>
       <el-select
         v-model="sprintId"
         :placeholder="$t('burndown.placeholder')"
         class="sprint-select"
-        size="small"
         @change="sprintChanged">
         <el-option v-for="sprint in sprints" :key="sprint.id" :label="sprint.name" :value="sprint.id"> </el-option>
       </el-select>
@@ -78,7 +77,10 @@ export default {
         },
         legend: {
           top: 10,
-          data: [this.$t('burndown.actual'), this.$t('burndown.reference')]
+          data: [this.$t('burndown.actual'), this.$t('burndown.reference')],
+          textStyle: {
+            color: this.$store.get('darkMode') ? '#ccc' : '#333'
+          }
         },
         xAxis: {
           type: 'category',
@@ -287,6 +289,10 @@ export default {
     height: 32px;
     margin: 10px 0 20px 0;
     justify-content: space-between;
+
+    .sprint-select {
+      width: 200px;
+    }
   }
 }
 </style>

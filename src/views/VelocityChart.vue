@@ -2,8 +2,8 @@
   <div class="velocity-chart-page page">
     <div class="header">
       <el-radio-group v-model="chartType" @change="chartTypeChanged">
-        <el-radio label="issue">{{ $t('burndown.chartByIssue') }}</el-radio>
-        <el-radio label="point">{{ $t('burndown.chartByPoint') }}</el-radio>
+        <el-radio value="ISSUE">{{ $t('burndown.chartByIssue') }}</el-radio>
+        <el-radio value="POINT">{{ $t('burndown.chartByPoint') }}</el-radio>
       </el-radio-group>
     </div>
     <div class="main">
@@ -38,7 +38,7 @@ export default {
     return {
       isInMobile: utils.isInMobile(),
       projectId: null,
-      chartType: 'issue',
+      chartType: 'ISSUE',
       sprintIssueCounts: [],
       sprintStoryPoints: [],
       option: {
@@ -117,7 +117,7 @@ export default {
       })
     },
     chartTypeChanged() {
-      if (this.chartType === 'issue') {
+      if (this.chartType === 'ISSUE') {
         this.showChartByIssueCount()
       } else {
         this.showChartByStoryPoints()

@@ -2,13 +2,12 @@
   <div class="cumulative-chart-page page">
     <div class="header">
       <el-radio-group v-model="chartType" @change="chartTypeChanged">
-        <el-radio label="issue">{{ $t('burndown.chartByIssue') }}</el-radio>
-        <el-radio label="point">{{ $t('burndown.chartByPoint') }}</el-radio>
+        <el-radio value="ISSUE">{{ $t('burndown.chartByIssue') }}</el-radio>
+        <el-radio value="POINT">{{ $t('burndown.chartByPoint') }}</el-radio>
       </el-radio-group>
       <el-select
         v-model="sprintId"
         :placeholder="$t('burndown.placeholder')"
-        size="small"
         class="sprint-select"
         @change="sprintChanged">
         <el-option v-for="sprint in sprints" :key="sprint.id" :label="sprint.name" :value="sprint.id"> </el-option>
@@ -56,7 +55,7 @@ export default {
       sprintDateLabels: [],
       linesData: {},
       series: [],
-      chartType: 'issue',
+      chartType: 'ISSUE',
       option: {
         tooltip: {
           trigger: 'axis',
@@ -64,7 +63,10 @@ export default {
         },
         legend: {
           top: 10,
-          data: []
+          data: [],
+          textStyle: {
+            color: this.$store.get('darkMode') ? '#ccc' : '#333'
+          }
         },
         toolbox: {
           feature: {
@@ -204,7 +206,7 @@ export default {
     chartTypeChanged() {
       Object.keys(this.linesData).forEach((groupId) => {
         this.series[groupId].data =
-          this.chartType === 'issue' ? this.linesData[groupId].isseCounts : this.linesData[groupId].totalStoryPoints
+          this.chartType === 'ISSUE' ? this.linesData[groupId].isseCounts : this.linesData[groupId].totalStoryPoints
       })
       this.option.series = Object.values(this.series).reverse()
       this.option.legend.data = this.issueGroupLabels
@@ -223,6 +225,10 @@ export default {
     height: 32px;
     margin: 10px 0 20px 0;
     justify-content: space-between;
+
+    .sprint-select {
+      width: 200px;
+    }
   }
 }
 </style>
