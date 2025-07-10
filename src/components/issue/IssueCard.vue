@@ -407,6 +407,7 @@ export default {
       overflow-wrap: break-word;
       margin-bottom: 5px;
       color: #595959;
+      line-height: 1.5;
     }
 
     .issue-tags {
