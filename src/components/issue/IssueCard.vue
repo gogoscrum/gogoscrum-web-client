@@ -271,7 +271,9 @@ export default {
     },
     cloneIssue() {
       issueApi.clone(this.issue.id).then((res) => {
-        this.$emit('issueCloned', this.issue.id, res.data)
+        const updatedIssue = res.data
+        updatedIssue.miniMode = this.issue.miniMode
+        this.$emit('issueCloned', this.issue.id, updatedIssue)
       })
     },
     deleteIssue() {
@@ -297,13 +299,17 @@ export default {
       this.issue.owner = user
 
       issueApi.assign(this.issue.id, user.id).then((res) => {
-        this.$emit('updateIssue', res.data)
+        const updatedIssue = res.data
+        updatedIssue.miniMode = this.issue.miniMode
+        this.$emit('updateIssue', updatedIssue)
       })
     },
     unassign() {
       this.issue.owner = null
       issueApi.unassign(this.issue.id).then((res) => {
-        this.$emit('updateIssue', res.data)
+        const updatedIssue = res.data
+        updatedIssue.miniMode = this.issue.miniMode
+        this.$emit('updateIssue', updatedIssue)
       })
     },
     moveIssue(targetSprint) {
@@ -317,6 +323,7 @@ export default {
       this.issue.miniMode = !this.issue.miniMode
     },
     issueUpdated(issue) {
+      issue.miniMode = this.issue.miniMode
       this.$emit('updateIssue', issue)
     },
     issueDeleted(issue) {
@@ -519,7 +526,7 @@ export default {
       }
 
       .el-card__body {
-        padding: 5px 12px 3px 12px;
+        padding: 5px 12px;
       }
     }
   }

@@ -705,7 +705,6 @@ export default {
   },
   computed: {
     dialogWidth() {
-      console.log('window.innerWidth', window.innerWidth)
       if (window.innerWidth > 1440) {
         return '860px'
       } else {
