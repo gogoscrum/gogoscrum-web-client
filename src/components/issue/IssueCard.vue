@@ -271,9 +271,9 @@ export default {
     },
     cloneIssue() {
       issueApi.clone(this.issue.id).then((res) => {
-        const updatedIssue = res.data
-        updatedIssue.miniMode = this.issue.miniMode
-        this.$emit('issueCloned', this.issue.id, updatedIssue)
+        const clonedIssue = res.data
+        clonedIssue.miniMode = this.issue.miniMode
+        this.$emit('issueCloned', this.issue, clonedIssue)
       })
     },
     deleteIssue() {
@@ -476,7 +476,7 @@ export default {
       }
 
       .issue-code {
-        width: 72px;
+        width: 80px;
         font-weight: 500;
       }
 

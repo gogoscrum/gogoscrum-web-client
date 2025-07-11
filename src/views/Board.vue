@@ -24,28 +24,28 @@
                   class="issue-count"
                   :title="
                     $t('board.group.issueCount', {
-                      issueCount: issueCount(element.id)
+                      issueCount: issuesOnBoard[index]?.issues?.length || 0
                     })
                   ">
-                  {{ issueCount(element.id) }}
+                  {{ issuesOnBoard[index]?.issues?.length || 0 }}
                 </div>
               </div>
               <div
-                v-if="countStoryPoints(element.id) != null"
+                v-if="sumColumnStoryPoints(element.id) != null"
                 class="story-point-tag"
                 :title="
                   $t('board.group.pointCount', {
-                    pointCount: countStoryPoints(element.id)
+                    pointCount: sumColumnStoryPoints(element.id)
                   })
                 ">
-                {{ countStoryPoints(element.id) }}
+                {{ sumColumnStoryPoints(element.id) }}
               </div>
             </div>
             <div class="column-icons" v-if="project.isDeveloper">
               <el-icon
                 class="issue-group-action"
                 :title="$t('board.group.newIssue')"
-                @click.stop="createIssues(index, element)">
+                @click.stop="newFastIssue(index, element)">
                 <Plus />
               </el-icon>
               <el-dropdown size="default" trigger="click">
@@ -121,8 +121,8 @@
           </div>
           <div class="issue-card-list">
             <draggable
-              v-if="issuesList[index]"
-              v-model="issuesList[index].issues"
+              v-if="issuesOnBoard[index]"
+              v-model="issuesOnBoard[index].issues"
               :id="element.id"
               class="issue-draggable-box"
               group="issue"
@@ -149,12 +149,12 @@
               </template>
               <template #footer>
                 <issue-fast-edit
-                  v-if="issueFastEditVisibleList[index]?.visible"
+                  v-if="fastIssueEditorVisibilities[index]?.visible"
                   :issue="issue"
                   :projectId="projectId"
                   id="issue-fast-edit-form"
                   @confirm="issueSaved"
-                  @close="closeIssueFastEditor"></issue-fast-edit>
+                  @close="closeAllFastIssueEditor"></issue-fast-edit>
               </template>
             </draggable>
           </div>
@@ -171,7 +171,7 @@
       v-if="issueGroupEditVisible"
       :originalIssueGroup="originalIssueGroup"
       :originalProject="project"
-      :issuesList="editingGroupIssues"
+      :issuesOnBoard="editingGroupIssues"
       @issueGroupEditClosed="issueGroupEditClosed"
       @issueGroupSaved="issueGroupSaved"
       @issueGroupDeleted="issueGroupDeleted">
@@ -267,10 +267,10 @@ export default {
       sprintId: null,
       issue: {},
       issueGroup: {},
-      issueFastEditVisibleList: [],
+      fastIssueEditorVisibilities: [],
       issueFastEditing: false,
       issueGroups: [],
-      issuesList: [],
+      issuesOnBoard: [],
       issueGroupEditVisible: false,
       editingGroupIssues: [],
       groupIndex: 0,
@@ -282,6 +282,13 @@ export default {
       rsocket: null,
       loading: false,
       editingIssueId: null
+    }
+  },
+  computed: {
+    sumColumnStoryPoints() {
+      return function (groupLabel) {
+        return this.calculateStoryPoints(groupLabel)
+      }
     }
   },
   watch: {
@@ -325,13 +332,6 @@ export default {
   beforeDestroy() {
     console.log('Board destorying...')
     this.closeSocket()
-  },
-  computed: {
-    countStoryPoints() {
-      return function (groupLabel) {
-        return this.calculateStoryPoints(groupLabel)
-      }
-    }
   },
   methods: {
     init() {
@@ -388,7 +388,7 @@ export default {
       this.issueGroups = this.project.issueGroups
 
       if (!this.issueFastEditing) {
-        this.initIssueFastEditsVisible()
+        this.initFastIssueEditorVisibilities()
       }
 
       // Blink group if needed
@@ -492,18 +492,18 @@ export default {
         this.project.isDeveloper = true
       }
     },
-    initIssueFastEditsVisible() {
-      this.issueFastEditVisibleList = []
+    initFastIssueEditorVisibilities() {
+      this.fastIssueEditorVisibilities = []
       this.issueGroups.forEach((group) => {
         let groupVisible = {
           id: group.id,
           visible: false
         }
-        this.issueFastEditVisibleList.push(groupVisible)
+        this.fastIssueEditorVisibilities.push(groupVisible)
       })
     },
     initIssues() {
-      this.issuesList = []
+      this.issuesOnBoard = []
 
       this.sprint.issues.forEach((issue) => {
         this.formatIssue(issue)
@@ -512,12 +512,58 @@ export default {
       this.issueGroups.forEach((issueGroup) => {
         if (this.sprint.issues != null) {
           let issues = this.sprint.issues.filter((issue) => issue.issueGroup && issue.issueGroup.id === issueGroup.id)
-          this.issuesList.push({
+          this.issuesOnBoard.push({
             id: issueGroup.id,
             issues: issues
           })
         }
       })
+    },
+    findColumn(groupId) {
+      const column = this.issuesOnBoard.find((group) => group.id === groupId)
+      if (column) {
+        return column.issues
+      } else {
+        console.warn('Issue group not found on board:', groupId)
+        return []
+      }
+    },
+    insertIssueIntoColumn(sourceIssue, clonedIssue) {
+      const columnIssues = this.findColumn(sourceIssue.issueGroup.id)
+      const issueIndex = columnIssues.findIndex((i) => i.id === sourceIssue.id)
+      if (issueIndex >= 0) {
+        // Insert right after the source issue
+        columnIssues.splice(issueIndex + 1, 0, clonedIssue)
+      } else {
+        // Otherwise append to the bottom
+        columnIssues.push(clonedIssue)
+      }
+    },
+    appendIssueIntoColumn(issue) {
+      const columnIssues = this.findColumn(issue.issueGroup.id)
+      if (columnIssues) {
+        columnIssues.push(issue)
+      } else {
+        console.warn('Issue group not found on board to append:', issue.issueGroup.id)
+      }
+    },
+    replaceIssueInColumn(issue) {
+      const columnIssues = this.findColumn(issue.issueGroup.id)
+      const issueIndex = columnIssues.findIndex((i) => i.id === issue.id)
+      if (issueIndex >= 0) {
+        columnIssues.splice(issueIndex, 1, issue)
+      } else {
+        console.warn('Issue not found on board to refresh:', issue)
+      }
+    },
+    deleteIssueFromColumn(issue) {
+      const columnIssues = this.findColumn(issue.issueGroup.id)
+      const issueIndex = columnIssues.findIndex((i) => i.id === issue.id)
+      if (issueIndex >= 0) {
+        columnIssues.splice(issueIndex, 1)
+      } else {
+        console.warn('Issue not found on board for deletion:', issue)
+      }
     },
     formatIssue(issue) {
       if (issue.dueTime) {
@@ -547,18 +593,9 @@ export default {
       }
       return issue
     },
-    issueCount(issueGroupId) {
-      return this.getIssuesByGroup(issueGroupId).length
-    },
-    getIssuesByGroup(issueGroupId) {
-      if (this.sprint.issues != null) {
-        let result = this.sprint.issues.filter((issue) => issue.issueGroup && issue.issueGroup.id === issueGroupId)
-        return result
-      }
-    },
     calculateStoryPoints(groupId) {
       let sum = null
-      this.issuesList.filter((group) => {
+      this.issuesOnBoard.filter((group) => {
         if (group.id === groupId) {
           let issues = group.issues
           for (let i = 0; i < issues.length; i++) {
@@ -578,18 +615,18 @@ export default {
         this.rsocket.close()
       }
     },
-    createIssues(groupIndex, issueGroup) {
-      this.closeIssueFastEditor()
+    newFastIssue(groupIndex, issueGroup) {
+      this.closeAllFastIssueEditor()
       this.issue.issueGroup = issueGroup
       this.issue.type = 'TASK'
       this.issue.sprint = this.sprint
       this.issue.files = []
-      this.issue.seq = this.issuesList[groupIndex].issues.length
+      this.issue.seq = this.issuesOnBoard[groupIndex].issues.length
       if (this.sprintId && this.projectId) {
         this.issue.sprint = { id: this.sprintId }
         let index = utils.indexInArray(this.issueGroups, issueGroup.id)
         if (index >= 0) {
-          this.issueFastEditVisibleList[index].visible = true
+          this.fastIssueEditorVisibilities[index].visible = true
           this.issueFastEditing = true
 
           this.$nextTick(() => {
@@ -605,15 +642,12 @@ export default {
       if (this.sprint.issues == null) {
         this.sprint.issues = []
       }
-      if (this.sprintId === issue.sprint.id) {
-        this.sprint.issues.push(issue)
-        this.initIssues()
-      }
+      this.appendIssueIntoColumn(issue)
       this.issue = {}
-      this.closeIssueFastEditor()
+      this.closeAllFastIssueEditor()
     },
-    closeIssueFastEditor() {
-      this.issueFastEditVisibleList.forEach((groupVisible) => {
+    closeAllFastIssueEditor() {
+      this.fastIssueEditorVisibilities.forEach((groupVisible) => {
         groupVisible.visible = false
       })
       this.issueFastEditing = false
@@ -630,8 +664,7 @@ export default {
       }
     },
     sortIssues(groupIndex, sortType) {
-      // console.log('Sort issues by', groupIndex, sortType)
-      let issues = this.issuesList[groupIndex].issues
+      let issues = this.issuesOnBoard[groupIndex].issues
 
       let result = 0
       const priorityOrders = ['CRITICAL', 'MAJOR', 'NORMAL', 'LOW', 'TRIVIAL']
@@ -659,7 +692,7 @@ export default {
       this.updateIssuesSeq(groupIndex)
     },
     updateIssuesSeq(groupIndex) {
-      let issues = JSON.parse(JSON.stringify(this.issuesList[groupIndex].issues))
+      let issues = JSON.parse(JSON.stringify(this.issuesOnBoard[groupIndex].issues))
       let issueIds = issues.map((issue) => issue.id)
       issueApi
         .updateSeq(issueIds)
@@ -667,7 +700,7 @@ export default {
           // Nothing need to do
         })
         .catch(() => {
-          this.issuesList = issues
+          this.issuesOnBoard = issues
           this.initIssues()
         })
     },
@@ -685,7 +718,7 @@ export default {
         let newGroup = this.issueGroups[targetGroupIndex]
         let oldGroup = JSON.parse(JSON.stringify(this.issue.issueGroup))
         this.issue.issueGroup = newGroup
-        this.calcDueTimeStatus(this.issue)
+        this.formatIssue(this.issue)
         issueApi
           .move(this.issue.id, newGroup.id)
           .then(() => {
@@ -698,43 +731,41 @@ export default {
           })
       }
     },
-    issueUpdated(newIssue) {
-      let index = utils.indexInArray(this.sprint.issues, newIssue.id)
-      if (newIssue.sprint.id === this.sprintId) {
-        this.sprint.issues.splice(index, 1, newIssue)
+    issueUpdated(updatedIssue) {
+      this.formatIssue(updatedIssue)
+      if (updatedIssue.sprint.id !== this.sprintId) {
+        // If the issue is moved to another sprint, remove it from the current board
+        this.deleteIssueFromColumn(updatedIssue)
       } else {
-        this.sprint.issues.splice(index, 1)
+        this.replaceIssueInColumn(updatedIssue)
       }
-      this.initIssues()
     },
     issueDeleted(issue) {
-      let index = utils.indexInArray(this.sprint.issues, issue.id)
-      this.sprint.issues.splice(index, 1)
+      this.deleteIssueFromColumn(issue)
       ElMessage.success({ message: this.$t('board.msg.issueDeleted') })
-      this.initIssues()
     },
-    issueCloned(sourceIssueId, issue) {
-      let sourceIssueIndex = utils.indexInArray(this.sprint.issues, sourceIssueId)
-      this.sprint.issues.splice(sourceIssueIndex + 1, 0, issue)
+    issueCloned(sourceIssue, clonedIssue) {
+      this.insertIssueIntoColumn(sourceIssue, clonedIssue)
       ElMessage.success({ message: this.$t('board.msg.issueCopied') })
-      this.initIssues()
     },
     issueLinked(sourceIssue, targetIssueId) {
-      let index = utils.indexInArray(this.sprint.issues, targetIssueId)
-      if (index >= 0) {
-        let linkedIssue = this.sprint.issues[index]
-        linkedIssue.linkedByIssues.push(sourceIssue)
-        this.sprint.issues.splice(index, 1, linkedIssue)
-        this.initIssues()
+      this.replaceIssueInColumn(sourceIssue)
+      const targetIssue = this.sprint.issues.find((issue) => issue.id === targetIssueId)
+      if (targetIssue) {
+        targetIssue.linkedByIssues.push(sourceIssue)
+        this.replaceIssueInColumn(targetIssue)
+      } else {
+        console.warn('Linked target issue is not in current sprint, ignored refreshing')
       }
     },
-    issueUnlinked(sourceIssue, unlinkIssue) {
-      let index = utils.indexInArray(this.sprint.issues, unlinkIssue.id)
-      if (index >= 0) {
-        unlinkIssue.linkedByIssues.filter((issue) => issue.id != sourceIssue.id)
-        unlinkIssue.linkToIssues.filter((issue) => issue.id != sourceIssue.id)
-        this.sprint.issues.splice(index, 1, unlinkIssue)
-        this.initIssues()
+    issueUnlinked(sourceIssue, unlinkedIssue) {
+      this.replaceIssueInColumn(sourceIssue)
+      const targetIssue = this.sprint.issues.find((issue) => issue.id === unlinkedIssue.id)
+      if (targetIssue) {
+        targetIssue.linkedByIssues.filter((issue) => issue.id != sourceIssue.id)
+        this.replaceIssueInColumn(targetIssue)
+      } else {
+        console.warn('Linked target issue is not in current sprint, will not refresh it')
       }
     },
     initWebSocket() {
@@ -858,14 +889,14 @@ export default {
       this.editingIssueId = null
     },
     editIssueGroup(issueGroup, index) {
-      this.editingGroupIssues = this.issuesList[index].issues
+      this.editingGroupIssues = this.issuesOnBoard[index].issues
       this.originalIssueGroup = issueGroup
       this.issueGroupEditVisible = true
     },
     toggleMiniMode(issueGroup, index, miniMode) {
       issueGroup.miniMode = miniMode
 
-      this.issuesList[index].issues.forEach((issue) => {
+      this.issuesOnBoard[index].issues.forEach((issue) => {
         issue.miniMode = issueGroup.miniMode
       })
     },
@@ -878,13 +909,13 @@ export default {
       let index = utils.indexInArray(this.issueGroups, newIssueGroup.id)
       if (index >= 0) {
         this.issueGroups[index] = newIssueGroup
-        this.issuesList[index].id = newIssueGroup.id
-        this.issuesList[index].issues.forEach((issue) => {
+        this.issuesOnBoard[index].id = newIssueGroup.id
+        this.issuesOnBoard[index].issues.forEach((issue) => {
           issue.issueGroup = newIssueGroup
         })
       } else {
         this.issueGroups.push(newIssueGroup)
-        this.initIssueFastEditsVisible()
+        this.initFastIssueEditorVisibilities()
         this.initIssues()
       }
       this.originalIssueGroup = {}
@@ -896,7 +927,7 @@ export default {
       this.releaseNotesDialogVisible = true
       this.doneIssuesGroupedByType = { REQUIREMENT: [], TASK: [], BUG: [] }
 
-      this.issuesList[index].issues.forEach((issue) => {
+      this.issuesOnBoard[index].issues.forEach((issue) => {
         this.doneIssuesGroupedByType[issue.type].push(issue)
       })
     },
@@ -953,7 +984,7 @@ export default {
       this.initIssues()
     },
     moveAllIssues(groupIndex, targetSprint) {
-      let issues = this.issuesList[groupIndex].issues
+      let issues = this.issuesOnBoard[groupIndex].issues
       let issueIds = issues.map((issue) => issue.id)
       issueApi.batchMove(targetSprint.id, issueIds).then((res) => {
         this.sprint.issues = this.sprint.issues.filter((issue) => !issues.includes(issue))

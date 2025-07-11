@@ -1199,6 +1199,7 @@ export default {
           issueApi.deleteLink(this.editIssue.id, issue.id).then(() => {
             let index = utils.indexInArray(this.linkedIssues, issue.id)
             this.linkedIssues.splice(index, 1)
+            this.editIssue.linkToIssues = this.linkedIssues
             ElMessage.success({
               message: this.$t('issueEdit.msg.linkDeleted')
             })
