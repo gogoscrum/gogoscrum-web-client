@@ -33,7 +33,17 @@ const initUploadParams = (file, projectId, targetType) => {
   return new Promise((resolve, reject) => {
     fileApi.getUploadToken(file.name, projectId, targetType).then(
       (res) => {
-        resolve(res.data)
+        const token = res.data
+        const uploadParams = {
+          ...token,
+          ...token.params
+        }
+        // remove uploadParams.params as it's already spread into uploadParams
+        delete uploadParams.params
+
+        console.log('Upload parameters initialized:', uploadParams)
+
+        resolve(uploadParams)
       },
       function (err) {
         console.error('Failed to get upload token:', err)
@@ -46,9 +56,13 @@ const initUploadParams = (file, projectId, targetType) => {
 const upload = function (file, params) {
   return new Promise((resolve, reject) => {
     let form = new FormData()
+    // Set all parameters except uploadActionUrl as form data
+    for (let key in params) {
+      if (key !== 'uploadActionUrl') {
+        form.append(key, params[key])
+      }
+    }
     form.append('file', file)
-    form.append('path', params.path)
-    form.append('targetFileName', params.targetFileName)
 
     axios
       .post(params.uploadActionUrl, form)
@@ -64,29 +78,27 @@ const upload = function (file, params) {
 const uploadFromTinymce = function (blobInfo, progress) {
   return new Promise((resolve, reject) => {
     const currentProject = store.get('project')
-    initUploadParams({ name: blobInfo.filename() }, currentProject?.id, 'TEXT_EDITOR').then((token) => {
-      upload(blobInfo.blob(), token)
+    initUploadParams({ name: blobInfo.filename() }, currentProject?.id, 'TEXT_EDITOR').then((params) => {
+      upload(blobInfo.blob(), params)
         .then((uploadedFilePath) => {
-          console.log('file uploaded:', uploadedFilePath)
+          console.log('file uploaded:', uploadedFilePath || params.targetFileUrl)
 
           const fileDto = {
             name: blobInfo.filename(),
-            fullPath: uploadedFilePath,
+            fullPath: uploadedFilePath || params.targetFileUrl,
             type: 'IMAGE', // Assuming image type for tinymce uploads
             size: blobInfo.blob().size,
-            projectId: token.projectId,
-            targetType: token.targetType,
-            storageProvider: token.provider,
-            urlPrefix: token.urlPrefix
+            projectId: params.projectId,
+            targetType: params.targetType,
+            storageProvider: params.provider,
+            urlPrefix: params.urlPrefix
           }
 
           fileApi
             .save(fileDto)
-            .then((savedFile) => {
-              console.log('file created:', savedFile)
-
-              // Resolve with the full URL of the uploaded file
-              resolve(token.urlPrefix + uploadedFilePath)
+            .then((res) => {
+              console.log('file created:', res.data)
+              resolve(res.data.url)
             })
             .catch((err) => {
               console.error('Failed to save file:', err)

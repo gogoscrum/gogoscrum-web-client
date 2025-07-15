@@ -700,7 +700,8 @@ export default {
       videoPlaying: null,
       videoDialogVisible: false,
       officeFile: null,
-      pdfFile: null
+      pdfFile: null,
+      fileIdUrlMap: {}
     }
   },
   computed: {
@@ -909,6 +910,8 @@ export default {
 
           uploader.initUploadParams(file, this.projectId, 'ISSUE_ATTACHMENT').then((params) => {
             this.uploadParams = params
+            // Store the file ID and URL mapping for later use
+            this.fileIdUrlMap[file.uid || file.lastModified] = params.targetFileUrl
             uploader
               .upload(file, params)
               .then((uploadRes) => {
@@ -999,9 +1002,17 @@ export default {
       } else {
         this.uploading = true
 
-        return uploader.initUploadParams(file, this.projectId, 'ISSUE_ATTACHMENT').then((params) => {
-          this.uploadParams = params
-        })
+        return uploader
+          .initUploadParams(file, this.projectId, 'ISSUE_ATTACHMENT')
+          .then((params) => {
+            this.uploadParams = params
+            this.fileIdUrlMap[file.uid || file.lastModified] = params.targetFileUrl
+          })
+          .catch((err) => {
+            console.error('Error initializing upload params:', err)
+            this.uploading = false
+            return false
+          })
       }
     },
     imgUploadError(err, file) {
@@ -1014,7 +1025,7 @@ export default {
     imgUploadSuccess(uploadRes, file) {
       const fileDto = {
         name: file.name,
-        fullPath: uploadRes,
+        fullPath: uploadRes || this.fileIdUrlMap[file.uid || file.lastModified] || this.uploadParams.targetFileUrl,
         type: uploader.getFileType(file.type || file.raw.type),
         size: file.size,
         projectId: this.project.id,

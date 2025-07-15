@@ -197,15 +197,22 @@ export default {
       } else {
         this.avatarUploading = true
 
-        return uploader.initUploadParams(file, null, 'USER_AVATAR').then((params) => {
-          this.uploadParams = params
-        })
+        return uploader
+          .initUploadParams(file, null, 'USER_AVATAR')
+          .then((params) => {
+            this.uploadParams = params
+          })
+          .catch((err) => {
+            console.error('Error initializing upload params:', err)
+            this.avatarUploading = false
+            return false
+          })
       }
     },
     avaterUploaded(uploadRes, file) {
       const avatarFileDto = {
         name: file.name,
-        fullPath: uploadRes,
+        fullPath: uploadRes || this.uploadParams.targetFileUrl,
         type: uploader.getFileType(file.raw.type),
         size: file.size,
         targetType: 'USER_AVATAR',

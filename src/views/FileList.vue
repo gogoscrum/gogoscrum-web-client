@@ -270,7 +270,8 @@ export default {
       videoPlaying: null,
       videoDialogVisible: false,
       officeFile: null,
-      pdfFile: null
+      pdfFile: null,
+      fileIdUrlMap: {}
     }
   },
   created() {
@@ -576,9 +577,17 @@ export default {
       } else {
         this.uploading = true
 
-        return uploader.initUploadParams(file, this.projectId, 'PROJECT_FILE').then((params) => {
-          this.uploadParams = params
-        })
+        return uploader
+          .initUploadParams(file, this.projectId, 'PROJECT_FILE')
+          .then((params) => {
+            this.uploadParams = params
+            this.fileIdUrlMap[file.uid || file.lastModified] = params.targetFileUrl
+          })
+          .catch((err) => {
+            console.error('Error initializing upload params:', err)
+            this.uploading = false
+            return false
+          })
       }
     },
     onExceed(files, fileList) {
@@ -594,7 +603,7 @@ export default {
     fileUploadSuccess: function (uploadRes, file) {
       const fileDto = {
         name: file.name,
-        fullPath: uploadRes,
+        fullPath: uploadRes || this.fileIdUrlMap[file.uid || file.lastModified] || this.uploadParams.targetFileUrl,
         type: uploader.getFileType(file.raw.type),
         size: file.size,
         targetType: 'PROJECT_FILE',
