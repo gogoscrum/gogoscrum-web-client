@@ -2,14 +2,14 @@
 
 <p align="center">
 <a href="https://www.gogoscrum.com">
-  <img src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/gogoscrum-full-logo.png" width="360">
+  <img src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/gogoscrum-full-logo.png" width="360" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache 2.0-orange" alt="License"></a>
+  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache 2.0-orange" alt="License" /></a>
   <img src="https://img.shields.io/badge/Java-21-brightgreen.svg" alt="Java Version" />
-  <a href="https://www.gogoscrum.com"><img src="https://img.shields.io/badge/Website-www.gogoscrum.com-blue" alt="gogoscrum Website"></a>
+  <a href="https://www.gogoscrum.com"><img src="https://img.shields.io/badge/Website-www.gogoscrum.com-blue" alt="gogoscrum Website" /></a>
 </p>
 
 <br/>
@@ -134,4 +134,5 @@ You are free to:
 
 However, you **may not sell** or use this software in **commercial** services or products without prior written consent from us.
 
-If you want to use this software in a commercial context (e.g., as part of a SaaS offering, enterprise system, or paid solution), please contact us to obtain a **commercial license**.
+If you want to use this software in a commercial context (e.g., as part of a SaaS offering, enterprise system, or paid solution), please contact us to obtain a **commercial license**: \
+<img src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/wechat-qr-contact-us.png" width="100">
