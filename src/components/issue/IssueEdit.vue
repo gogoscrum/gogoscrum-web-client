@@ -414,12 +414,12 @@
                 <el-icon class="text-base mr-1"><ChatDotSquare /></el-icon> {{ $t('issueEdit.comments') }}
               </div>
             </template>
-            <div v-if="editIssue.comments && editIssue.comments.length" class="comments-list">
+            <div v-if="editIssue.comments?.length" class="comments-list">
               <el-timeline :reverse="false">
                 <el-timeline-item
                   v-for="(comment, index) in editIssue.comments"
                   :key="comment.id"
-                  :timestamp="`${comment.createdTime} ${comment.createdBy.nickname}`"
+                  :timestamp="`${comment.createdTimeFormatted} ${comment.createdBy.nickname}`"
                   placement="top">
                   <template #dot>
                     <el-tooltip :content="comment.createdBy.nickname" placement="left">
@@ -431,8 +431,10 @@
                       <span>{{ comment.content }}</span>
                     </div>
                     <div v-if="currentUser.id == comment.createdBy.id" class="comment-item-actions">
-                      <el-icon :title="$t('common.edit')" @click="editComment(index)"><Edit /></el-icon>
-                      <el-icon :title="$t('common.delete')" @click="deleteComment(index)"><Delete /></el-icon>
+                      <el-icon :title="$t('common.edit')" @click="editComment(index)" class="btn"><Edit /></el-icon>
+                      <el-icon :title="$t('common.delete')" @click="deleteComment(index)" class="btn"
+                        ><Delete
+                      /></el-icon>
                     </div>
                   </div>
                 </el-timeline-item>
@@ -457,7 +459,7 @@
                   {{ $t('issueEdit.ctrlEnter') }}
                 </div>
                 <div class="flex-row">
-                  <div class="action-btn" @click="cancelEditComment">
+                  <div class="action-btn mr-2!" @click="cancelEditComment">
                     {{ $t('common.cancel') }}
                   </div>
                   <div class="action-btn" @click="saveComment">
@@ -480,12 +482,12 @@
               </div>
             </template>
 
-            <div v-if="histories && histories.length" v-infinite-scroll="loadIssueHistories" class="comments-list">
+            <div v-if="histories?.length" v-infinite-scroll="loadIssueHistories" class="comments-list">
               <el-timeline :reverse="true">
                 <el-timeline-item
                   v-for="history in histories"
                   :key="history.id"
-                  :timestamp="`${history.createdTime} ${history.createdBy.nickname}`"
+                  :timestamp="`${history.createdTimeFormatted} ${history.createdBy.nickname}`"
                   placement="top">
                   <template #dot>
                     <el-tooltip :content="history.createdBy.nickname" placement="left">
@@ -497,10 +499,10 @@
                       <span>{{ $t(`historyActionTypes.${history.actionType}`) }}</span>
                     </div>
                     <div class="comment-item-actions">
-                      <el-popover placement="top-end" trigger="hover" popper-class="history-details-popover">
+                      <el-popover placement="left" trigger="hover" popper-class="history-details-popover">
                         <div v-html="history.details"></div>
                         <template #reference>
-                          <div class="show-history-details">
+                          <div class="show-history-details btn">
                             <el-icon class="mr-3px"><ZoomIn /></el-icon>
                             <div>{{ $t('issueEdit.details') }}</div>
                           </div>
@@ -739,6 +741,9 @@ export default {
       })
     },
     formatIssue(issue) {
+      if (issue.comments?.length) {
+        issue.comments.forEach((comment) => utils.formatCreateUpdateTime(comment))
+      }
       return utils.formatCreateUpdateTime(issue)
     },
     loadComponents() {
@@ -1163,7 +1168,11 @@ export default {
       if (this.historyTotalPages === null || this.historyTotalPages > this.historyPage) {
         this.historyPage++
         issueApi.getHistories(this.editIssue.id, { page: this.historyPage }).then((res) => {
-          this.histories = this.histories.concat(res.data.results)
+          const resultList = res.data.results
+          resultList.forEach((history) => {
+            utils.formatCreateUpdateTime(history)
+          })
+          this.histories = this.histories.concat(resultList)
           this.historyTotalPages = res.data.totalPages
         })
       }
@@ -1319,7 +1328,6 @@ export default {
         bottom: 0;
         visibility: hidden;
         background-color: #e7f5f3;
-        color: var(--el-color-primary);
         backdrop-filter: blur(3px);
       }
 
@@ -1354,7 +1362,7 @@ export default {
 }
 
 .history-details-popover {
-  width: 540px !important;
+  width: 530px !important;
 
   @media only screen and (max-width: 768px) {
     width: 91%;
@@ -1588,9 +1596,9 @@ export default {
               visibility: visible;
               color: #999999;
 
-              i {
+              .btn {
                 &:hover {
-                  color: #303133;
+                  color: var(--el-color-primary);
                   cursor: pointer;
                 }
               }
@@ -1699,6 +1707,8 @@ export default {
     font-weight: 450;
     white-space: nowrap;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
 
     &:hover {
       color: var(--el-color-primary);

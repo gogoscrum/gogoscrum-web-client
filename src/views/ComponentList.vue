@@ -39,7 +39,7 @@
               :content="
                 $t('componentList.list.creatorTip', {
                   nickname: scope.row.createdBy.nickname,
-                  createdTime: scope.row.createdTime
+                  createdTime: scope.row.createdTimeFormatted || scope.row.createdTime
                 })
               "
               placement="left">
@@ -92,6 +92,7 @@ import { componentApi } from '@/api/component.js'
 import ComponentEdit from '@/components/component/ComponentEdit.vue'
 import Avatar from '@/components/common/Avatar.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import utils from '@/utils/util.js'
 
 export default {
   name: 'ComponentList',
@@ -116,9 +117,16 @@ export default {
       this.loading = true
       componentApi.getTree(this.projectId).then((response) => {
         this.tree = response.data
+        this.formatComponent(this.tree)
         this.components = response.data?.children || []
         this.loading = false
       })
+    },
+    formatComponent(component) {
+      utils.formatCreateUpdateTime(component)
+      if (component.children?.length) {
+        component.children.forEach((child) => this.formatComponent(child))
+      }
     },
     toggleExpandAll() {
       this.expandAll = !this.expandAll

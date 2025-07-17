@@ -32,11 +32,11 @@
             {{ $t(`projectMemberRoles.${scope.row.role}`) }}
           </template>
         </el-table-column>
-        <el-table-column prop="createdTime" :label="$t('invitedMemberList.header.joinedTime')" min-width="80">
+        <el-table-column prop="createdTimeFormatted" :label="$t('invitedMemberList.header.joinedTime')" min-width="80">
         </el-table-column>
         <el-table-column
           v-if="!isInMobile"
-          prop="user.createdTime"
+          prop="user.createdTimeFormatted"
           :label="$t('invitedMemberList.header.registeredTime')"
           min-width="80">
         </el-table-column>
@@ -94,6 +94,10 @@ export default {
     loadMembers() {
       projectApi.findMembersByInvitation(this.projectId, this.invitationId, this.page, this.pageSize).then((res) => {
         this.members = res.data.results
+        this.members.forEach((member) => {
+          utils.formatCreateUpdateTime(member)
+          utils.formatCreateUpdateTime(member.user)
+        })
         this.totalElements = res.data.totalElements
         this.totalPages = res.data.totalPages
         this.page = res.data.currentPage
