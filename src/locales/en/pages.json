@@ -335,7 +335,7 @@
     "titleDetails": "Project details",
     "name": "Name",
     "code": "Code",
-    "codeTips": "3-6 letters in upper case, this will be used to generate issue code, e.g. input GGSM as the project code and the first issue code will be GGSM-1",
+    "codeTips": "3-6 letters in upper case, this will be used to generate issue code, e.g. input ABC as the project code and the issue code will be ABC-1, ABC-2, and so on",
     "avatar": "Avatar",
     "uploadAvatar": "Upload",
     "changeAvatar": "Change",

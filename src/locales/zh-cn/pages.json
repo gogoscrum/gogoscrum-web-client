@@ -335,7 +335,7 @@
     "titleDetails": "项目详情",
     "name": "名称",
     "code": "代码",
-    "codeTips": "3-6个大写字母，用于生成任务唯一代码，例如项目代码为\"GGSM\"，则该项目下的第一个任务代码为\"GGSM-1\"",
+    "codeTips": "3-6个大写字母，用于生成任务唯一代码，例如项目代码为\"ABC\"，则该项目下的任务代码将依次为\"ABC-1\"，\"ABC-2\"",
     "avatar": "头像",
     "uploadAvatar": "上传",
     "changeAvatar": "修改",
