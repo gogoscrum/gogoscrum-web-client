@@ -134,8 +134,8 @@ export default {
         this.sprint = res.data
         this.issues = res.data.issues
         this.issues.forEach((issue) => {
-          if (issue.completeTime) {
-            issue.completeDate = dayjs(issue.completeTime).format('YYYY-MM-DD')
+          if (issue.completedTime) {
+            issue.completedDate = dayjs(issue.completedTime).format('YYYY-MM-DD')
           }
         })
 
@@ -181,10 +181,10 @@ export default {
     },
     getActualPointList(currenDatetList) {
       this.actualPointList = []
-      currenDatetList.forEach((time) => {
+      currenDatetList.forEach((date) => {
         let point = 0
         this.issues.filter((issue) => {
-          if (issue.storyPoints != null && issue.completeDate == time) {
+          if (issue.storyPoints != null && issue.completedDate == date) {
             point += issue.storyPoints
           }
         })
@@ -244,10 +244,10 @@ export default {
     },
     getActualIssueDoneCount(currenDatetList) {
       this.actualIssueDoneCount = []
-      currenDatetList.forEach((time) => {
+      currenDatetList.forEach((date) => {
         let count = 0
         this.issues.filter((issue) => {
-          if (issue.completeDate == time) {
+          if (issue.completedDate == date) {
             count++
           }
         })
