@@ -162,6 +162,10 @@
       "issue": "Issues",
       "file": "Files",
       "doc": "Documents",
+      "testing": "Testing",
+      "testCase": "Test Case",
+      "testPlan": "Test Plan",
+      "testReport": "Test Report",
       "charts": "Charts",
       "burndown": "Burndown",
       "velocity": "Velocity",
@@ -790,5 +794,63 @@
       "delAvatarConfirmMsg": "You are about to delete user avatar, which cannot be recovered. Are you sure to proceed?",
       "delAvatarSuccess": "User avatar deleted"
     }
+  },
+  "test": {
+    "case": {
+      "edit": {
+        "title": {
+          "new": "Create test case",
+          "edit": "Edit test case"
+        },
+        "version": "Version {version}",
+        "name": "Name",
+        "type": "Type",
+        "component": "Component",
+        "priority": "Priority",
+        "preconditions": "Preconditions",
+        "steps": {
+          "label": "Test Steps",
+          "description": "Description",
+          "expectation": "Expectation",
+          "empty": "No test steps, please add test steps",
+          "add": "Add step",
+          "insert": "Insert step",
+          "moveUp": "Move up",
+          "moveDown": "Move down"
+        },
+        "msg": {
+          "oldVersion": "This is an old version of the test case",
+          "nameMissing": "Please input test case name",
+          "createSuccess": "Test case created successfully",
+          "updateSuccess": "Test case updated successfully",
+          "delConfirmTitle": "Delete test case",
+          "delConfirmMsg": "You are about to delete test case <strong class=\"red\">\"{caseName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+          "delSuccess": "Test case deleted successfully"
+        }
+      },
+      "list": {
+        "filter": {
+          "new": "New test case",
+          "totalElements": "{count} test cases",
+          "matchedResults": "{count} matched results",
+          "search": "Search"
+        },
+        "header": {
+          "code": "Code",
+          "name": "Name",
+          "priority": "Priority",
+          "creator": "Creator"
+        },
+        "table": {
+          "creatorTip": "{nickname} created at {createdTime}",
+          "emptyMsg": "No test cases in this project"
+        },
+        "msg": {
+          "issueCopied": "Test case copied successfully"
+        }
+      }
+    },
+    "plan": {},
+    "report": {}
   }
 }

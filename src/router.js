@@ -107,6 +107,16 @@ const routes = [
             path: 'details',
             name: 'ProjectDetails',
             component: () => import('@/views/ProjectDetails.vue')
+          },
+          {
+            path: 'test/cases',
+            name: 'TestCaseList',
+            component: () => import('@/views/testing/TestCaseList.vue')
+          },
+          {
+            path: 'test/cases/:testCaseId',
+            name: 'TestCaseEdit',
+            component: () => import('@/views/testing/TestCaseEdit.vue')
           }
         ]
       }

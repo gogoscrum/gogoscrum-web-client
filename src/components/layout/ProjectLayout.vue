@@ -94,6 +94,43 @@
             ><span>{{ $t('projectLayout.menu.doc') }}</span></template
           >
         </el-menu-item>
+
+        <el-sub-menu index="Testing" class="menu-item">
+          <template #title>
+            <el-icon><Odometer /></el-icon>
+            <span>{{ $t('projectLayout.menu.testing') }}</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item
+              index="TestCaseList"
+              :route="{
+                name: 'TestCaseList',
+                params: { projectId: projectId }
+              }"
+              :class="$route.name == 'TestCaseList' ? 'menu-selected' : ''">
+              <span>{{ $t('projectLayout.menu.testCase') }}</span>
+            </el-menu-item>
+            <el-menu-item
+              index="TestPlanList"
+              :route="{
+                name: 'TestPlanList',
+                params: { projectId: projectId }
+              }"
+              :class="$route.name == 'TestPlanList' ? 'menu-selected' : ''">
+              <span>{{ $t('projectLayout.menu.testPlan') }}</span>
+            </el-menu-item>
+            <el-menu-item
+              index="TestReportList"
+              :route="{
+                name: 'TestReportList',
+                params: { projectId: projectId }
+              }"
+              :class="$route.name == 'TestReportList' ? 'menu-selected' : ''">
+              <span>{{ $t('projectLayout.menu.testReport') }}</span>
+            </el-menu-item>
+          </el-menu-item-group>
+        </el-sub-menu>
+
         <el-sub-menu index="Charts" class="menu-item">
           <template #title>
             <el-icon><DataLine /></el-icon>

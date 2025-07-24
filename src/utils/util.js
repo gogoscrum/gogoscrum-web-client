@@ -163,6 +163,45 @@ const toFullUrl = (path) => {
   return `${window.location.origin}${path}`
 }
 
+/**
+ * Get the number of lines in a textarea
+ * @param {*} textarea The textarea element to measure
+ * @returns {number} Number of lines in the textarea
+ */
+const getTextareaLineCount = (textarea) => {
+  const style = window.getComputedStyle(textarea)
+  const lineHeight = parseFloat(style.lineHeight)
+
+  // Create a hidden div for measurement
+  const div = document.createElement('div')
+  div.style.position = 'absolute'
+  div.style.visibility = 'hidden'
+  div.style.top = '-9999px'
+  div.style.left = '-9999px'
+  div.style.width = textarea.clientWidth + 'px'
+  div.style.fontFamily = style.fontFamily
+  div.style.fontSize = style.fontSize
+  div.style.lineHeight = style.lineHeight
+  div.style.whiteSpace = 'pre-wrap'
+  div.style.wordWrap = 'break-word'
+  div.style.padding = style.padding
+  div.style.border = style.border
+  div.style.boxSizing = style.boxSizing
+
+  // Handle trailing line breaks
+  let text = textarea.value
+  if (text.endsWith('\n')) {
+    text += ' ' // Make the last \n render as a line
+  }
+  div.textContent = text
+
+  document.body.appendChild(div)
+  const lines = Math.round(div.scrollHeight / lineHeight)
+  document.body.removeChild(div)
+
+  return lines
+}
+
 export default {
   indexInArray,
   toggleFullscreen,
@@ -177,5 +216,6 @@ export default {
   formatCreateUpdateTime,
   formatAndCaclSprintStatus,
   isLocalhost,
-  toFullUrl
+  toFullUrl,
+  getTextareaLineCount
 }

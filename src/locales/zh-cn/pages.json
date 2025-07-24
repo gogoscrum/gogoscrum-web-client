@@ -162,6 +162,10 @@
       "issue": "任务",
       "file": "文件",
       "doc": "文档",
+      "testing": "测试",
+      "testCase": "测试用例",
+      "testPlan": "测试计划",
+      "testReport": "测试报告",
       "charts": "图表",
       "burndown": "燃尽图",
       "velocity": "速率图",
@@ -790,5 +794,63 @@
       "delAvatarConfirmMsg": "您即将删除用户头像，删除后无法恢复，是否继续？",
       "delAvatarSuccess": "用户头像删除成功"
     }
+  },
+  "test": {
+    "case": {
+      "edit": {
+        "title": {
+          "new": "新建测试用例",
+          "edit": "修改测试用例"
+        },
+        "version": "版本 {version}",
+        "name": "名称",
+        "type": "类型",
+        "component": "功能模块",
+        "priority": "优先级",
+        "preconditions": "前置条件",
+        "steps": {
+          "label": "测试步骤",
+          "description": "步骤",
+          "expectation": "预期结果",
+          "empty": "测试步骤为空，请添加测试步骤",
+          "add": "添加步骤",
+          "insert": "插入步骤",
+          "moveUp": "上移",
+          "moveDown": "下移"
+        },
+        "msg": {
+          "oldVersion": "当前查看的测试用例为旧版本",
+          "nameMissing": "请输入用例名称",
+          "createSuccess": "测试用例创建成功",
+          "updateSuccess": "测试用例更新成功",
+          "delConfirmTitle": "删除测试用例",
+          "delConfirmMsg": "您即将删除测试用例 <strong class=\"red\">\"{caseName}\"</strong>，删除后无法恢复，是否继续？",
+          "delSuccess": "测试用例删除成功"
+        }
+      },
+      "list": {
+        "filter": {
+          "new": "新建用例",
+          "totalElements": "{count} 个测试用例",
+          "matchedResults": "{count} 个符合条件的结果",
+          "search": "查找用例"
+        },
+        "header": {
+          "code": "编号",
+          "name": "名称",
+          "priority": "优先级",
+          "creator": "创建者"
+        },
+        "table": {
+          "creatorTip": "{nickname} 创建于 {createdTime}",
+          "emptyMsg": "项目中还没有任何测试用例"
+        },
+        "msg": {
+          "issueCopied": "测试用例复制成功"
+        }
+      }
+    },
+    "plan": {},
+    "report": {}
   }
 }

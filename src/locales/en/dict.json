@@ -41,5 +41,18 @@
     "OWNER": "Owner",
     "DEVELOPER": "Developer",
     "GUEST": "Guest"
+  },
+  "testCaseTypes": {
+    "API": "API Testing",
+    "INTEGRATION": "Integration Testing",
+    "ACCEPTANCE": "Acceptance Testing",
+    "FUNCTIONAL": "Functional Testing",
+    "SMOKE": "Smoke Testing",
+    "REGRESSION": "Regression Testing",
+    "PERFORMANCE": "Performance Testing",
+    "SECURITY": "Security Testing",
+    "USABILITY": "Usability Testing",
+    "COMPATIBILITY": "Compatibility Testing",
+    "OTHER": "Other"
   }
 }

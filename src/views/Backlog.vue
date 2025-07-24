@@ -58,7 +58,7 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="DocumentCopy" @click.native="cloneIssue(scope.row)">{{
+                  <el-dropdown-item icon="DocumentCopy" @click.native="cloneIssue(scope.$index, scope.row)">{{
                     $t('common.copy')
                   }}</el-dropdown-item>
                   <el-dropdown-item
@@ -208,14 +208,16 @@ export default {
     issueDialogClosed() {
       this.editingIssue = null
     },
-    cloneIssue(issue) {
+    cloneIssue(index, issue) {
       issueApi.clone(issue.id).then((res) => {
-        this.issueSaved(res.data)
         ElMessage.success({
           message: this.$t('backlog.msg.issueCopied', {
             issueName: issue.code
           })
         })
+        // insert the cloned issue right after the original issue
+        this.issues.splice(index + 1, 0, res.data)
+        this.totalElements++
       })
     },
     issueSaved(issue) {
