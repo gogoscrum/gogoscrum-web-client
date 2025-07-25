@@ -60,7 +60,11 @@
             <span class="case-name" v-html="scope.row['details.nameHighlightLabel'] || scope.row.details.name" />
           </template>
         </el-table-column>
-        <el-table-column :label="$t('test.case.list.header.priority')" prop="priority" sortable="custom" min-width="30">
+        <el-table-column
+          :label="$t('test.case.list.header.priority')"
+          prop="details.priority"
+          sortable="custom"
+          min-width="30">
           <template #default="scope">
             <div v-if="scope.row.details.priority" class="flex">
               <PriorityIcon :priority="scope.row.details.priority" />

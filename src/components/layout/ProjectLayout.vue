@@ -107,7 +107,7 @@
                 name: 'TestCaseList',
                 params: { projectId: projectId }
               }"
-              :class="$route.name == 'TestCaseList' ? 'menu-selected' : ''">
+              :class="{ 'menu-selected': ['TestCaseList', 'TestCaseEdit'].includes($route.name) }">
               <span>{{ $t('projectLayout.menu.testCase') }}</span>
             </el-menu-item>
             <el-menu-item
@@ -305,6 +305,8 @@ export default {
         this.$refs.menu.open('more')
       } else if (['IssueList'].includes(route)) {
         this.$refs.menu.open('Issues')
+      } else if (['TestCaseList', 'TestCaseEdit', 'TestPlanList', 'TestReportList'].includes(route)) {
+        this.$refs.menu.open('Testing')
       }
     },
     setMenuCollpaseFlag() {

@@ -12,7 +12,7 @@
           </el-tag>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item v-for="version in descVersions" :key="version" @click.native="loadCase(version)">{{
+              <el-dropdown-item v-for="version in descVersions" :key="version" @click.native="loadDetails(version)">{{
                 $t('test.case.edit.version', { version: version })
               }}</el-dropdown-item>
             </el-dropdown-menu>
@@ -200,7 +200,6 @@ export default {
       projectId: this.$route.params.projectId,
       project: {},
       testCaseId: this.$route.params.testCaseId,
-      version: this.$route.query.version,
       testCase: {
         projectId: this.$route.params.projectId,
         details: {
@@ -261,11 +260,22 @@ export default {
         this.components = response.data?.children || []
       })
     },
-    loadCase(version = this.version) {
-      testCaseApi.get(this.testCaseId, { version }).then((response) => {
+    loadCase() {
+      testCaseApi.get(this.testCaseId).then((response) => {
         this.testCase = response.data
         this.$nextTick(() => {
           // Adjust input heights after loading the test case
+          this.testCase.details?.steps?.forEach((step, index) => {
+            this.syncInputHeight(index)
+          })
+        })
+      })
+    },
+    loadDetails(version) {
+      testCaseApi.getDetails(this.testCaseId, version).then((response) => {
+        this.testCase.details = response.data
+        this.$nextTick(() => {
+          // Adjust input heights after loading the details version
           this.testCase.details?.steps?.forEach((step, index) => {
             this.syncInputHeight(index)
           })
