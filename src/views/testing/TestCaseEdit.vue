@@ -29,26 +29,33 @@
       :model="testCase"
       :disabled="!project.isDeveloper || isOldVersion"
       :rules="rules"
-      label-width="100px"
+      label-width="105px"
+      class="test-case-form"
       :label-position="isInMobile ? 'top' : 'right'">
       <el-form-item :label="$t('test.case.edit.name')" prop="details.name">
         <el-input v-model="testCase.details.name" maxlength="200" show-word-limit clearable></el-input>
       </el-form-item>
 
       <el-row>
-        <el-col :xs="24" :sm="8">
+        <el-col :xs="24" :sm="12">
           <el-form-item :label="$t('test.case.edit.type')">
-            <el-select v-model="testCase.details.type">
-              <el-option
-                v-for="caseType in Object.keys(dict.testCaseTypes)"
-                :key="caseType"
-                :label="$t(`testCaseTypes.${caseType}`)"
-                :value="caseType">
-              </el-option>
-            </el-select>
+            <div class="w-full flex items-center">
+              <el-select v-model="testCase.details.type" clearable>
+                <el-option
+                  v-for="caseType in Object.keys(dict.testCaseTypes)"
+                  :key="caseType"
+                  :label="$t(`testCaseTypes.${caseType}`)"
+                  :value="caseType">
+                </el-option>
+              </el-select>
+              <el-checkbox
+                v-model="testCase.details.automated"
+                :label="$t('test.case.edit.automated')"
+                class="ml-12px" />
+            </div>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="8">
+        <el-col :xs="24" :sm="12">
           <el-form-item :label="$t('test.case.edit.component')">
             <el-cascader
               v-model="testCase.details.componentId"
@@ -59,19 +66,42 @@
               class="w-full" />
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="8">
+      </el-row>
+
+      <el-row>
+        <el-col :xs="24" :sm="12">
           <el-form-item :label="$t('test.case.edit.priority')">
             <priority-selector v-model="testCase.details.priority"></priority-selector>
           </el-form-item>
         </el-col>
+
+        <el-col :xs="24" :sm="12">
+          <el-form-item :label="$t('test.case.edit.owner')">
+            <member-selector
+              v-model="testCase.details.owner"
+              :placeholder="$t('test.case.edit.ownerPlaceholder')"
+              :members="project.projectMembers"
+              :clearable="true"></member-selector>
+          </el-form-item>
+        </el-col>
       </el-row>
+
+      <el-form-item :label="$t('test.case.edit.description')">
+        <el-input
+          v-model="testCase.details.description"
+          :autosize="{ minRows: 3 }"
+          show-word-limit
+          maxlength="1000"
+          type="textarea"
+          resize="vertical"></el-input>
+      </el-form-item>
 
       <el-form-item :label="$t('test.case.edit.preconditions')">
         <el-input
           v-model="testCase.details.preconditions"
           :autosize="{ minRows: 3 }"
           show-word-limit
-          maxlength="500"
+          maxlength="1000"
           type="textarea"
           resize="vertical"></el-input>
       </el-form-item>
@@ -80,8 +110,13 @@
         <el-table
           :data="testCase.details.steps"
           :empty-text="$t('test.case.edit.steps.empty')"
+          :border="true"
           class="test-case-steps-table">
-          <el-table-column type="index" width="30" align="center" />
+          <el-table-column width="45" align="center">
+            <template #default="scope">
+              <div class="seq-badge">{{ scope.$index + 1 }}</div>
+            </template>
+          </el-table-column>
           <el-table-column :label="$t('test.case.edit.steps.description')">
             <template #default="scope">
               <el-input
@@ -142,9 +177,6 @@
               </el-dropdown>
             </template>
           </el-table-column>
-          <!-- <template v-slot:empty>
-            <span class="small-text text-gray-400">{{ $t('test.case.edit.steps.empty') }}</span>
-          </template> -->
         </el-table>
         <el-button class="add-step-button mt-2" type="primary" text icon="Plus" @click="addStep">
           {{ $t('test.case.edit.steps.add') }}</el-button
@@ -181,16 +213,18 @@
 
 <script>
 import { componentApi } from '@/api/component.js'
-import { testCaseApi } from '@/api/testCase.js'
+import { testCaseApi } from '@/api/testing.js'
 import utils from '@/utils/util.js'
 import dict from '@/locales/zh-cn/dict.json'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PrioritySelector from '@/components/common/PrioritySelector.vue'
+import MemberSelector from '@/components/common/MemberSelector.vue'
 
 export default {
   name: 'TestCaseEdit',
   components: {
-    PrioritySelector
+    PrioritySelector,
+    MemberSelector
   },
   props: {},
   data() {
@@ -263,23 +297,13 @@ export default {
     loadCase() {
       testCaseApi.get(this.testCaseId).then((response) => {
         this.testCase = response.data
-        this.$nextTick(() => {
-          // Adjust input heights after loading the test case
-          this.testCase.details?.steps?.forEach((step, index) => {
-            this.syncInputHeight(index)
-          })
-        })
+        this.syncAllInputHeights()
       })
     },
     loadDetails(version) {
       testCaseApi.getDetails(this.testCaseId, version).then((response) => {
         this.testCase.details = response.data
-        this.$nextTick(() => {
-          // Adjust input heights after loading the details version
-          this.testCase.details?.steps?.forEach((step, index) => {
-            this.syncInputHeight(index)
-          })
-        })
+        this.syncAllInputHeights()
       })
     },
     syncInputHeight(index) {
@@ -294,6 +318,13 @@ export default {
       descInput.style.height = `${maxHeight}px`
       expInput.style.height = `${maxHeight}px`
     },
+    syncAllInputHeights() {
+      this.$nextTick(() => {
+        this.testCase.details?.steps?.forEach((_, index) => {
+          this.syncInputHeight(index)
+        })
+      })
+    },
     addStep() {
       this.testCase.details.steps.push({
         description: '',
@@ -305,32 +336,25 @@ export default {
         description: '',
         expectation: ''
       })
+      this.syncAllInputHeights()
     },
     moveUpStep(index) {
       if (index > 0) {
         const step = this.testCase.details.steps.splice(index, 1)[0]
         this.testCase.details.steps.splice(index - 1, 0, step)
-
-        // Adjust the input heights after moving the step at next tick
-        this.$nextTick(() => {
-          this.syncInputHeight(index - 1)
-          this.syncInputHeight(index)
-        })
+        this.syncAllInputHeights()
       }
     },
     moveDownStep(index) {
       if (index < this.testCase.details.steps.length - 1) {
         const step = this.testCase.details.steps.splice(index, 1)[0]
         this.testCase.details.steps.splice(index + 1, 0, step)
-        // Adjust the input heights after moving the step at next tick
-        this.$nextTick(() => {
-          this.syncInputHeight(index)
-          this.syncInputHeight(index + 1)
-        })
+        this.syncAllInputHeights()
       }
     },
     deleteStep(index) {
       this.testCase.details.steps.splice(index, 1)
+      this.syncAllInputHeights()
     },
     saveTestCase() {
       this.$refs.testCaseForm.validate((valid) => {
@@ -352,12 +376,8 @@ export default {
                   ? this.$t('test.case.edit.msg.updateSuccess')
                   : this.$t('test.case.edit.msg.createSuccess')
               )
-              // stay on the same page
+              // stay on the edit page
               this.testCase = response.data
-              // this.$router.push({
-              //   name: 'TestCaseList',
-              //   params: { projectId: this.projectId }
-              // })
             })
             .finally(() => {
               this.saving = false
@@ -400,6 +420,9 @@ export default {
 <style lang="less" scoped>
 .test-case-edit-page {
   width: 760px;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 120px);
 
   .title {
     display: flex;
@@ -422,6 +445,10 @@ export default {
     }
   }
 
+  .test-case-form {
+    flex-grow: 1;
+  }
+
   .footer {
     display: flex;
   }
@@ -429,21 +456,23 @@ export default {
 </style>
 <style lang="less">
 .test-case-edit-page {
-  .actions-column {
-    .cell {
-      padding-left: 0;
-      padding-right: 4px;
-    }
-  }
-
   .test-case-steps-table {
-    .el-table__cell {
-      border-bottom: none !important;
+    thead {
+      .el-table__cell {
+        background-color: unset !important;
+      }
     }
-  }
 
-  .el-table {
-    --el-table-border-color: #unset;
+    .el-table__cell {
+      background-color: unset !important;
+      padding: 4px 0 !important;
+    }
+
+    textarea {
+      box-shadow: none !important;
+      padding: 5px 0;
+      background-color: unset !important;
+    }
   }
 }
 </style>

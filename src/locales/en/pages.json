@@ -7,17 +7,21 @@
   "common": {
     "slogan": "Lightweight Open-Source Scrum Tool",
     "empty": "No data",
+    "back": "Back",
     "close": "Close",
     "create": "Create",
     "edit": "Edit",
+    "details": "Details",
     "copy": "Duplicate",
     "refresh": "Refresh",
     "delete": "Delete",
     "cancel": "Cancel",
+    "unlink": "Unlink",
     "upload": "Upload",
     "download": "Download",
     "save": "Save",
     "ok": "OK",
+    "done": "Done",
     "to": "to",
     "actions": "Actions",
     "move": "Move to",
@@ -31,7 +35,8 @@
       "formValidationFail": "Please fill out all required fields",
       "h5NotSupported": "Mobile not supported so far, please switch to PC",
       "shortcutKeys": "Esc to cancel, Ctrl + Enter to submit",
-      "uploadFailed": "Upload failed"
+      "uploadFailed": "Upload failed",
+      "pickedItems": "{count} items selected"
     }
   },
   "homepage": {
@@ -163,13 +168,13 @@
       "file": "Files",
       "doc": "Documents",
       "testing": "Testing",
-      "testCase": "Test Case",
-      "testPlan": "Test Plan",
-      "testReport": "Test Report",
+      "testCase": "Test case",
+      "testPlan": "Test plan",
+      "testReport": "Test report",
       "charts": "Charts",
       "burndown": "Burndown",
       "velocity": "Velocity",
-      "cumulative": "Cumulative Flow",
+      "cumulative": "Cumulative flow",
       "setting": "Settings",
       "projectDetails": "Project details",
       "component": "Components",
@@ -804,9 +809,13 @@
         },
         "version": "Version {version}",
         "name": "Name",
-        "type": "Type",
+        "type": "Test type",
+        "automated": "Automated",
         "component": "Component",
         "priority": "Priority",
+        "owner": "Owner",
+        "ownerPlaceholder": "Select owner",
+        "description": "Description",
         "preconditions": "Preconditions",
         "steps": {
           "label": "Test Steps",
@@ -838,7 +847,9 @@
         "header": {
           "code": "Code",
           "name": "Name",
+          "type": "Type",
           "priority": "Priority",
+          "owner": "Owner",
           "creator": "Creator"
         },
         "table": {
@@ -850,7 +861,62 @@
         }
       }
     },
-    "plan": {},
+    "plan": {
+      "edit": {
+        "title": {
+          "new": "New test plan",
+          "edit": "Edit test plan"
+        },
+        "name": "Name",
+        "type": "Test type",
+        "typePlaceholder": "Select type",
+        "owner": "Owner",
+        "ownerPlaceholder": "Select owner",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "msg": {
+          "nameMissing": "Please input test plan name",
+          "createSuccess": "Test plan created successfully",
+          "updateSuccess": "Test plan updated successfully",
+          "delConfirmTitle": "Delete test plan",
+          "delConfirmMsg": "You are about to delete test plan <strong class=\"red\">\"{planName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+          "delSuccess": "Test plan deleted successfully"
+        }
+      },
+      "details": {
+        "title": "Test plan details",
+        "tabCases": "Test cases"
+      },
+      "items": {
+        "add": "Link cases",
+        "emptyMsg": "No test cases in this plan",
+        "msg": {
+          "delConfirmTitle": "Unlink test case",
+          "delConfirmMsg": "You are about to unlink test case <strong class=\"red\">\"{caseName}\"</strong>. Once unlinked, the execution results of the related test cases will be cleared. Are you sure you want to proceed?",
+          "delSuccess": "Test case unlinked successfully",
+          "addSuccess": "Test cases linked successfully"
+        }
+      },
+      "list": {
+        "filter": {
+          "new": "New test plan",
+          "totalElements": "{count} test plans",
+          "matchedResults": "{count} matched results",
+          "search": "Search plan"
+        },
+        "header": {
+          "name": "Name",
+          "startDate": "Start Date",
+          "endDate": "End Date",
+          "owner": "Owner",
+          "creator": "Creator"
+        },
+        "table": {
+          "creatorTip": "{nickname} created at {createdTime}",
+          "emptyMsg": "No test plans in this project"
+        }
+      }
+    },
     "report": {}
   }
 }

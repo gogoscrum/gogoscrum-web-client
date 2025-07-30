@@ -7,17 +7,21 @@
   "common": {
     "slogan": "开源轻量级敏捷项目管理工具",
     "empty": "暂无数据",
+    "back": "返回",
     "close": "关闭",
     "create": "创建",
     "edit": "修改",
+    "details": "详情",
     "copy": "复制",
     "refresh": "刷新",
     "delete": "删除",
     "cancel": "取消",
+    "unlink": "移除",
     "upload": "上传",
     "download": "下载",
     "save": "保存",
     "ok": "确定",
+    "done": "完成",
     "to": "至",
     "actions": "操作",
     "move": "移至",
@@ -31,7 +35,8 @@
       "formValidationFail": "请填写必要的表单信息",
       "h5NotSupported": "目前暂不支持手机端看板，请切换至电脑端查看",
       "shortcutKeys": "Esc放弃编辑, Ctrl + 回车键快捷提交",
-      "uploadFailed": "文件上传失败"
+      "uploadFailed": "文件上传失败",
+      "pickedItems": "已选中 {count} 条"
     }
   },
   "homepage": {
@@ -805,12 +810,16 @@
         "version": "版本 {version}",
         "name": "名称",
         "type": "类型",
+        "automated": "自动化",
         "component": "功能模块",
         "priority": "优先级",
+        "owner": "负责人",
+        "ownerPlaceholder": "选择负责人",
+        "description": "备注",
         "preconditions": "前置条件",
         "steps": {
           "label": "测试步骤",
-          "description": "步骤",
+          "description": "步骤描述",
           "expectation": "预期结果",
           "empty": "测试步骤为空，请添加测试步骤",
           "add": "添加步骤",
@@ -838,7 +847,9 @@
         "header": {
           "code": "编号",
           "name": "名称",
+          "type": "类型",
           "priority": "优先级",
+          "owner": "负责人",
           "creator": "创建者"
         },
         "table": {
@@ -850,7 +861,62 @@
         }
       }
     },
-    "plan": {},
+    "plan": {
+      "edit": {
+        "title": {
+          "new": "新建计划",
+          "edit": "修改计划"
+        },
+        "name": "计划名称",
+        "type": "测试类型",
+        "typePlaceholder": "选择类型",
+        "owner": "负责人",
+        "ownerPlaceholder": "选择负责人",
+        "startDate": "开始日期",
+        "endDate": "结束日期",
+        "msg": {
+          "nameMissing": "请输入测试计划名称",
+          "createSuccess": "测试计划创建成功",
+          "updateSuccess": "测试计划更新成功",
+          "delConfirmTitle": "删除测试计划",
+          "delConfirmMsg": "您即将删除测试计划 <strong class=\"red\">\"{planName}\"</strong>，删除后无法恢复，是否继续？",
+          "delSuccess": "测试计划删除成功"
+        }
+      },
+      "details": {
+        "title": "测试计划详情",
+        "tabCases": "测试用例"
+      },
+      "items": {
+        "add": "关联用例",
+        "emptyMsg": "计划中还没有关联任何用例",
+        "msg": {
+          "delConfirmTitle": "取消关联用例",
+          "delConfirmMsg": "您即将取消关联测试用例 <strong class=\"red\">\"{caseName}\"</strong>，关联取消后相关测试用例执行结果将被清空，是否继续？",
+          "delSuccess": "取消关联成功",
+          "addSuccess": "关联用例成功"
+        }
+      },
+      "list": {
+        "filter": {
+          "new": "新建计划",
+          "totalElements": "{count} 个测试计划",
+          "matchedResults": "{count} 个符合条件的结果",
+          "search": "查找计划"
+        },
+        "header": {
+          "name": "名称",
+          "startDate": "开始日期",
+          "endDate": "结束日期",
+          "owner": "负责人",
+          "creator": "创建者"
+        },
+        "table": {
+          "creatorTip": "{nickname} 创建于 {createdTime}",
+          "emptyMsg": "项目中还没有任何测试计划"
+        }
+      }
+    },
     "report": {}
   }
 }

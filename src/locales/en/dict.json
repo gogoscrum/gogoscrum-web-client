@@ -43,16 +43,16 @@
     "GUEST": "Guest"
   },
   "testCaseTypes": {
-    "API": "API Testing",
-    "INTEGRATION": "Integration Testing",
-    "ACCEPTANCE": "Acceptance Testing",
-    "FUNCTIONAL": "Functional Testing",
-    "SMOKE": "Smoke Testing",
-    "REGRESSION": "Regression Testing",
-    "PERFORMANCE": "Performance Testing",
-    "SECURITY": "Security Testing",
-    "USABILITY": "Usability Testing",
-    "COMPATIBILITY": "Compatibility Testing",
+    "API": "API",
+    "INTEGRATION": "Integration",
+    "ACCEPTANCE": "Acceptance",
+    "FUNCTIONAL": "Functional",
+    "SMOKE": "Smoke",
+    "REGRESSION": "Regression",
+    "PERFORMANCE": "Performance",
+    "SECURITY": "Security",
+    "USABILITY": "Usability",
+    "COMPATIBILITY": "Compatibility",
     "OTHER": "Other"
   }
 }

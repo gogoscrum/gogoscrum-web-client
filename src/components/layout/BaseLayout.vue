@@ -23,7 +23,7 @@
           <template #dropdown>
             <el-dropdown-menu class="header-project-dropdown-list" :class="{ wider: projects?.length }">
               <el-dropdown-item command="newProject">
-                <div class="flex items-center py-1">
+                <div class="flex items-center py-1 font-medium">
                   <el-icon size="16" class="ml-4px !mr-10px"><Plus /></el-icon>
                   {{ $t('baseLayout.header.newProject') }}
                 </div>
@@ -69,7 +69,7 @@
           <template #dropdown>
             <el-dropdown-menu class="header-sprint-dropdown-list">
               <el-dropdown-item command="newSprint">
-                <div class="flex items-center py-1">
+                <div class="flex items-center py-1 font-medium">
                   <el-icon size="16" class="ml-4px !mr-10px"><Plus /></el-icon>
                   {{ $t('baseLayout.header.newSprint') }}
                 </div>
@@ -101,7 +101,7 @@
                 </div>
               </el-dropdown-item>
               <el-dropdown-item command="viewProjectSprints">
-                <div class="flex items-center py-1">
+                <div class="flex items-center py-1 font-medium">
                   <el-icon size="16" class="ml-4px !mr-10px"><Timer /></el-icon>
                   {{ $t('baseLayout.header.listSprints') }}
                 </div>

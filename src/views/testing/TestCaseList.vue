@@ -3,6 +3,7 @@
     <div class="filter-row">
       <div class="left-part">
         <el-button
+          v-if="!pickerMode"
           :disabled="!project.isDeveloper"
           text
           type="primary"
@@ -11,6 +12,12 @@
           class="text-icon-btn"
           >{{ $t('test.case.list.filter.new') }}</el-button
         >
+        <template v-else>
+          <el-button type="primary" :disabled="loading" @click="finishPicking">{{ $t('common.done') }}</el-button>
+          <span v-if="pickedCases?.length" class="desc font-bold ml-4">{{
+            $t('common.msg.pickedItems', { count: pickedCases.length })
+          }}</span>
+        </template>
       </div>
       <div class="right-part">
         <div class="summary-info">
@@ -39,12 +46,15 @@
     </div>
     <div class="main">
       <el-table
+        ref="testCaseList"
         :data="testCases"
         v-loading="loading"
         row-class-name="test-case-row clickable"
         :show-header="true"
+        @selection-change="(selection) => (pickedCases = selection)"
         @row-click="caseClicked"
         @sort-change="sortChange">
+        <el-table-column v-if="pickerMode" type="selection" :selectable="isCaseSelectable" width="40" />
         <el-table-column
           :label="$t('test.case.list.header.code')"
           prop="code"
@@ -55,16 +65,27 @@
             <span class="case-name" v-html="scope.row.codeHighlightLabel || scope.row.code" />
           </template>
         </el-table-column>
-        <el-table-column :label="$t('test.case.list.header.name')" min-width="120">
+        <el-table-column
+          :label="$t('test.case.list.header.name')"
+          prop="details.name"
+          sortable="custom"
+          min-width="120">
           <template #default="scope">
             <span class="case-name" v-html="scope.row['details.nameHighlightLabel'] || scope.row.details.name" />
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('test.case.list.header.type')" prop="details.type" sortable="custom" min-width="40">
+          <template #default="scope">
+            <span v-if="scope.row.details.type">
+              {{ $t(`testCaseTypes.${scope.row.details.type}`) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
           :label="$t('test.case.list.header.priority')"
           prop="details.priority"
           sortable="custom"
-          min-width="30">
+          min-width="35">
           <template #default="scope">
             <div v-if="scope.row.details.priority" class="flex">
               <PriorityIcon :priority="scope.row.details.priority" />
@@ -72,7 +93,31 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" :label="$t('test.case.list.header.creator')" min-width="50" align="center">
+        <el-table-column
+          :label="$t('test.case.list.header.owner')"
+          prop="details.owner.nickname"
+          sortable="custom"
+          min-width="35"
+          align="center"
+          class-name="owner-column">
+          <template #default="scope">
+            <el-tooltip v-if="scope.row.details.owner" :content="scope.row.details.owner.nickname" placement="left">
+              <avatar
+                :name="scope.row.details.owner.nickname"
+                :size="22"
+                :src="scope.row.details.owner.avatarUrl"
+                inline></avatar>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="!pickerMode"
+          :label="$t('test.case.list.header.creator')"
+          prop="createdBy.nickname"
+          sortable="custom"
+          min-width="30"
+          align="center"
+          class-name="creator-column">
           <template #default="scope">
             <el-tooltip
               v-if="scope.row.createdBy"
@@ -100,14 +145,20 @@
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item icon="Edit" @click.native="editCase(scope.row)">{{
-                    $t('common.edit')
+                    pickerMode ? $t('common.details') : $t('common.edit')
                   }}</el-dropdown-item>
-                  <el-dropdown-item icon="DocumentCopy" @click.native="cloneCase(scope.$index, scope.row)">{{
-                    $t('common.copy')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item icon="Delete" @click.native="deleteCase(scope.$index, scope.row)">{{
-                    $t('common.delete')
-                  }}</el-dropdown-item>
+                  <el-dropdown-item
+                    v-if="!pickerMode"
+                    icon="DocumentCopy"
+                    @click.native="cloneCase(scope.$index, scope.row)"
+                    >{{ $t('common.copy') }}</el-dropdown-item
+                  >
+                  <el-dropdown-item
+                    v-if="!pickerMode"
+                    icon="Delete"
+                    @click.native="deleteCase(scope.$index, scope.row)"
+                    >{{ $t('common.delete') }}</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -141,10 +192,9 @@
 
 <script>
 import Avatar from '@/components/common/Avatar.vue'
-import { testCaseApi } from '@/api/testCase.js'
+import { testCaseApi } from '@/api/testing.js'
 import highlight from '@/utils/highlight.js'
 import utils from '@/utils/util.js'
-import dict from '@/locales/zh-cn/dict.json'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 
@@ -154,10 +204,19 @@ export default {
     Avatar,
     PriorityIcon
   },
+  emits: ['caseSelected'],
+  props: {
+    pickerMode: {
+      type: Boolean,
+      default: false
+    },
+    selectedCaseIds: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
-      dict: dict,
-      isInMobile: utils.isInMobile(),
       projectId: this.$route.params.projectId,
       project: {},
       testCases: [],
@@ -170,7 +229,8 @@ export default {
       },
       totalElements: 0,
       totalPages: 0,
-      loading: false
+      loading: false,
+      pickedCases: []
     }
   },
   created() {
@@ -199,6 +259,12 @@ export default {
     },
     formatCase(testCase) {
       return utils.formatCreateUpdateTime(testCase)
+    },
+    isCaseSelectable(row) {
+      return !this.selectedCaseIds.includes(row.id)
+    },
+    finishPicking() {
+      this.$emit('caseSelected', this.pickedCases)
     },
     sortChange(event) {
       this.filter.orders = []
@@ -246,7 +312,11 @@ export default {
       })
     },
     caseClicked(row) {
-      this.$router.push({ name: 'TestCaseEdit', params: { testCaseId: row.id } })
+      if (this.pickerMode) {
+        this.$refs.testCaseList.toggleRowSelection(row)
+      } else {
+        this.$router.push({ name: 'TestCaseEdit', params: { testCaseId: row.id } })
+      }
     },
     deleteCase(index, row) {
       ElMessageBox.confirm(
@@ -273,7 +343,13 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .test-case-list-page {
+  .owner-column,
+  .creator-column {
+    .cell {
+      line-height: 1;
+    }
+  }
 }
 </style>
