@@ -906,6 +906,7 @@
         },
         "header": {
           "name": "名称",
+          "type": "类型",
           "startDate": "开始日期",
           "endDate": "结束日期",
           "owner": "负责人",

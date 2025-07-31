@@ -33,7 +33,7 @@
             clearable
             prefix-icon="Search"
             :placeholder="$t('test.plan.list.filter.search')"
-            @input="keywordChanged"></el-input>
+            @input="filterChanged"></el-input>
         </el-form-item>
       </div>
     </div>
@@ -44,10 +44,28 @@
         row-class-name="test-plan-row clickable"
         :show-header="true"
         @row-click="planClicked"
-        @sort-change="sortChange">
+        @sort-change="sortChange"
+        @filterChange="filterChange">
         <el-table-column :label="$t('test.plan.list.header.name')" prop="name" sortable="custom" min-width="120">
           <template #default="scope">
             <span class="plan-name" v-html="scope.row.nameHighlightLabel || scope.row.name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          :label="$t('test.plan.list.header.type')"
+          prop="type"
+          sortable="custom"
+          column-key="types"
+          :filters="testTypeFilters"
+          :filter-multiple="true"
+          min-width="40">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.types?.length }"><Filter /></el-icon>
+          </template>
+          <template #default="scope">
+            <span v-if="scope.row.type">
+              {{ $t(`testTypes.${scope.row.type}`) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -55,7 +73,7 @@
           prop="startDate"
           sortable="custom"
           :label="$t('test.plan.list.header.startDate')"
-          min-width="50">
+          min-width="40">
           <template #default="scope">
             <span>{{ scope.row.startDateFormatted }}</span>
           </template>
@@ -75,9 +93,15 @@
           :label="$t('test.plan.list.header.owner')"
           prop="owner.nickname"
           sortable="custom"
+          column-key="owners"
+          :filters="userFilters"
+          :filter-multiple="true"
           min-width="40"
           class-name="owner-column"
           align="center">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.owners?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <el-tooltip v-if="scope.row.owner" :content="scope.row.owner.nickname" placement="left">
               <avatar :name="scope.row.owner.nickname" :size="22" :src="scope.row.owner.avatarUrl" inline></avatar>
@@ -89,9 +113,15 @@
           :label="$t('test.plan.list.header.creator')"
           prop="createdBy.nickname"
           sortable="custom"
+          column-key="creators"
+          :filters="userFilters"
+          :filter-multiple="true"
           min-width="40"
           class-name="creator-column"
           align="center">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <el-tooltip
               v-if="scope.row.createdBy"
@@ -167,6 +197,7 @@ import Avatar from '@/components/common/Avatar.vue'
 import { testPlanApi } from '@/api/testing.js'
 import highlight from '@/utils/highlight.js'
 import utils from '@/utils/util.js'
+import dict from '@/locales/zh-cn/dict.json'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import TestPlanEdit from './TestPlanEdit.vue'
@@ -179,6 +210,7 @@ export default {
   },
   data() {
     return {
+      dict: dict,
       isInMobile: utils.isInMobile(),
       projectId: this.$route.params.projectId,
       project: {},
@@ -193,16 +225,30 @@ export default {
       totalElements: 0,
       totalPages: 0,
       loading: false,
-      editingTestPlan: null
+      editingTestPlan: null,
+      testTypeFilters: [],
+      userFilters: []
     }
   },
   created() {
     this.project = this.$store.get('project')
+    this.initColumnFilters()
   },
   mounted() {
     this.loadPlans()
   },
   methods: {
+    initColumnFilters() {
+      this.testTypeFilters = Object.keys(dict.testTypes).map((key) => ({
+        text: this.$t(`testTypes.${key}`),
+        value: key
+      }))
+
+      this.userFilters = this.project.projectMembers.map((member) => ({
+        text: member.user.nickname,
+        value: member.user.id
+      }))
+    },
     loadPlans() {
       this.loading = true
       testPlanApi
@@ -237,10 +283,36 @@ export default {
           direction: event.order === 'ascending' ? 'ASC' : 'DESC'
         })
       }
-      this.filter.page = 1
-      this.loadPlans()
+      this.filterChanged()
     },
-    keywordChanged() {
+    filterChange(filters) {
+      if (filters.types) {
+        if (filters.types.length > 0) {
+          this.filter.types = filters.types
+        } else {
+          this.filter.types = null
+        }
+      }
+
+      if (filters.owners) {
+        if (filters.owners.length > 0) {
+          this.filter.owners = filters.owners
+        } else {
+          this.filter.owners = null
+        }
+      }
+
+      if (filters.creators) {
+        if (filters.creators.length > 0) {
+          this.filter.creators = filters.creators
+        } else {
+          this.filter.creators = null
+        }
+      }
+
+      this.filterChanged()
+    },
+    filterChanged() {
       this.filter.page = 1
       this.loadPlans()
     },
@@ -250,19 +322,13 @@ export default {
     },
     pageSizeChanged(size) {
       this.filter.pageSize = size
-      this.filter.page = 1
       this.$store.set('testPlanListPageSize', this.filter.pageSize)
-      this.loadPlans()
+      this.filterChanged()
     },
     newPlan() {
-      // this.$router.push({ name: 'TestPlanDetails', params: { testPlanId: 'new' } })
       this.editingTestPlan = { id: null, projectId: this.projectId }
     },
     editPlan(row) {
-      // this.$router.push({
-      //   name: 'TestPlanDetails',
-      //   params: { testPlanId: row.id }
-      // })
       this.editingTestPlan = row
     },
     testPlanClosed() {
@@ -276,7 +342,6 @@ export default {
       } else {
         this.testPlans.unshift(testPlan)
       }
-      // this.editingTestPlan = null
     },
     testPlanDeleted(testPlan) {
       let index = utils.indexInArray(this.testPlans, testPlan.id)
@@ -284,7 +349,6 @@ export default {
         this.testPlans.splice(index, 1)
         this.totalElements--
       }
-      // this.editingTestPlan = null
     },
     planClicked(row) {
       this.$router.push({ name: 'TestPlanDetails', params: { testPlanId: row.id } })

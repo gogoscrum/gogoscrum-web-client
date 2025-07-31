@@ -74,7 +74,7 @@
           min-width="40">
           <template #default="scope">
             <span v-if="scope.row.testCase.details.type">
-              {{ $t(`testCaseTypes.${scope.row.testCase.details.type}`) }}
+              {{ $t(`testTypes.${scope.row.testCase.details.type}`) }}
             </span>
           </template>
         </el-table-column>

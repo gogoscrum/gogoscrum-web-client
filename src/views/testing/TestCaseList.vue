@@ -40,7 +40,7 @@
             clearable
             prefix-icon="Search"
             :placeholder="$t('test.case.list.filter.search')"
-            @input="keywordChanged"></el-input>
+            @input="filterChanged"></el-input>
         </el-form-item>
       </div>
     </div>
@@ -52,6 +52,7 @@
         row-class-name="test-case-row clickable"
         :show-header="true"
         @selection-change="(selection) => (pickedCases = selection)"
+        @filterChange="filterChange"
         @row-click="caseClicked"
         @sort-change="sortChange">
         <el-table-column v-if="pickerMode" type="selection" :selectable="isCaseSelectable" width="40" />
@@ -74,10 +75,20 @@
             <span class="case-name" v-html="scope.row['details.nameHighlightLabel'] || scope.row.details.name" />
           </template>
         </el-table-column>
-        <el-table-column :label="$t('test.case.list.header.type')" prop="details.type" sortable="custom" min-width="40">
+        <el-table-column
+          :label="$t('test.case.list.header.type')"
+          prop="details.type"
+          sortable="custom"
+          column-key="types"
+          :filters="testTypeFilters"
+          :filter-multiple="true"
+          min-width="40">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.types?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <span v-if="scope.row.details.type">
-              {{ $t(`testCaseTypes.${scope.row.details.type}`) }}
+              {{ $t(`testTypes.${scope.row.details.type}`) }}
             </span>
           </template>
         </el-table-column>
@@ -85,7 +96,15 @@
           :label="$t('test.case.list.header.priority')"
           prop="details.priority"
           sortable="custom"
+          column-key="priorities"
+          :filters="priorityFilters"
+          :filter-multiple="true"
           min-width="35">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.priorities?.length }"
+              ><Filter
+            /></el-icon>
+          </template>
           <template #default="scope">
             <div v-if="scope.row.details.priority" class="flex">
               <PriorityIcon :priority="scope.row.details.priority" />
@@ -97,9 +116,15 @@
           :label="$t('test.case.list.header.owner')"
           prop="details.owner.nickname"
           sortable="custom"
+          column-key="owners"
+          :filters="userFilters"
+          :filter-multiple="true"
           min-width="35"
           align="center"
           class-name="owner-column">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.owners?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <el-tooltip v-if="scope.row.details.owner" :content="scope.row.details.owner.nickname" placement="left">
               <avatar
@@ -115,9 +140,15 @@
           :label="$t('test.case.list.header.creator')"
           prop="createdBy.nickname"
           sortable="custom"
+          column-key="creators"
+          :filters="userFilters"
+          :filter-multiple="true"
           min-width="30"
           align="center"
           class-name="creator-column">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <el-tooltip
               v-if="scope.row.createdBy"
@@ -195,6 +226,7 @@ import Avatar from '@/components/common/Avatar.vue'
 import { testCaseApi } from '@/api/testing.js'
 import highlight from '@/utils/highlight.js'
 import utils from '@/utils/util.js'
+import dict from '@/locales/zh-cn/dict.json'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 
@@ -217,6 +249,7 @@ export default {
   },
   data() {
     return {
+      dict: dict,
       projectId: this.$route.params.projectId,
       project: {},
       testCases: [],
@@ -230,16 +263,36 @@ export default {
       totalElements: 0,
       totalPages: 0,
       loading: false,
-      pickedCases: []
+      pickedCases: [],
+      testTypeFilters: [],
+      priorityFilters: [],
+      userFilters: []
     }
   },
   created() {
     this.project = this.$store.get('project')
+    this.initColumnFilters()
   },
   mounted() {
     this.loadCases()
   },
   methods: {
+    initColumnFilters() {
+      this.priorityFilters = Object.keys(dict.issuePriorities).map((key) => ({
+        text: this.$t(`issuePriorities.${key}`),
+        value: key
+      }))
+
+      this.testTypeFilters = Object.keys(dict.testTypes).map((key) => ({
+        text: this.$t(`testTypes.${key}`),
+        value: key
+      }))
+
+      this.userFilters = this.project.projectMembers.map((member) => ({
+        text: member.user.nickname,
+        value: member.user.id
+      }))
+    },
     loadCases() {
       this.loading = true
       testCaseApi
@@ -274,10 +327,44 @@ export default {
           direction: event.order === 'ascending' ? 'ASC' : 'DESC'
         })
       }
-      this.filter.page = 1
-      this.loadCases()
+      this.filterChanged()
     },
-    keywordChanged() {
+    filterChange(filters) {
+      if (filters.priorities) {
+        if (filters.priorities.length > 0) {
+          this.filter.priorities = filters.priorities
+        } else {
+          this.filter.priorities = null
+        }
+      }
+
+      if (filters.types) {
+        if (filters.types.length > 0) {
+          this.filter.types = filters.types
+        } else {
+          this.filter.types = null
+        }
+      }
+
+      if (filters.owners) {
+        if (filters.owners.length > 0) {
+          this.filter.owners = filters.owners
+        } else {
+          this.filter.owners = null
+        }
+      }
+
+      if (filters.creators) {
+        if (filters.creators.length > 0) {
+          this.filter.creators = filters.creators
+        } else {
+          this.filter.creators = null
+        }
+      }
+
+      this.filterChanged()
+    },
+    filterChanged() {
       this.filter.page = 1
       this.loadCases()
     },
@@ -287,9 +374,8 @@ export default {
     },
     pageSizeChanged(size) {
       this.filter.pageSize = size
-      this.filter.page = 1
       this.$store.set('testCaseListPageSize', this.filter.pageSize)
-      this.loadCases()
+      this.filterChanged()
     },
     newCase() {
       this.$router.push({ name: 'TestCaseEdit', params: { testCaseId: 'new' } })

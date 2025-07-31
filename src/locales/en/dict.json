@@ -42,7 +42,7 @@
     "DEVELOPER": "Developer",
     "GUEST": "Guest"
   },
-  "testCaseTypes": {
+  "testTypes": {
     "API": "API",
     "INTEGRATION": "Integration",
     "ACCEPTANCE": "Acceptance",

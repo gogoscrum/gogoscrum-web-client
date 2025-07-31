@@ -685,7 +685,7 @@
       "disabled": "Disabled",
       "neverExpire": "Never expire",
       "actions": {
-        "copyUrl": "Copy Invitation",
+        "copyUrl": "Copy invitation",
         "disable": "Disable",
         "enable": "Enable"
       }
@@ -748,7 +748,7 @@
     "edit": {
       "titleNew": "New component",
       "titleEdit": "Edit component",
-      "name": "name"
+      "name": "Name"
     },
     "msg": {
       "delConfirmTitle": "Delete component",
@@ -766,7 +766,7 @@
   "userInfo": {
     "title": "My account",
     "profile": {
-      "title": "User Profile",
+      "title": "User profile",
       "username": "Username",
       "usernameNotEditable": "Username cannot be modified",
       "usernameTip": "4-16 letters or numbers, there's only one chance to set you username, please be careful.",
@@ -818,7 +818,7 @@
         "description": "Description",
         "preconditions": "Preconditions",
         "steps": {
-          "label": "Test Steps",
+          "label": "Test steps",
           "description": "Description",
           "expectation": "Expectation",
           "empty": "No test steps, please add test steps",
@@ -906,8 +906,9 @@
         },
         "header": {
           "name": "Name",
-          "startDate": "Start Date",
-          "endDate": "End Date",
+          "type": "Type",
+          "startDate": "Start date",
+          "endDate": "End date",
           "owner": "Owner",
           "creator": "Creator"
         },

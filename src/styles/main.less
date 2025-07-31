@@ -386,12 +386,6 @@ a {
   justify-content: space-between;
   margin-bottom: 20px;
 
-  .filter-tags {
-    :not(:first-child) {
-      margin-left: 10px;
-    }
-  }
-
   .left-part {
     display: flex;
     align-items: center;
@@ -484,4 +478,25 @@ a {
   font-size: 12px;
   line-height: 20px;
   font-weight: 600;
+}
+
+.table-header-filter-icon {
+  padding-bottom: 3px;
+
+  &.active {
+    color: var(--el-color-primary);
+  }
+}
+
+.el-table-filter {
+  .el-table-filter__content {
+    min-width: 150px;
+  }
+
+  .el-table-filter__bottom {
+    border-top: 1px solid var(--el-border-color-lighter);
+    padding: 8px;
+    display: flex;
+    justify-content: space-evenly;
+  }
 }

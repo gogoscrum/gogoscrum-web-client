@@ -30,7 +30,7 @@
         <el-col :span="6" class="flex">
           <div class="label">{{ $t('test.plan.edit.type') }}</div>
           <div class="value">
-            {{ testPlan.type ? $t(`testCaseTypes.${testPlan.type}`) : '--' }}
+            {{ testPlan.type ? $t(`testTypes.${testPlan.type}`) : '--' }}
           </div>
         </el-col>
         <el-col :span="6" class="flex">

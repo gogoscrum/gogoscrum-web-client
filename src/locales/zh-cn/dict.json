@@ -42,7 +42,7 @@
     "DEVELOPER": "成员",
     "GUEST": "访客"
   },
-  "testCaseTypes": {
+  "testTypes": {
     "API": "接口测试",
     "INTEGRATION": "集成测试",
     "ACCEPTANCE": "验收测试",

@@ -22,9 +22,9 @@
           <el-form-item :label="$t('test.plan.edit.type')">
             <el-select v-model="testPlan.type" :placeholder="$t('test.plan.edit.typePlaceholder')" clearable>
               <el-option
-                v-for="caseType in Object.keys(dict.testCaseTypes)"
+                v-for="caseType in Object.keys(dict.testTypes)"
                 :key="caseType"
-                :label="$t(`testCaseTypes.${caseType}`)"
+                :label="$t(`testTypes.${caseType}`)"
                 :value="caseType">
               </el-option>
             </el-select>
