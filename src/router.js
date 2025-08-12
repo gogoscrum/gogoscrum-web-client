@@ -8,6 +8,11 @@ const routes = [
     component: () => import('@/views/Index.vue')
   },
   {
+    path: '/opensource',
+    name: 'OpenSource',
+    component: () => import('@/views/OpenSource.vue')
+  },
+  {
     path: '/layout',
     name: 'Layout',
     component: () => import('@/components/layout/BaseLayout.vue'),
@@ -119,6 +124,11 @@ const routes = [
             component: () => import('@/views/testing/TestCaseEdit.vue')
           },
           {
+            path: 'test/cases/:testCaseId/runs',
+            name: 'TestRunList',
+            component: () => import('@/views/testing/TestRunList.vue')
+          },
+          {
             path: 'test/plans',
             name: 'TestPlanList',
             component: () => import('@/views/testing/TestPlanList.vue')
@@ -160,7 +170,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   let user = store.get('user')
-  const publicRoutes = ['Homepage', 'Login', 'Register']
+  const publicRoutes = ['Homepage', 'OpenSource', 'Login', 'Register']
   if (!publicRoutes.includes(to.name) && !user) {
     localStorage.setItem('lastUrl', to.fullPath)
     console.warn('Requested url rejected: ' + to.fullPath)

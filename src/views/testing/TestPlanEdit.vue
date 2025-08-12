@@ -32,11 +32,11 @@
         </el-col>
         <el-col :xs="24" :sm="12">
           <el-form-item :label="$t('test.plan.edit.owner')">
-            <member-selector
+            <MemberSelector
               v-model="testPlan.owner"
               :placeholder="$t('test.plan.edit.ownerPlaceholder')"
               :members="project.projectMembers"
-              :clearable="true"></member-selector>
+              :clearable="true" />
           </el-form-item>
         </el-col>
       </el-row>

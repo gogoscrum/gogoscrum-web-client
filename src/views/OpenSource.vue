@@ -13,7 +13,7 @@
           <el-image
             src="https://img.shields.io/github/stars/gogoscrum/gogoscrum-rest-service?style=flat&logo=github&color=0d9c89">
             <template #error>
-              <!-- Cannot access Github, just don't show the badge. -->
+              <!-- If cannot access Github, just don't show the badge. -->
               <span></span>
             </template>
           </el-image>
@@ -35,114 +35,57 @@
         <el-row class="section higher">
           <el-col :xs="24" :sm="13" class="left-part">
             <div class="title">
-              {{ $t('common.slogan') }}
+              {{ $t('opensource.title') }}
             </div>
             <div class="content">
-              {{ $t('homepage.intro') }}
+              {{ $t('opensource.intro') }}
             </div>
-            <el-button type="primary" size="large" class="start-to-use-btn" @click="signup">{{
-              $t('homepage.start')
-            }}</el-button>
+            <div class="flex">
+              <el-button type="primary" plain size="large" class="start-to-use-btn smaller !mr-30px" @click="goGithub">
+                <img src="@/assets/images/github.png" class="w-24px mr-2" />
+                GitHub
+              </el-button>
+              <el-button type="primary" size="large" class="start-to-use-btn smaller" @click="goGitee">
+                <img src="@/assets/images/gitee.png" class="w-24px mr-2" />
+                Gitee</el-button
+              >
+            </div>
           </el-col>
           <el-col :xs="0" :sm="11" class="flex-container">
-            <img src="/power-of-teamwork.png" class="main-img" />
-          </el-col>
-        </el-row>
-      </div>
-      <div class="section-outter">
-        <el-row class="section wide">
-          <el-col :span="24">
-            <div class="sub-title">{{ $t('homepage.board.title') }}</div>
-            <div class="content">
-              {{ $t('homepage.board.intro') }}
-            </div>
-            <div class="laptop-frame">
-              <img :src="`/${lang}/board-sticky-notes.png`" class="board-screenshot" />
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-      <div class="section-outter stripped">
-        <el-row type="flex" align="middle" class="section">
-          <el-col :xs="24" :sm="12">
-            <img :src="`/${lang}/issue.png`" class="screenshot-img live" />
-          </el-col>
-          <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 10, offset: 2 }" class="intro first-order">
-            <div class="sub-title center">{{ $t('homepage.issue.title') }}</div>
-            <div class="content">
-              {{ $t('homepage.issue.intro') }}
-            </div>
+            <img src="@/assets/images/teamwork.jpg" class="main-img" />
           </el-col>
         </el-row>
       </div>
       <div class="section-outter">
         <el-row type="flex" align="middle" class="section">
-          <el-col :xs="24" :sm="6" class="intro">
+          <el-col :xs="24" :sm="8">
+            <img src="@/assets/images/download.png" class="screenshot-img live" />
+          </el-col>
+          <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 12, offset: 2 }" class="intro first-order">
+            <div class="sub-title center">{{ $t('opensource.download.title') }}</div>
+            <div class="content" v-html="$t('opensource.download.intro')" />
+            <el-button type="primary" plain size="large" class="start-to-use-btn" @click="goDownload">
+              <img src="@/assets/images/download-icon.png" class="w-20px mr-4" />
+              {{ $t('common.download') }}
+            </el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="section-outter">
+        <el-row type="flex" align="middle" class="section">
+          <el-col :xs="24" :sm="12" class="intro">
             <div class="sub-title center">
-              {{ $t('homepage.backlog.title') }}
+              {{ $t('opensource.demo.title') }}
             </div>
-            <div class="content">
-              {{ $t('homepage.backlog.intro') }}
-            </div>
+            <div class="content" v-html="$t('opensource.demo.intro')" />
+            <div class="content smaller" v-html="$t('opensource.demo.desc')" />
+            <el-button type="primary" plain size="large" class="start-to-use-btn" icon="Monitor" @click="goDemo">
+              {{ $t('opensource.demo.btnLable') }}
+            </el-button>
           </el-col>
-          <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 17, offset: 1 }">
-            <img :src="`/${lang}/backlog.png`" class="screenshot-img live" />
+          <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 11, offset: 1 }">
+            <img src="@/assets/images/demo-site.jpg" class="screenshot-img live" />
           </el-col>
-        </el-row>
-      </div>
-      <div class="section-outter stripped">
-        <el-row type="flex" align="middle" class="section">
-          <el-col :xs="24" :sm="17">
-            <img :src="`/${lang}/files.png`" class="screenshot-img live" />
-          </el-col>
-          <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 6, offset: 1 }" class="intro first-order">
-            <div class="sub-title center">{{ $t('homepage.file.title') }}</div>
-            <div class="content">
-              {{ $t('homepage.file.intro') }}
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-
-      <div class="section-outter">
-        <el-row type="flex" align="middle" class="section">
-          <el-col :xs="24" :sm="6" class="intro">
-            <div class="sub-title center">
-              {{ $t('homepage.doc.title') }}
-            </div>
-            <div class="content">
-              {{ $t('homepage.doc.intro') }}
-            </div>
-          </el-col>
-          <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 17, offset: 1 }">
-            <img :src="`/${lang}/documents.png`" class="screenshot-img live" />
-          </el-col>
-        </el-row>
-      </div>
-      <div class="section-outter stripped">
-        <el-row type="flex" align="middle" class="section">
-          <el-col :xs="24" :sm="17">
-            <img :src="`/${lang}/burndown.png`" class="screenshot-img live" />
-          </el-col>
-          <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 6, offset: 1 }" class="intro first-order">
-            <div class="sub-title center">{{ $t('homepage.chart.title') }}</div>
-            <div class="content">
-              {{ $t('homepage.chart.intro') }}
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-      <div class="section-outter">
-        <el-row type="flex" justify="center" align="middle" class="section higher">
-          <div :span="24" class="intro">
-            <div class="title">{{ $t('homepage.startnow.title') }}</div>
-            <div class="content">{{ $t('homepage.startnow.intro') }}</div>
-            <div class="button-container margin-top center">
-              <el-button type="primary" size="large" class="start-to-use-btn" @click="signup">{{
-                $t('homepage.start')
-              }}</el-button>
-            </div>
-          </div>
         </el-row>
       </div>
     </el-main>
@@ -175,8 +118,9 @@
 <script>
 import utils from '@/utils/util.js'
 import LanguageSelector from '@/components/common/LanguageSelector.vue'
+
 export default {
-  name: 'Homepage',
+  name: 'OpenSource',
   components: {
     LanguageSelector
   },
@@ -194,21 +138,30 @@ export default {
   mounted() {
     if (this.$store.get('user')) {
       const user = this.$store.get('user')
-      let lastBoard = this.$store.get('lastBoard-' + user.id)
-      if (!lastBoard) {
+      let userRecord = this.$store.get('lastBoard-' + user.id)
+      if (!userRecord) {
         this.$router.push({ name: 'MyProjects' })
-      } else {
-        const { projectId, sprintId } = lastBoard
-        this.$router.push({
-          name: 'Board',
-          params: { projectId, sprintId }
-        })
+        return
       }
+      const { projectId, sprintId } = userRecord
+      this.$router.push({
+        name: 'Board',
+        params: { projectId, sprintId }
+      })
     }
   },
   methods: {
-    signup() {
-      this.$router.push({ name: 'Register' })
+    goGithub() {
+      window.open('https://github.com/gogoscrum', '_blank')
+    },
+    goGitee() {
+      window.open('https://gitee.com/gogoscrum', '_blank')
+    },
+    goDownload() {
+      window.open('https://www.gogoscrum.com/downloads/gogoscrum-docker.zip', '_blank')
+    },
+    goDemo() {
+      window.open('https://demo.gogoscrum.com/login', '_blank')
     },
     languageChanged(lang) {
       this.lang = lang
@@ -219,6 +172,17 @@ export default {
 </script>
 
 <style lang="less">
+.shop-popover-container.el-popover {
+  text-align: center;
+  font-size: 12px;
+  color: #999999;
+
+  .wechat-qr-img {
+    width: 180px;
+    height: 180px;
+  }
+}
+
 .qr-popover-container.el-popover {
   text-align: center;
   font-size: 12px;
@@ -242,6 +206,7 @@ export default {
     padding: 0 20px;
 
     .logo-container {
+      // margin: 10px 0;
       display: flex;
 
       @media only screen and (max-width: 520px) {
@@ -288,6 +253,7 @@ export default {
   }
 
   .body {
+    // height: calc(100vh - 100px);
     padding: 0;
     align-items: center;
     display: flex;
@@ -310,7 +276,7 @@ export default {
     .title {
       font-size: 32px;
       font-weight: 700;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .sub-title {
@@ -323,8 +289,13 @@ export default {
       font-size: 20px;
       color: #383838;
       font-weight: 300;
-      margin: 10px 0;
+      margin: 20px 0;
       line-height: 1.6;
+
+      &.smaller {
+        font-size: 16px;
+        // color: #666666;
+      }
     }
 
     .row {
@@ -339,14 +310,6 @@ export default {
       justify-content: center;
     }
 
-    .laptop-frame {
-      width: 100%;
-      margin-top: 50px;
-      background: no-repeat url('/laptop-frame.png');
-      background-size: 100% 100%;
-      background-position: center;
-    }
-
     .board-screenshot {
       width: 75%;
       margin: 5% 4% 7% 4%;
@@ -356,7 +319,7 @@ export default {
       text-align: center;
       width: 80%;
       padding: 50px 0;
-      min-height: 600px;
+      min-height: 520px;
       display: flex;
       flex-wrap: wrap;
 
@@ -368,8 +331,15 @@ export default {
         width: calc(100% - 40px);
         padding: 20px;
         margin: 40px 0;
-        border-radius: 5px;
-        box-shadow: 0px 1px 16px 0px rgba(0, 0, 0, 0.1);
+        // border-radius: 5px;
+        // box-shadow: 0px 1px 16px 0px rgba(0, 0, 0, 0.1);
+        // transition: transform 0.5s;
+
+        // &.live {
+        //   &:hover {
+        //     transform: scale(1.2);
+        //   }
+        // }
       }
     }
 
@@ -389,13 +359,27 @@ export default {
     }
 
     .start-to-use-btn {
+      background: unset !important;
+      // background-color: var(--el-color-primary-light-9) !important;
+      border: 1px solid #999999 !important;
+      color: #333333;
       width: 200px;
       margin: 20px 0;
       font-size: 16px;
       font-weight: 700;
+
+      &.smaller {
+        width: 160px;
+      }
+
+      &:hover {
+        background-color: #f5f5f5 !important;
+        color: #333333;
+      }
     }
 
     .left-part {
+      // padding-left: 50px;
       margin: auto 0;
       display: flex;
       flex-direction: column;
@@ -404,8 +388,15 @@ export default {
       @media only screen and (max-width: 768px) {
         text-align: center;
         align-items: center;
+        // .start-to-use-btn {
+        //   margin-left: 0;
+        // }
       }
     }
+
+    // .right-part {
+    //   text-align: center;
+    // }
 
     .main-img {
       width: 80%;
@@ -435,6 +426,14 @@ export default {
       height: 12px;
       cursor: pointer;
       opacity: 60%;
+    }
+
+    .icp {
+      font-weight: normal;
+      margin: 5px 0;
+      a {
+        color: #cccccc;
+      }
     }
   }
 }

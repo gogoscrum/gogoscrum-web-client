@@ -1,11 +1,16 @@
 <template>
-  <div class="vue-avatar--wrapper" :class="{ colorBox: !isImage }" :style="[style, customStyle]" aria-hidden="true">
-    <img v-if="isImage" style="display: none" :src="src" @error="onImgError" />
-    <div
-      v-show="!isImage"
-      class="color-box"
-      :style="`word-break: keep-all; transform: scale(${1 / Math.sqrt(userInitial.length)});`">
-      {{ userInitial }}
+  <div class="vue-avatar--wrapper" aria-hidden="true">
+    <div class="avator-icon" :class="{ colorBox: !isImage }" :style="[style, customStyle]">
+      <img v-if="isImage" style="display: none" :src="src" @error="onImgError" />
+      <div
+        v-show="!isImage"
+        class="color-box"
+        :style="`word-break: keep-all; transform: scale(${1 / Math.sqrt(userInitial.length)});`">
+        {{ userInitial }}
+      </div>
+    </div>
+    <div v-if="showName" class="vue-avatar-name">
+      {{ name }}
     </div>
   </div>
 </template>
@@ -34,6 +39,10 @@ const emits = defineEmits(['avatar-initials'])
 const props = defineProps({
   name: {
     type: String
+  },
+  showName: {
+    type: Boolean,
+    default: false
   },
   initials: {
     type: String
@@ -194,7 +203,17 @@ const lightenColor = (hex, amt) => {
 </script>
 
 <style lang="less" scoped>
-.vue-avatar--wrapper.colorBox {
-  background-image: linear-gradient(180deg, #00000000 0%, #00000000 50%, #0000002f 100%) !important;
+.vue-avatar--wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  .avator-icon.colorBox {
+    background-image: linear-gradient(180deg, #00000000 0%, #00000000 50%, #0000002f 100%) !important;
+  }
+
+  .vue-avatar-name {
+    margin-left: 8px;
+  }
 }
 </style>

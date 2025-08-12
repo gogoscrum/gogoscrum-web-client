@@ -36,13 +36,25 @@
       "h5NotSupported": "目前暂不支持手机端看板，请切换至电脑端查看",
       "shortcutKeys": "Esc放弃编辑, Ctrl + 回车键快捷提交",
       "uploadFailed": "文件上传失败",
-      "pickedItems": "已选中 {count} 条"
+      "pickedItems": "已选中 {count} 条",
+      "fileSizeLimit": "文件大小不能超过 {maxSize}",
+      "tooManyFiles": "一次上传文件不能超过 {maxCount} 个",
+      "delFileConfirmTitle": "删除文件",
+      "delFileConfirmMsg": "您即将删除文件 <strong class=\"red\">\"{name}\"</strong>，文件删除后无法恢复，是否继续？",
+      "delFileSuccess": "文件已删除"
     }
+  },
+  "uploader": {
+    "uploaderDesc": "将文件拖到此处，或点击选择文件上传",
+    "switchToCardView": "切换到卡片视图",
+    "switchToTableView": "切换到表格视图",
+    "thumbnail": "缩略图"
   },
   "homepage": {
     "header": {
       "signin": "登录",
-      "signup": "注册"
+      "signup": "注册",
+      "opensource": "开源"
     },
     "start": "开始使用",
     "intro": "从待办事项列表到迭代任务看板、故事点估算、Bug跟踪、项目文件管理和燃尽图报表，轻松管理Scrum敏捷软件开发流程的所有环节，个人和企业均可免费使用，项目数量和成员数量无限制。",
@@ -73,6 +85,23 @@
     "startnow": {
       "title": "现在就开始使用 gogoscrum",
       "intro": "以开发团队为中心的Scrum工具，协助Scrum团队轻松高效完成工作。"
+    },
+    "footer": {
+      "company": "版权所有 © 杭州拾米网络科技有限公司"
+    }
+  },
+  "opensource": {
+    "title": "源码开放计划",
+    "intro": "gogoscrum是轻量级敏捷项目管理工具，遵循Scrum敏捷实践，为敏捷软件开发团队量身打造。系统基于Java语言和Spring Boot框架，前端采用Vue 3开发，现已开源至GitHub和码云Gitee平台，欢迎开发者克隆代码库并给项目标星。",
+    "download": {
+      "title": "一分钟本地部署",
+      "intro": "1. 下载安装包，解压缩至本地目录 <br/>2. 运行 'docker compose up' 启动服务 <br/>3. 访问 http://localhost 开始体验 gogoscrum"
+    },
+    "demo": {
+      "title": "演示站点",
+      "intro": "访问演示站点，体验 gogoscrum 完整功能 <br/>登录账号：demo，登录密码：demo1234",
+      "desc": "演示站点数据定期清理，登录后可创建新项目和任务。",
+      "btnLable": "演示站"
     },
     "footer": {
       "company": "版权所有 © 杭州拾米网络科技有限公司"
@@ -827,6 +856,8 @@
           "moveUp": "上移",
           "moveDown": "下移"
         },
+        "files": "附件",
+        "uploaderDesc": "将文件拖到此处，或点击选择文件上传",
         "msg": {
           "oldVersion": "当前查看的测试用例为旧版本",
           "nameMissing": "请输入用例名称",
@@ -854,7 +885,9 @@
         },
         "table": {
           "creatorTip": "{nickname} 创建于 {createdTime}",
-          "emptyMsg": "项目中还没有任何测试用例"
+          "emptyMsg": "项目中还没有任何测试用例",
+          "run": "快速执行",
+          "records": "执行记录"
         },
         "msg": {
           "issueCopied": "测试用例复制成功"
@@ -889,10 +922,12 @@
       },
       "items": {
         "add": "关联用例",
+        "run": "执行",
+        "records": "执行记录",
         "emptyMsg": "计划中还没有关联任何用例",
         "msg": {
           "delConfirmTitle": "取消关联用例",
-          "delConfirmMsg": "您即将取消关联测试用例 <strong class=\"red\">\"{caseName}\"</strong>，关联取消后相关测试用例执行结果将被清空，是否继续？",
+          "delConfirmMsg": "您即将从测试计划中移除测试用例 <strong class=\"red\">\"{caseName}\"</strong>，移除后该测试用例的执行结果将不会用于生成该计划的测试报告，是否继续？",
           "delSuccess": "取消关联成功",
           "addSuccess": "关联用例成功"
         }
@@ -915,6 +950,44 @@
         "table": {
           "creatorTip": "{nickname} 创建于 {createdTime}",
           "emptyMsg": "项目中还没有任何测试计划"
+        }
+      }
+    },
+    "run": {
+      "titleNew": "创建测试执行记录",
+      "titleEdit": "修改测试执行记录",
+      "steps": {
+        "status": "状态",
+        "result": "步骤实际结果",
+        "resultPlaceholder": "请输入步骤实际结果"
+      },
+      "result": "执行结果备注",
+      "resultPlaceholder": "请输入实际执行结果备注",
+      "status": "用例执行结果",
+      "files": "附件",
+      "createdTime": "测试记录创建时间：{ timestamp }",
+      "updatedTime": "测试记录更新时间：{ timestamp }",
+      "msg": {
+        "statusRequired": "请选择用例执行结果",
+        "createdSuccess": "测试执行记录创建成功",
+        "updatedSuccess": "测试执行记录更新成功"
+      },
+      "list": {
+        "caseBasics": "用例基本信息",
+        "title": "执行记录",
+        "filter": {
+          "new": "新建记录",
+          "totalElements": "{count} 条执行记录"
+        },
+        "createdTime": "执行时间",
+        "createdBy": "执行者",
+        "version": "用例版本",
+        "status": "执行结果",
+        "msg": {
+          "empty": "暂无测试执行记录",
+          "delConfirmTitle": "删除测试执行记录",
+          "delConfirmMsg": "您即将删除 <strong class=\"red\">\"{runTime}\"</strong> 的测试执行记录，删除后无法恢复，是否继续？",
+          "delSuccess": "测试执行记录删除成功"
         }
       }
     },

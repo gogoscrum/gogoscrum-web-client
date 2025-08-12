@@ -36,13 +36,25 @@
       "h5NotSupported": "Mobile not supported so far, please switch to PC",
       "shortcutKeys": "Esc to cancel, Ctrl + Enter to submit",
       "uploadFailed": "Upload failed",
-      "pickedItems": "{count} items selected"
+      "pickedItems": "{count} items selected",
+      "fileSizeLimit": "File size cannot exceed {maxSize}",
+      "tooManyFiles": "Cannot upload more than {maxCount} files at a time",
+      "delFileConfirmTitle": "Delete file",
+      "delFileConfirmMsg": "You are about to delete file <strong class=\"red\">\"{name}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+      "delFileSuccess": "File deleted successfully."
     }
+  },
+  "uploader": {
+    "uploaderDesc": "Drop file here, or click to select file",
+    "switchToCardView": "Switch to card view",
+    "switchToTableView": "Switch to table view",
+    "thumbnail": "Thumbnail"
   },
   "homepage": {
     "header": {
       "signin": "Sign in",
-      "signup": "Sign up"
+      "signup": "Sign up",
+      "opensource": "Open Source"
     },
     "start": "Start Now",
     "intro": "Keep track of everything on sprint board, drag and drop to update task status, report and track bugs, view sprint burn-down chart, share files and documents - all features needed by an agile team, free for everyone with unlimited number of projects and team members",
@@ -73,6 +85,23 @@
     "startnow": {
       "title": "Start to use gogoscrum now",
       "intro": "Ease scrum team's work by this easy-to-use scrum tool"
+    },
+    "footer": {
+      "company": "Copyright © Hangzhou Shimi Network Technology"
+    }
+  },
+  "opensource": {
+    "title": "Open Source",
+    "intro": "gogoscrum is a lightweight agile project management tool that follows Scrum agile practices. The system is built with Java and the Spring Boot framework, and Vue 3 for the front end. Developers are welcome to clone the codebase and star the project.",
+    "download": {
+      "title": "Local Deployment",
+      "intro": "1. Download and unzip to the local directory <br/>2. Run 'docker compose up' to start the service <br/>3. Visit http://localhost to start using gogoscrum"
+    },
+    "demo": {
+      "title": "Demo Site",
+      "intro": "Visit the demo site to explore all features of gogoscrum <br/>Login account: demo, Password: demo1234",
+      "desc": "The demo site data is regularly cleared, fell free to create projects, sprints, issues, files, documents and other data after loggin in.",
+      "btnLable": "Demo Site"
     },
     "footer": {
       "company": "Copyright © Hangzhou Shimi Network Technology"
@@ -827,6 +856,8 @@
           "moveUp": "Move up",
           "moveDown": "Move down"
         },
+        "files": "Attachments",
+        "uploaderDesc": "Drop file here, or click to select file",
         "msg": {
           "oldVersion": "This is an old version of the test case",
           "nameMissing": "Please input test case name",
@@ -854,7 +885,9 @@
         },
         "table": {
           "creatorTip": "{nickname} created at {createdTime}",
-          "emptyMsg": "No test cases in this project"
+          "emptyMsg": "No test cases in this project",
+          "run": "Run",
+          "records": "Records"
         },
         "msg": {
           "issueCopied": "Test case copied successfully"
@@ -889,10 +922,12 @@
       },
       "items": {
         "add": "Link cases",
+        "run": "Run",
+        "records": "Records",
         "emptyMsg": "No test cases in this plan",
         "msg": {
           "delConfirmTitle": "Unlink test case",
-          "delConfirmMsg": "You are about to unlink test case <strong class=\"red\">\"{caseName}\"</strong>. Once unlinked, the execution results of the related test cases will be cleared. Are you sure you want to proceed?",
+          "delConfirmMsg": "You are about to unlink test case <strong class=\"red\">\"{caseName}\"</strong> from this test plan. After unlinking, the execution results of this test case will not be included in the test report for this plan. Are you sure to proceed?",
           "delSuccess": "Test case unlinked successfully",
           "addSuccess": "Test cases linked successfully"
         }
@@ -915,6 +950,44 @@
         "table": {
           "creatorTip": "{nickname} created at {createdTime}",
           "emptyMsg": "No test plans in this project"
+        }
+      }
+    },
+    "run": {
+      "titleNew": "Create test execution record",
+      "titleEdit": "Edit test execution record",
+      "steps": {
+        "status": "Status",
+        "result": "Step actual Result",
+        "resultPlaceholder": "Please input step actual result"
+      },
+      "result": "Result remark",
+      "resultPlaceholder": "Please input actual result remark",
+      "status": "Test case execution result",
+      "files": "Attachments",
+      "createdTime": "Execution result created at {timestamp}",
+      "updatedTime": "Execution result updated at {timestamp}",
+      "msg": {
+        "statusRequired": "Please select test case execution result",
+        "createdSuccess": "Test execution record created successfully",
+        "updatedSuccess": "Test execution record updated successfully"
+      },
+      "list": {
+        "caseBasics": "Test case basic info",
+        "title": "Execution records",
+        "filter": {
+          "new": "New record",
+          "totalElements": "{count} execution records"
+        },
+        "createdTime": "Execution time",
+        "createdBy": "Executor",
+        "version": "Version",
+        "status": "Result",
+        "msg": {
+          "empty": "No test execution records",
+          "delConfirmTitle": "Delete test execution record",
+          "delConfirmMsg": "You are about to delete test execution record created at <strong class=\"red\">\"{runTime}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+          "delSuccess": "Test execution record deleted successfully"
         }
       }
     },

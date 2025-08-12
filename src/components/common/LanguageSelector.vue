@@ -2,11 +2,11 @@
   <div class="language-selector cursor-pointer">
     <el-dropdown size="default" trigger="click" @command="languageChanged">
       <div class="flex items-center">
-        <span class="iconfont icon-earth global-icon hidden-xs-only"></span>
-        <span class="el-dropdown-link">
-          {{ lang === 'en' ? `${isInMobile ? 'EN' : 'English'}` : `${isInMobile ? '中' : '中文'}` }}
+        <span v-if="!isInMobile" class="iconfont icon-earth global-icon hidden-xs-only"></span>
+        <span class="el-dropdown-link whitespace-nowrap">
+          {{ lang === 'en' ? `${isInMobile ? 'EN' : 'English'}` : `${isInMobile ? '中文' : '中文'}` }}
         </span>
-        <el-icon class="text-xs"><CaretBottom /></el-icon>
+        <el-icon class="text-xs ml-1"><CaretBottom /></el-icon>
       </div>
       <template #dropdown>
         <el-dropdown-menu>

@@ -3,7 +3,14 @@
     <div class="title">
       <div class="left-part">
         <span>{{ testCase.id ? $t('test.case.edit.title.edit') : $t('test.case.edit.title.new') }}</span>
-        <el-dropdown v-if="testCase.latestVersion > 1" trigger="click" class="ml-4 mt-2px">
+        <el-tag type="info" class="ml-2">TC-{{ testCase.code }}</el-tag>
+      </div>
+      <div class="right-part flex">
+        <div class="old-version-warning" v-if="isOldVersion">
+          <el-icon class="text-lg mr-1"><WarnTriangleFilled /></el-icon>
+          <span>{{ $t('test.case.edit.msg.oldVersion') }}</span>
+        </div>
+        <el-dropdown v-if="testCase.latestVersion >= 1" trigger="click" class="ml-20px mt-2px">
           <el-tag type="info" size="small"
             >{{ $t('test.case.edit.version', { version: testCase.details.version }) }}
             <el-icon class="el-icon--right">
@@ -12,16 +19,13 @@
           </el-tag>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item v-for="version in descVersions" :key="version" @click.native="loadDetails(version)">{{
-                $t('test.case.edit.version', { version: version })
-              }}</el-dropdown-item>
+              <el-dropdown-item v-for="version in descVersions" :key="version" @click.native="loadDetails(version)">
+                <span>{{ $t('test.case.edit.version', { version: version }) }}</span>
+                <el-icon v-if="version === testCase.details.version" class="ml-2"><Check /></el-icon>
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-      </div>
-      <div class="old-version-warning" v-if="isOldVersion">
-        <el-icon class="text-lg mr-1"><WarnTriangleFilled /></el-icon>
-        <span>{{ $t('test.case.edit.msg.oldVersion') }}</span>
       </div>
     </div>
     <el-form
@@ -29,6 +33,7 @@
       :model="testCase"
       :disabled="!project.isDeveloper || isOldVersion"
       :rules="rules"
+      label-position="top"
       label-width="105px"
       class="test-case-form"
       :label-position="isInMobile ? 'top' : 'right'">
@@ -37,7 +42,7 @@
       </el-form-item>
 
       <el-row>
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="24" :sm="10">
           <el-form-item :label="$t('test.case.edit.type')">
             <div class="w-full flex items-center">
               <el-select v-model="testCase.details.type" clearable>
@@ -55,7 +60,7 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="24" :sm="10" :offset="4">
           <el-form-item :label="$t('test.case.edit.component')">
             <el-cascader
               v-model="testCase.details.componentId"
@@ -69,13 +74,13 @@
       </el-row>
 
       <el-row>
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="24" :sm="10">
           <el-form-item :label="$t('test.case.edit.priority')">
             <priority-selector v-model="testCase.details.priority"></priority-selector>
           </el-form-item>
         </el-col>
 
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="24" :sm="10" :offset="4">
           <el-form-item :label="$t('test.case.edit.owner')">
             <member-selector
               v-model="testCase.details.owner"
@@ -106,13 +111,13 @@
           resize="vertical"></el-input>
       </el-form-item>
 
-      <el-form-item :label="$t('test.case.edit.steps.label')">
+      <el-form-item :label="$t('test.case.edit.steps.label')" class="mt-12">
         <el-table
           :data="testCase.details.steps"
           :empty-text="$t('test.case.edit.steps.empty')"
           :border="true"
           class="test-case-steps-table">
-          <el-table-column width="45" align="center">
+          <el-table-column label="#" width="45" align="center">
             <template #default="scope">
               <div class="seq-badge">{{ scope.$index + 1 }}</div>
             </template>
@@ -166,12 +171,9 @@
                       @click.native="moveDownStep(scope.$index)"
                       >{{ $t('test.case.edit.steps.moveDown') }}</el-dropdown-item
                     >
-                    <el-dropdown-item
-                      icon="Delete"
-                      :disabled="testCase.details.steps?.length <= 1"
-                      @click.native="deleteStep(scope.$index)"
-                      >{{ $t('common.delete') }}</el-dropdown-item
-                    >
+                    <el-dropdown-item icon="Delete" @click.native="deleteStep(scope.$index)">{{
+                      $t('common.delete')
+                    }}</el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
@@ -181,6 +183,14 @@
         <el-button class="add-step-button mt-2" type="primary" text icon="Plus" @click="addStep">
           {{ $t('test.case.edit.steps.add') }}</el-button
         >
+      </el-form-item>
+      <el-form-item :label="$t('test.case.edit.files')" class="mt-10">
+        <FileUploader
+          :files="testCase.files"
+          :projectId="project.id"
+          targetType="TEST_CASE_ATTACHMENT"
+          @fileUploaded="handleFileUploaded"
+          @fileDeleted="handleFileDeleted" />
       </el-form-item>
     </el-form>
     <div class="footer">
@@ -216,15 +226,21 @@ import { componentApi } from '@/api/component.js'
 import { testCaseApi } from '@/api/testing.js'
 import utils from '@/utils/util.js'
 import dict from '@/locales/zh-cn/dict.json'
+import FileUploader from '@/components/common/FileUploader.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PrioritySelector from '@/components/common/PrioritySelector.vue'
 import MemberSelector from '@/components/common/MemberSelector.vue'
+import FileIcon from '@/components/common/FileIcon.vue'
+import Avatar from '@/components/common/Avatar.vue'
 
 export default {
   name: 'TestCaseEdit',
   components: {
     PrioritySelector,
-    MemberSelector
+    MemberSelector,
+    FileIcon,
+    Avatar,
+    FileUploader
   },
   props: {},
   data() {
@@ -249,7 +265,8 @@ export default {
               expectation: ''
             }
           ]
-        }
+        },
+        files: []
       },
       components: [],
       componentProps: {
@@ -297,6 +314,9 @@ export default {
     loadCase() {
       testCaseApi.get(this.testCaseId).then((response) => {
         this.testCase = response.data
+        if (!this.testCase.files) {
+          this.testCase.files = []
+        }
         this.syncAllInputHeights()
       })
     },
@@ -356,6 +376,15 @@ export default {
       this.testCase.details.steps.splice(index, 1)
       this.syncAllInputHeights()
     },
+    handleFileUploaded(file) {
+      this.testCase.files.push(file)
+    },
+    handleFileDeleted(file) {
+      const index = this.testCase.files.findIndex((f) => f.id === file.id)
+      if (index !== -1) {
+        this.testCase.files.splice(index, 1)
+      }
+    },
     saveTestCase() {
       this.$refs.testCaseForm.validate((valid) => {
         if (valid) {
@@ -378,6 +407,14 @@ export default {
               )
               // stay on the edit page
               this.testCase = response.data
+
+              // Replace the router if is creating a new test case
+              if (this.testCaseId === 'new') {
+                this.$router.replace({
+                  name: 'TestCaseEdit',
+                  params: { projectId: this.projectId, testCaseId: this.testCase.id }
+                })
+              }
             })
             .finally(() => {
               this.saving = false
@@ -419,7 +456,7 @@ export default {
 
 <style lang="less" scoped>
 .test-case-edit-page {
-  width: 760px;
+  width: 800px;
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 120px);
@@ -451,6 +488,7 @@ export default {
 
   .footer {
     display: flex;
+    margin-top: 50px;
   }
 }
 </style>
@@ -472,6 +510,13 @@ export default {
       box-shadow: none !important;
       padding: 5px 0;
       background-color: unset !important;
+    }
+
+    .el-table__empty-block {
+      min-height: unset;
+      .el-table__empty-text {
+        line-height: 40px;
+      }
     }
   }
 }

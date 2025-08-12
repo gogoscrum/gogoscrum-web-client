@@ -54,5 +54,11 @@
     "USABILITY": "可用性测试",
     "COMPATIBILITY": "兼容性测试",
     "OTHER": "其他"
+  },
+  "testRunStatuses": {
+    "SUCCESS": "成功",
+    "FAILED": "失败",
+    "SKIPPED": "跳过",
+    "BLOCKED": "阻塞"
   }
 }

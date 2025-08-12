@@ -41,7 +41,7 @@ const initUploadParams = (file, projectId, targetType) => {
         // remove uploadParams.params as it's already spread into uploadParams
         delete uploadParams.params
 
-        console.log('Upload parameters initialized:', uploadParams)
+        // console.log('Upload parameters initialized:', uploadParams)
 
         resolve(uploadParams)
       },

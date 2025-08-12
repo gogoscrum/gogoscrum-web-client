@@ -54,5 +54,11 @@
     "USABILITY": "Usability",
     "COMPATIBILITY": "Compatibility",
     "OTHER": "Other"
+  },
+  "testRunStatuses": {
+    "SKIPPED": "Skipped",
+    "BLOCKED": "Blocked",
+    "SUCCESS": "Success",
+    "FAILED": "Failed"
   }
 }

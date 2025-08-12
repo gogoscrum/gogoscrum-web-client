@@ -63,7 +63,7 @@
           width="85"
           align="center">
           <template #default="scope">
-            <span class="case-name" v-html="scope.row.codeHighlightLabel || scope.row.code" />
+            TC-<span class="case-name" v-html="scope.row.codeHighlightLabel || scope.row.code" />
           </template>
         </el-table-column>
         <el-table-column
@@ -143,7 +143,7 @@
           column-key="creators"
           :filters="userFilters"
           :filter-multiple="true"
-          min-width="30"
+          min-width="35"
           align="center"
           class-name="creator-column">
           <template #filter-icon>
@@ -175,6 +175,15 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item
+                    v-if="!pickerMode"
+                    icon="VideoPlay"
+                    @click.native="runCase(scope.$index, scope.row)"
+                    >{{ $t('test.case.list.table.run') }}</el-dropdown-item
+                  >
+                  <el-dropdown-item v-if="!pickerMode" icon="Clock" @click.native="showRuns(scope.row)">{{
+                    $t('test.case.list.table.records')
+                  }}</el-dropdown-item>
                   <el-dropdown-item icon="Edit" @click.native="editCase(scope.row)">{{
                     pickerMode ? $t('common.details') : $t('common.edit')
                   }}</el-dropdown-item>
@@ -219,6 +228,7 @@
       </div>
     </div>
   </div>
+  <TestRunEdit v-if="editingCaseId" :test-case-id="editingCaseId" @testRunClosed="hideTestRun" />
 </template>
 
 <script>
@@ -229,12 +239,14 @@ import utils from '@/utils/util.js'
 import dict from '@/locales/zh-cn/dict.json'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
+import TestRunEdit from './TestRunEdit.vue'
 
 export default {
   name: 'TestCaseList',
   components: {
     Avatar,
-    PriorityIcon
+    PriorityIcon,
+    TestRunEdit
   },
   emits: ['caseSelected'],
   props: {
@@ -266,7 +278,8 @@ export default {
       pickedCases: [],
       testTypeFilters: [],
       priorityFilters: [],
-      userFilters: []
+      userFilters: [],
+      editingCaseId: null
     }
   },
   created() {
@@ -380,6 +393,9 @@ export default {
     newCase() {
       this.$router.push({ name: 'TestCaseEdit', params: { testCaseId: 'new' } })
     },
+    showRuns(row) {
+      this.$router.push({ name: 'TestRunList', params: { testCaseId: row.id } })
+    },
     editCase(row) {
       this.$router.push({
         name: 'TestCaseEdit',
@@ -424,6 +440,12 @@ export default {
         .catch(() => {
           // Cancelled, do nothing
         })
+    },
+    runCase(index, row) {
+      this.editingCaseId = row.id
+    },
+    hideTestRun() {
+      this.editingCaseId = null
     }
   }
 }

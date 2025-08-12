@@ -102,11 +102,11 @@
               v-if="scope.row.testCase.details.owner"
               :content="scope.row.testCase.details.owner.nickname"
               placement="left">
-              <avatar
+              <Avatar
                 :name="scope.row.testCase.details.owner.nickname"
                 :size="22"
                 :src="scope.row.testCase.details.owner.avatarUrl"
-                inline></avatar>
+                inline />
             </el-tooltip>
           </template>
         </el-table-column>
@@ -118,6 +118,12 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item icon="VideoPlay" @click.native="runCase(scope.$index, scope.row)">{{
+                    $t('test.plan.items.run')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item icon="Clock" @click.native="showRuns(scope.row)">{{
+                    $t('test.plan.items.records')
+                  }}</el-dropdown-item>
                   <el-dropdown-item icon="Edit" @click.native="showCaseDetails(scope.row)">{{
                     $t('common.details')
                   }}</el-dropdown-item>
@@ -153,12 +159,12 @@
       </div>
     </div>
   </div>
-  <test-case-picker
+  <TestCasePicker
     v-if="casePickerVisible"
     :selectedCaseIds="selectedCaseIds"
     @caseSelected="handleCaseSelected"
-    @casePickerClosed="toggleCasePicker">
-  </test-case-picker>
+    @casePickerClosed="toggleCasePicker" />
+  <TestRunEdit v-if="runningCaseId" :test-case-id="runningCaseId" @testRunClosed="hideTestRun" />
 </template>
 
 <script>
@@ -168,13 +174,15 @@ import highlight from '@/utils/highlight.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import TestCasePicker from './TestCasePicker.vue'
+import TestRunEdit from './TestRunEdit.vue'
 
 export default {
   name: 'TestPlanItemList',
   components: {
     Avatar,
     PriorityIcon,
-    TestCasePicker
+    TestCasePicker,
+    TestRunEdit
   },
   props: {
     testPlanId: {
@@ -197,7 +205,8 @@ export default {
       totalPages: 0,
       loading: false,
       casePickerVisible: false,
-      selectedCaseIds: []
+      selectedCaseIds: [],
+      runningCaseId: null
     }
   },
   created() {
@@ -257,6 +266,15 @@ export default {
       this.filter.page = 1
       this.$store.set('testPlanItemListPageSize', this.filter.pageSize)
       this.loadPlanItems()
+    },
+    runCase(index, row) {
+      this.runningCaseId = row.testCase.id
+    },
+    hideTestRun() {
+      this.runningCaseId = null
+    },
+    showRuns(row) {
+      this.$router.push({ name: 'TestRunList', params: { testCaseId: row.testCase.id } })
     },
     showCaseDetails(row) {
       this.$router.push({

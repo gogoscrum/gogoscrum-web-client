@@ -228,7 +228,6 @@ import Avatar from '@/components/common/Avatar.vue'
 import { ElMessage } from 'element-plus'
 import OfficeViewer from '@/components/common/OfficeViewer.vue'
 import PdfViewer from '@/components/common/PdfViewer.vue'
-import dayjs from 'dayjs'
 import util from '@/utils/util.js'
 
 export default {

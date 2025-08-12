@@ -296,6 +296,7 @@
               </el-tooltip>
               <el-tooltip v-else :content="$t('issueEdit.uploaderPlacehoder')" placement="top">
                 <el-upload
+                  ref="fileUploaderRef"
                   v-loading="uploading"
                   :action="uploadParams.uploadActionUrl"
                   drag
@@ -1044,6 +1045,7 @@ export default {
         this.editIssue.files.push(res.data)
         this.initImgPreviewSrcList()
         this.uploading = false
+        this.$refs.fileUploaderRef.clearFiles()
       })
     },
     deleteFile(index, file) {

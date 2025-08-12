@@ -52,5 +52,10 @@ export default {
   .el-drawer__header {
     margin-bottom: 10px;
   }
+
+  .test-case-list-page {
+    padding: unset !important;
+    margin: unset !important;
+  }
 }
 </style>

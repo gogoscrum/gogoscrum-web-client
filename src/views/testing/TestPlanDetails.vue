@@ -36,12 +36,12 @@
         <el-col :span="6" class="flex">
           <div class="label">{{ $t('test.plan.edit.owner') }}</div>
           <div class="value flex">
-            <avatar
+            <Avatar
               v-if="testPlan.owner"
               :name="testPlan.owner.nickname"
               :size="22"
               :src="testPlan.owner.avatarUrl"
-              inline></avatar>
+              inline />
             <span class="ml-2">{{ testPlan.owner?.nickname || '--' }}</span>
           </div>
         </el-col>
@@ -55,21 +55,19 @@
         </el-col>
       </el-row>
     </div>
-    <el-tabs v-if="testPlan.id" v-model="activTab" type="card" class="mt-10">
+    <el-tabs v-if="testPlan.id" v-model="activeTab" type="card" class="mt-10">
       <el-tab-pane :label="$t('test.plan.details.tabCases')" name="cases">
-        <test-plan-items :test-plan-id="testPlan.id" />
+        <TestPlanItems :test-plan-id="testPlan.id" />
       </el-tab-pane>
-      <!-- <el-tab-pane label="执行记录" name="results">execution records</el-tab-pane>
-      <el-tab-pane label="关联缺陷" name="bugs">related bugs</el-tab-pane> -->
     </el-tabs>
   </div>
-  <test-plan-edit
+  <TestPlanEdit
     v-if="planEditVisible"
     :testPlanId="testPlanId"
     :project="project"
     @testPlanClosed="togglePlanEdit"
     @testPlanSaved="testPlanSaved"
-    @testPlanDeleted="returnToList"></test-plan-edit>
+    @testPlanDeleted="returnToList" />
 </template>
 
 <script>
@@ -94,7 +92,7 @@ export default {
       project: {},
       testPlanId: this.$route.params.testPlanId,
       testPlan: {},
-      activTab: 'cases',
+      activeTab: 'cases',
       planEditVisible: false
     }
   },

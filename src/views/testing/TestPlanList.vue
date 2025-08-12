@@ -104,7 +104,7 @@
           </template>
           <template #default="scope">
             <el-tooltip v-if="scope.row.owner" :content="scope.row.owner.nickname" placement="left">
-              <avatar :name="scope.row.owner.nickname" :size="22" :src="scope.row.owner.avatarUrl" inline></avatar>
+              <Avatar :name="scope.row.owner.nickname" :size="22" :src="scope.row.owner.avatarUrl" inline />
             </el-tooltip>
           </template>
         </el-table-column>
@@ -132,11 +132,7 @@
                 })
               "
               placement="left">
-              <avatar
-                :name="scope.row.createdBy.nickname"
-                :size="22"
-                :src="scope.row.createdBy.avatarUrl"
-                inline></avatar>
+              <Avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl" inline />
             </el-tooltip>
           </template>
         </el-table-column>
@@ -148,6 +144,9 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item icon="ZoomIn" @click.native="planClicked(scope.row)">{{
+                    $t('common.details')
+                  }}</el-dropdown-item>
                   <el-dropdown-item icon="Edit" @click.native="editPlan(scope.row)">{{
                     $t('common.edit')
                   }}</el-dropdown-item>
@@ -183,13 +182,13 @@
       </div>
     </div>
   </div>
-  <test-plan-edit
+  <TestPlanEdit
     v-if="editingTestPlan"
     :testPlanId="editingTestPlan.id"
     :project="project"
     @testPlanClosed="testPlanClosed"
     @testPlanSaved="testPlanSaved"
-    @testPlanDeleted="testPlanDeleted"></test-plan-edit>
+    @testPlanDeleted="testPlanDeleted" />
 </template>
 
 <script>
@@ -341,6 +340,7 @@ export default {
         this.testPlans.splice(index, 1, testPlan)
       } else {
         this.testPlans.unshift(testPlan)
+        this.totalElements++
       }
     },
     testPlanDeleted(testPlan) {

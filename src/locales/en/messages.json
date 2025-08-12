@@ -10,6 +10,7 @@
     "429": "Too many request",
     "500": "Internal error occurred, please try again later or contact the admin",
     "502": "Cannot connect to server, please try again later or contact the admin",
+    "invalidRequestData": "Invalid request data",
     "wrongPassword": "Password validation failed",
     "duplicatedUsername": "Username already exists",
     "duplicatedGroup": "Isse group name already exists",
