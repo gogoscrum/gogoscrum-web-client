@@ -17,6 +17,7 @@
             <a v-else @click="fileClicked(file)"><FileIcon :type="file.type" class="file-img" /></a>
           </el-tooltip>
           <el-icon
+            v-if="!readonly"
             class="img-action-icon delete-img-icon"
             :title="$t('common.delete')"
             @click="deleteFile(index, file)">
@@ -28,10 +29,10 @@
         </div>
       </template>
 
-      <el-table v-else :data="fileList" :show-header="false" class="file-table-list">
+      <el-table v-else :data="fileList" :show-header="false" class="file-table-list tight-table">
         <el-table-column :label="$t('uploader.thumbnail')" width="60">
           <template #default="scope">
-            <div class="h-30px">
+            <div class="h-32px">
               <el-image
                 v-if="scope.row.type === 'IMAGE'"
                 :src="scope.row.url"
@@ -42,23 +43,25 @@
                 :z-index="9999"
                 fit="contain"
                 class="file-img" />
-              <a v-else @click="fileClicked(scope.row)"><FileIcon :type="scope.row.type" class="file-img" /></a>
+              <a v-else @click="fileClicked(scope.row)"
+                ><FileIcon :type="scope.row.type" size="small" class="file-img"
+              /></a>
             </div>
           </template>
         </el-table-column>
         <el-table-column prop="name" :label="$t('fileList.list.name')" min-width="120" />
         <el-table-column prop="sizeFormatted" :label="$t('fileList.list.size')" min-width="40" />
-        <el-table-column prop="createdBy.nickname" :label="$t('fileList.list.creator')" min-width="50">
+        <el-table-column prop="createdBy.nickname" :label="$t('fileList.list.creator')" min-width="40">
           <template #default="scope">
             <Avatar
               :name="scope.row.createdBy.nickname"
-              :show-name="true"
               :size="22"
               :src="scope.row.createdBy.avatarUrl"
+              show-name
               inline></Avatar>
           </template>
         </el-table-column>
-        <el-table-column prop="createdTimeFormatted" :label="$t('fileList.list.createdTime')" min-width="80" />
+        <el-table-column prop="createdTimeFormatted" :label="$t('fileList.list.createdTime')" min-width="70" />
         <el-table-column :label="$t('common.actions')" width="50" align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
@@ -70,9 +73,12 @@
                   <el-dropdown-item icon="Download" @click.native="downloadFile(scope.row)">{{
                     $t('common.download')
                   }}</el-dropdown-item>
-                  <el-dropdown-item icon="Delete" @click.native="deleteFile(scope.$index, scope.row)">{{
-                    $t('common.delete')
-                  }}</el-dropdown-item>
+                  <el-dropdown-item
+                    v-if="!readonly"
+                    icon="Delete"
+                    @click.native="deleteFile(scope.$index, scope.row)"
+                    >{{ $t('common.delete') }}</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -80,6 +86,7 @@
         </el-table-column>
       </el-table>
       <el-upload
+        v-if="!readonly"
         ref="fileUploaderRef"
         v-loading="uploading"
         :action="uploadParams.uploadActionUrl"
@@ -98,10 +105,14 @@
     </div>
 
     <div class="flex items-center">
-      <div class="form-field-tip !mt-0">{{ $t('uploader.uploaderDesc') }}</div>
-      <el-button type="primary" text size="small" @click="switchMode" class="ml-4 !h-24px">{{
+      <div v-if="!readonly" class="form-field-tip !mt-0 mr-4">{{ $t('uploader.uploaderDesc') }}</div>
+      <el-button v-if="fileList.length" type="primary" text size="small" @click="switchMode" class="!h-24px">{{
         mode === 'CARD' ? $t('uploader.switchToTableView') : $t('uploader.switchToCardView')
       }}</el-button>
+    </div>
+
+    <div v-if="readonly && fileList.length === 0" class="desc">
+      {{ $t('test.case.edit.filesEmpty') }}
     </div>
   </div>
 </template>
@@ -126,6 +137,10 @@ export default {
     files: {
       type: Array,
       default: () => []
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     },
     multiple: {
       type: Boolean,
@@ -167,7 +182,6 @@ export default {
       this.fileList.forEach((file) => {
         this.formatFile(file)
       })
-      console.log('Updated fileList:', this.fileList)
     }
   },
   mounted() {},
@@ -336,8 +350,8 @@ export default {
   .file-table-list {
     margin-bottom: 16px;
     .file-img {
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
 
       img {
         object-fit: contain;

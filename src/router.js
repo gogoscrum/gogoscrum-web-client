@@ -119,14 +119,14 @@ const routes = [
             component: () => import('@/views/testing/TestCaseList.vue')
           },
           {
-            path: 'test/cases/:testCaseId',
+            path: 'test/cases/:testCaseId/edit',
             name: 'TestCaseEdit',
             component: () => import('@/views/testing/TestCaseEdit.vue')
           },
           {
-            path: 'test/cases/:testCaseId/runs',
-            name: 'TestRunList',
-            component: () => import('@/views/testing/TestRunList.vue')
+            path: 'test/cases/:testCaseId',
+            name: 'TestCaseDetails',
+            component: () => import('@/views/testing/TestCaseDetails.vue')
           },
           {
             path: 'test/plans',
@@ -137,6 +137,11 @@ const routes = [
             path: 'test/plans/:testPlanId',
             name: 'TestPlanDetails',
             component: () => import('@/views/testing/TestPlanDetails.vue')
+          },
+          {
+            path: 'test/runs',
+            name: 'TestRunList',
+            component: () => import('@/views/testing/TestRunList.vue')
           }
         ]
       }

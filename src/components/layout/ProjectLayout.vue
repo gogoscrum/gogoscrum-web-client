@@ -107,7 +107,7 @@
                 name: 'TestCaseList',
                 params: { projectId: projectId }
               }"
-              :class="{ 'menu-selected': ['TestCaseList', 'TestCaseEdit'].includes($route.name) }">
+              :class="{ 'menu-selected': ['TestCaseList', 'TestCaseEdit', 'TestCaseDetails'].includes($route.name) }">
               <span>{{ $t('projectLayout.menu.testCase') }}</span>
             </el-menu-item>
             <el-menu-item
@@ -118,6 +118,15 @@
               }"
               :class="{ 'menu-selected': ['TestPlanList', 'TestPlanDetails'].includes($route.name) }">
               <span>{{ $t('projectLayout.menu.testPlan') }}</span>
+            </el-menu-item>
+            <el-menu-item
+              index="TestRunList"
+              :route="{
+                name: 'TestRunList',
+                params: { projectId: projectId }
+              }"
+              :class="$route.name == 'TestRunList' ? 'menu-selected' : ''">
+              <span>{{ $t('projectLayout.menu.testRun') }}</span>
             </el-menu-item>
             <el-menu-item
               index="TestReportList"
@@ -305,9 +314,7 @@ export default {
         this.$refs.menu.open('more')
       } else if (['IssueList'].includes(route)) {
         this.$refs.menu.open('Issues')
-      } else if (
-        ['TestCaseList', 'TestCaseEdit', 'TestPlanList', 'TestPlanDetails', 'TestReportList'].includes(route)
-      ) {
+      } else if (route.startsWith('Test')) {
         this.$refs.menu.open('Testing')
       }
     },

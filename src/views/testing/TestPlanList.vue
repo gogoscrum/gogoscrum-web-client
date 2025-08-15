@@ -150,6 +150,9 @@
                   <el-dropdown-item icon="Edit" @click.native="editPlan(scope.row)">{{
                     $t('common.edit')
                   }}</el-dropdown-item>
+                  <el-dropdown-item icon="DocumentCopy" @click.native="clonePlan(scope.$index, scope.row)">{{
+                    $t('common.copy')
+                  }}</el-dropdown-item>
                   <el-dropdown-item icon="Delete" @click.native="deletePlan(scope.$index, scope.row)">{{
                     $t('common.delete')
                   }}</el-dropdown-item>
@@ -329,6 +332,17 @@ export default {
     },
     editPlan(row) {
       this.editingTestPlan = row
+    },
+    clonePlan(index, row) {
+      testPlanApi.clone(row.id).then((res) => {
+        ElMessage.success({
+          message: this.$t('test.plan.edit.msg.cloneSuccess')
+        })
+        // insert the cloned plan right after the original plan
+        const clonedPlan = res.data
+        this.testPlans.splice(index, 0, this.formatPlan(clonedPlan))
+        this.totalElements++
+      })
     },
     testPlanClosed() {
       this.editingTestPlan = null

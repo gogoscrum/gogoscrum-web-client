@@ -1,14 +1,16 @@
 <template>
   <div class="vue-avatar--wrapper" aria-hidden="true">
-    <div class="avator-icon" :class="{ colorBox: !isImage }" :style="[style, customStyle]">
-      <img v-if="isImage" style="display: none" :src="src" @error="onImgError" />
-      <div
-        v-show="!isImage"
-        class="color-box"
-        :style="`word-break: keep-all; transform: scale(${1 / Math.sqrt(userInitial.length)});`">
-        {{ userInitial }}
+    <el-tooltip :content="name" :disabled="!showTooltip" :placement="tooltipPlacement">
+      <div class="avator-icon" :class="{ colorBox: !isImage }" :style="[style, customStyle]">
+        <img v-if="isImage" style="display: none" :src="src" @error="onImgError" />
+        <div
+          v-show="!isImage"
+          class="color-box"
+          :style="`word-break: keep-all; transform: scale(${1 / Math.sqrt(userInitial.length)});`">
+          {{ userInitial }}
+        </div>
       </div>
-    </div>
+    </el-tooltip>
     <div v-if="showName" class="vue-avatar-name">
       {{ name }}
     </div>
@@ -43,6 +45,14 @@ const props = defineProps({
   showName: {
     type: Boolean,
     default: false
+  },
+  showTooltip: {
+    type: Boolean,
+    default: false
+  },
+  tooltipPlacement: {
+    type: String,
+    default: 'left'
   },
   initials: {
     type: String

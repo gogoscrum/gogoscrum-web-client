@@ -13,6 +13,7 @@
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item icon="Edit" @click.native="togglePlanEdit">{{ $t('common.edit') }}</el-dropdown-item>
+              <el-dropdown-item icon="DocumentCopy" @click.native="clonePlan">{{ $t('common.copy') }}</el-dropdown-item>
               <el-dropdown-item icon="Delete" @click.native="deletePlan">{{ $t('common.delete') }}</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -57,7 +58,7 @@
     </div>
     <el-tabs v-if="testPlan.id" v-model="activeTab" type="card" class="mt-10">
       <el-tab-pane :label="$t('test.plan.details.tabCases')" name="cases">
-        <TestPlanItems :test-plan-id="testPlan.id" />
+        <TestPlanItems :test-plan-id="testPlan.id" :testPlan="testPlan" @itemChanged="loadPlan" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -123,6 +124,14 @@ export default {
     },
     togglePlanEdit() {
       this.planEditVisible = !this.planEditVisible
+    },
+    clonePlan() {
+      testPlanApi.clone(this.testPlanId).then((res) => {
+        ElMessage.success({
+          message: this.$t('test.plan.edit.msg.cloneSuccess')
+        })
+        this.$router.push({ name: 'TestPlanDetails', params: { projectId: this.projectId, testPlanId: res.data.id } })
+      })
     },
     deletePlan() {
       ElMessageBox.confirm(

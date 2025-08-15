@@ -15,6 +15,7 @@ export const testPlanApi = {
   update: (id, testPlan) => put(`/api/testing/plans/${id}`, testPlan),
   delete: (id) => del(`/api/testing/plans/${id}`),
   search: (filter) => post('/api/testing/plans/search', filter),
+  clone: (id) => post(`/api/testing/plans/${id}/clone`),
 
   // Test plan items (i.e. cases) API
   getTestCaseIds: (planId) => get(`/api/testing/plans/${planId}/cases`),

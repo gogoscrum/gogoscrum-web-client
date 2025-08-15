@@ -63,7 +63,7 @@
           width="85"
           align="center">
           <template #default="scope">
-            TC-<span class="case-name" v-html="scope.row.codeHighlightLabel || scope.row.code" />
+            <el-tag type="info">TC-{{ scope.row.code }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -137,33 +137,30 @@
         </el-table-column>
         <el-table-column
           v-if="!pickerMode"
-          :label="$t('test.case.list.header.creator')"
-          prop="createdBy.nickname"
+          :label="$t('test.case.list.header.latestRunStatus')"
+          prop="latestRun.status"
           sortable="custom"
-          column-key="creators"
-          :filters="userFilters"
+          column-key="runStatuses"
+          :filters="runStatusFilters"
           :filter-multiple="true"
           min-width="35"
-          align="center"
-          class-name="creator-column">
+          class-name="run-status-column">
           <template #filter-icon>
-            <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.latestRunStatus?.length }"
+              ><Filter
+            /></el-icon>
           </template>
           <template #default="scope">
             <el-tooltip
-              v-if="scope.row.createdBy"
+              v-if="scope.row.latestRun"
               :content="
-                $t('test.case.list.table.creatorTip', {
-                  nickname: scope.row.createdBy.nickname,
-                  createdTime: scope.row.createdTimeFormatted
+                $t('test.case.list.table.latestRunTip', {
+                  nickname: scope.row.latestRun.createdBy.nickname,
+                  latestRunTime: scope.row.latestRun.createdTimeFormatted
                 })
               "
               placement="left">
-              <avatar
-                :name="scope.row.createdBy.nickname"
-                :size="22"
-                :src="scope.row.createdBy.avatarUrl"
-                inline></avatar>
+              <TestRunStatusIcon :status="scope.row.latestRun.status" />
             </el-tooltip>
           </template>
         </el-table-column>
@@ -181,9 +178,6 @@
                     @click.native="runCase(scope.$index, scope.row)"
                     >{{ $t('test.case.list.table.run') }}</el-dropdown-item
                   >
-                  <el-dropdown-item v-if="!pickerMode" icon="Clock" @click.native="showRuns(scope.row)">{{
-                    $t('test.case.list.table.records')
-                  }}</el-dropdown-item>
                   <el-dropdown-item icon="Edit" @click.native="editCase(scope.row)">{{
                     pickerMode ? $t('common.details') : $t('common.edit')
                   }}</el-dropdown-item>
@@ -228,7 +222,11 @@
       </div>
     </div>
   </div>
-  <TestRunEdit v-if="editingCaseId" :test-case-id="editingCaseId" @testRunClosed="hideTestRun" />
+  <TestRunEdit
+    v-if="editingCaseId"
+    :test-case-id="editingCaseId"
+    @testRunSaved="handleTestRunSaved"
+    @testRunClosed="hideTestRun" />
 </template>
 
 <script>
@@ -239,6 +237,7 @@ import utils from '@/utils/util.js'
 import dict from '@/locales/zh-cn/dict.json'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
+import TestRunStatusIcon from '@/components/common/TestRunStatusIcon.vue'
 import TestRunEdit from './TestRunEdit.vue'
 
 export default {
@@ -246,6 +245,7 @@ export default {
   components: {
     Avatar,
     PriorityIcon,
+    TestRunStatusIcon,
     TestRunEdit
   },
   emits: ['caseSelected'],
@@ -279,6 +279,7 @@ export default {
       testTypeFilters: [],
       priorityFilters: [],
       userFilters: [],
+      runStatusFilters: [],
       editingCaseId: null
     }
   },
@@ -305,6 +306,11 @@ export default {
         text: member.user.nickname,
         value: member.user.id
       }))
+
+      this.runStatusFilters = Object.keys(dict.testRunStatuses).map((key) => ({
+        text: this.$t(`testRunStatuses.${key}`),
+        value: key
+      }))
     },
     loadCases() {
       this.loading = true
@@ -324,7 +330,11 @@ export default {
         })
     },
     formatCase(testCase) {
-      return utils.formatCreateUpdateTime(testCase)
+      if (testCase.latestRun) {
+        utils.formatCreateUpdateTime(testCase.latestRun)
+      }
+      utils.formatCreateUpdateTime(testCase)
+      return testCase
     },
     isCaseSelectable(row) {
       return !this.selectedCaseIds.includes(row.id)
@@ -375,6 +385,14 @@ export default {
         }
       }
 
+      if (filters.runStatuses) {
+        if (filters.runStatuses.length > 0) {
+          this.filter.runStatuses = filters.runStatuses
+        } else {
+          this.filter.runStatuses = null
+        }
+      }
+
       this.filterChanged()
     },
     filterChanged() {
@@ -393,8 +411,11 @@ export default {
     newCase() {
       this.$router.push({ name: 'TestCaseEdit', params: { testCaseId: 'new' } })
     },
-    showRuns(row) {
-      this.$router.push({ name: 'TestRunList', params: { testCaseId: row.id } })
+    showCaseDetails(row) {
+      this.$router.push({ name: 'TestCaseDetails', params: { testCaseId: row.id } })
+    },
+    handleTestRunSaved(run) {
+      this.loadCases() // Reload cases to update latest run status
     },
     editCase(row) {
       this.$router.push({
@@ -405,11 +426,11 @@ export default {
     cloneCase(index, row) {
       testCaseApi.clone(row.id).then((res) => {
         ElMessage.success({
-          message: this.$t('test.case.list.msg.issueCopied')
+          message: this.$t('test.case.list.msg.caseCopied')
         })
         // insert the cloned case right after the original case
         const clonedCase = res.data
-        this.testCases.splice(index + 1, 0, this.formatCase(clonedCase))
+        this.testCases.splice(index, 0, this.formatCase(clonedCase))
         this.totalElements++
       })
     },
@@ -417,7 +438,8 @@ export default {
       if (this.pickerMode) {
         this.$refs.testCaseList.toggleRowSelection(row)
       } else {
-        this.$router.push({ name: 'TestCaseEdit', params: { testCaseId: row.id } })
+        this.showCaseDetails(row)
+        // this.$router.push({ name: 'TestCaseDetails', params: { testCaseId: row.id } })
       }
     },
     deleteCase(index, row) {

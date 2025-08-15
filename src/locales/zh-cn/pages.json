@@ -10,6 +10,7 @@
     "back": "返回",
     "close": "关闭",
     "create": "创建",
+    "update": "更新",
     "edit": "修改",
     "details": "详情",
     "copy": "复制",
@@ -31,6 +32,10 @@
     "uploading": "正在上传",
     "more": "更多",
     "pageSize": "每页条数",
+    "createdBy": "创建者",
+    "updatedBy": "更新者",
+    "createdTime": "创建时间",
+    "updatedTime": "更新时间",
     "msg": {
       "formValidationFail": "请填写必要的表单信息",
       "h5NotSupported": "目前暂不支持手机端看板，请切换至电脑端查看",
@@ -42,6 +47,10 @@
       "delFileConfirmTitle": "删除文件",
       "delFileConfirmMsg": "您即将删除文件 <strong class=\"red\">\"{name}\"</strong>，文件删除后无法恢复，是否继续？",
       "delFileSuccess": "文件已删除"
+    },
+    "filter": {
+      "totalElements": "共 {count} 条",
+      "matchedResults": "{count} 个符合条件的结果"
     }
   },
   "uploader": {
@@ -199,6 +208,7 @@
       "testing": "测试",
       "testCase": "测试用例",
       "testPlan": "测试计划",
+      "testRun": "执行记录",
       "testReport": "测试报告",
       "charts": "图表",
       "burndown": "燃尽图",
@@ -837,6 +847,7 @@
           "edit": "修改测试用例"
         },
         "version": "版本 {version}",
+        "latestVersion": "最新版本",
         "name": "名称",
         "type": "类型",
         "automated": "自动化",
@@ -857,6 +868,7 @@
           "moveDown": "下移"
         },
         "files": "附件",
+        "filesEmpty": "用例中暂无附件",
         "uploaderDesc": "将文件拖到此处，或点击选择文件上传",
         "msg": {
           "oldVersion": "当前查看的测试用例为旧版本",
@@ -867,6 +879,10 @@
           "delConfirmMsg": "您即将删除测试用例 <strong class=\"red\">\"{caseName}\"</strong>，删除后无法恢复，是否继续？",
           "delSuccess": "测试用例删除成功"
         }
+      },
+      "details": {
+        "title": "测试用例详情",
+        "tabRuns": "执行记录"
       },
       "list": {
         "filter": {
@@ -881,16 +897,18 @@
           "type": "类型",
           "priority": "优先级",
           "owner": "负责人",
-          "creator": "创建者"
+          "creator": "创建者",
+          "latestRunStatus": "最近执行"
         },
         "table": {
           "creatorTip": "{nickname} 创建于 {createdTime}",
+          "latestRunTip": "{nickname} 于 {latestRunTime} 执行",
           "emptyMsg": "项目中还没有任何测试用例",
-          "run": "快速执行",
+          "run": "执行",
           "records": "执行记录"
         },
         "msg": {
-          "issueCopied": "测试用例复制成功"
+          "caseCopied": "测试用例复制成功"
         }
       }
     },
@@ -911,6 +929,7 @@
           "nameMissing": "请输入测试计划名称",
           "createSuccess": "测试计划创建成功",
           "updateSuccess": "测试计划更新成功",
+          "cloneSuccess": "测试计划复制成功",
           "delConfirmTitle": "删除测试计划",
           "delConfirmMsg": "您即将删除测试计划 <strong class=\"red\">\"{planName}\"</strong>，删除后无法恢复，是否继续？",
           "delSuccess": "测试计划删除成功"
@@ -923,7 +942,9 @@
       "items": {
         "add": "关联用例",
         "run": "执行",
-        "records": "执行记录",
+        "startRun": "开始执行",
+        "continueRun": "继续执行",
+        "caseDetails": "用例详情",
         "emptyMsg": "计划中还没有关联任何用例",
         "msg": {
           "delConfirmTitle": "取消关联用例",
@@ -965,6 +986,8 @@
       "resultPlaceholder": "请输入实际执行结果备注",
       "status": "用例执行结果",
       "files": "附件",
+      "previous": "上一条",
+      "next": "下一条",
       "createdTime": "测试记录创建时间：{ timestamp }",
       "updatedTime": "测试记录更新时间：{ timestamp }",
       "msg": {
@@ -976,13 +999,15 @@
         "caseBasics": "用例基本信息",
         "title": "执行记录",
         "filter": {
-          "new": "新建记录",
+          "new": "新建执行",
           "totalElements": "{count} 条执行记录"
         },
+        "caseName": "用例名称",
         "createdTime": "执行时间",
         "createdBy": "执行者",
         "version": "用例版本",
-        "status": "执行结果",
+        "planName": "测试计划",
+        "status": "结果",
         "msg": {
           "empty": "暂无测试执行记录",
           "delConfirmTitle": "删除测试执行记录",

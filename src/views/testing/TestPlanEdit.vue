@@ -86,9 +86,9 @@
           <el-button size="default" class="no-border" @click="dialogVisible = false">{{
             $t('common.cancel')
           }}</el-button>
-          <el-button :loading="saving" size="default" type="primary" class="no-border" @click="saveTestPlan">{{
-            $t('common.save')
-          }}</el-button>
+          <el-button :loading="saving" size="default" type="primary" class="no-border" @click="saveTestPlan">
+            {{ testPlan.id ? $t('common.update') : $t('common.create') }}</el-button
+          >
         </div>
       </div>
     </template>

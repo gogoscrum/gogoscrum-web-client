@@ -11,7 +11,17 @@
           class="text-icon-btn"
           >{{ $t('test.plan.items.add') }}</el-button
         >
+        <el-button
+          :disabled="!project.isDeveloper || !planItems.length"
+          text
+          type="primary"
+          @click="startRun"
+          icon="VideoPlay"
+          class="text-icon-btn"
+          >{{ runningCaseIndex ? $t('test.plan.items.continueRun') : $t('test.plan.items.startRun') }}</el-button
+        >
       </div>
+      <TestPlanStatistics :testPlan="testPlan" class="statistics" />
       <div class="right-part">
         <div class="summary-info">
           <el-icon v-if="loading" class="is-loading refresh-btn">
@@ -46,6 +56,14 @@
         :show-header="true"
         @row-click="itemClicked"
         @sort-change="sortChange">
+        <el-table-column width="25">
+          <template #default="scope">
+            <!-- <el-tag :type="runningCaseId === scope.row.testCase.id ? 'success' : 'info'"
+              >TC-{{ scope.row.testCase.code }}</el-tag
+            > -->
+            <el-icon v-if="runningCaseId === scope.row.testCase.id" class="cursor-arrow"><CaretRight /></el-icon>
+          </template>
+        </el-table-column>
         <el-table-column
           :label="$t('test.case.list.header.code')"
           prop="testCase.code"
@@ -53,7 +71,9 @@
           width="85"
           align="center">
           <template #default="scope">
-            <span class="case-name" v-html="scope.row['testCase.codeHighlightLabel'] || scope.row.testCase.code" />
+            <el-tag :type="runningCaseId === scope.row.testCase.id ? 'success' : 'info'"
+              >TC-{{ scope.row.testCase.code }}</el-tag
+            >
           </template>
         </el-table-column>
         <el-table-column
@@ -64,6 +84,7 @@
           <template #default="scope">
             <span
               class="case-name"
+              :class="{ highlight: runningCaseId === scope.row.testCase.id }"
               v-html="scope.row['testCase.details.nameHighlightLabel'] || scope.row.testCase.details.name" />
           </template>
         </el-table-column>
@@ -90,7 +111,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           :label="$t('test.case.list.header.owner')"
           prop="testCase.details.owner.nickname"
           sortable="custom"
@@ -109,6 +130,26 @@
                 inline />
             </el-tooltip>
           </template>
+        </el-table-column> -->
+        <el-table-column
+          :label="$t('test.case.list.header.latestRunStatus')"
+          prop="latestRun.status"
+          sortable="custom"
+          min-width="30"
+          class-name="run-status-column">
+          <template #default="scope">
+            <el-tooltip
+              v-if="scope.row.latestRun"
+              :content="
+                $t('test.case.list.table.latestRunTip', {
+                  nickname: scope.row.latestRun.createdBy.nickname,
+                  latestRunTime: scope.row.latestRun.createdTimeFormatted
+                })
+              "
+              placement="left">
+              <TestRunStatusIcon :status="scope.row.latestRun.status" />
+            </el-tooltip>
+          </template>
         </el-table-column>
         <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
           <template #default="scope">
@@ -121,11 +162,8 @@
                   <el-dropdown-item icon="VideoPlay" @click.native="runCase(scope.$index, scope.row)">{{
                     $t('test.plan.items.run')
                   }}</el-dropdown-item>
-                  <el-dropdown-item icon="Clock" @click.native="showRuns(scope.row)">{{
-                    $t('test.plan.items.records')
-                  }}</el-dropdown-item>
                   <el-dropdown-item icon="Edit" @click.native="showCaseDetails(scope.row)">{{
-                    $t('common.details')
+                    $t('test.plan.items.caseDetails')
                   }}</el-dropdown-item>
                   <el-dropdown-item icon="Delete" @click.native="deleteItem(scope.$index, scope.row)">{{
                     $t('common.unlink')
@@ -164,17 +202,30 @@
     :selectedCaseIds="selectedCaseIds"
     @caseSelected="handleCaseSelected"
     @casePickerClosed="toggleCasePicker" />
-  <TestRunEdit v-if="runningCaseId" :test-case-id="runningCaseId" @testRunClosed="hideTestRun" />
+  <TestRunEdit
+    v-if="caseRunEditVisible"
+    :test-case-id="runningCaseId"
+    :test-case-index="runningCaseIndex"
+    :test-plan-id="testPlanId"
+    :test-run-id="latestRunId"
+    :total-size="totalElements"
+    @prevTestRun="handlePrevCase"
+    @nextTestRun="handleNextCase"
+    @testRunSaved="handleTestRunSaved"
+    @testRunClosed="hideTestRun" />
 </template>
 
 <script>
 import Avatar from '@/components/common/Avatar.vue'
 import { testPlanApi } from '@/api/testing.js'
 import highlight from '@/utils/highlight.js'
+import utils from '@/utils/util.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import TestCasePicker from './TestCasePicker.vue'
 import TestRunEdit from './TestRunEdit.vue'
+import TestRunStatusIcon from '@/components/common/TestRunStatusIcon.vue'
+import TestPlanStatistics from './TestPlanStatistics.vue'
 
 export default {
   name: 'TestPlanItemList',
@@ -182,12 +233,19 @@ export default {
     Avatar,
     PriorityIcon,
     TestCasePicker,
-    TestRunEdit
+    TestRunEdit,
+    TestRunStatusIcon,
+    TestPlanStatistics
   },
+  emits: ['itemChanged'],
   props: {
     testPlanId: {
       type: String,
       default: null
+    },
+    testPlan: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -206,9 +264,13 @@ export default {
       loading: false,
       casePickerVisible: false,
       selectedCaseIds: [],
-      runningCaseId: null
+      caseRunEditVisible: false,
+      runningCaseId: null,
+      runningCaseIndex: 0,
+      latestRunId: null
     }
   },
+  computed: {},
   created() {
     this.project = this.$store.get('project')
   },
@@ -218,31 +280,48 @@ export default {
   methods: {
     loadPlanItems() {
       this.loading = true
-      testPlanApi
-        .searchPlanItems(this.testPlanId, this.filter)
-        .then((res) => {
-          this.planItems = highlight.highlight(
-            res.data.results,
-            this.filter.keyword,
-            'testCase.code',
-            'testCase.details.name'
-          )
-          this.totalElements = res.data.totalElements
-          this.totalPages = res.data.totalPages
+      return new Promise((resolve, reject) => {
+        testPlanApi
+          .searchPlanItems(this.testPlanId, this.filter)
+          .then((res) => {
+            this.planItems = highlight.highlight(
+              res.data.results,
+              this.filter.keyword,
+              'testCase.code',
+              'testCase.details.name'
+            )
 
-          if (this.totalElements > 0) {
-            this.loadAllPlanCaseIds()
-          } else {
-            this.selectedCaseIds = []
-          }
-        })
-        .finally(() => {
-          setTimeout(() => {
-            this.loading = false
-          }, 200)
-        })
+            this.planItems.forEach((item) => {
+              this.formatItem(item)
+            })
+
+            this.totalElements = res.data.totalElements
+            this.totalPages = res.data.totalPages
+
+            if (this.totalElements > 0) {
+              this.loadAllPlanCaseIds()
+            } else {
+              this.selectedCaseIds = []
+            }
+
+            resolve(this.planItems)
+          })
+          .finally(() => {
+            setTimeout(() => {
+              this.loading = false
+            }, 200)
+          })
+      })
+    },
+    formatItem(item) {
+      if (item.latestRun) {
+        utils.formatCreateUpdateTime(item.latestRun)
+      }
+      utils.formatCreateUpdateTime(item.testCase)
     },
     sortChange(event) {
+      this.runningCaseId = null
+      this.runningCaseIndex = 0
       this.filter.orders = []
       if (event.prop && event.order) {
         this.filter.orders.push({
@@ -254,6 +333,8 @@ export default {
       this.loadPlanItems()
     },
     keywordChanged() {
+      this.runningCaseId = null
+      this.runningCaseIndex = 0
       this.filter.page = 1
       this.loadPlanItems()
     },
@@ -267,23 +348,73 @@ export default {
       this.$store.set('testPlanItemListPageSize', this.filter.pageSize)
       this.loadPlanItems()
     },
-    runCase(index, row) {
-      this.runningCaseId = row.testCase.id
-    },
-    hideTestRun() {
-      this.runningCaseId = null
-    },
-    showRuns(row) {
-      this.$router.push({ name: 'TestRunList', params: { testCaseId: row.testCase.id } })
-    },
-    showCaseDetails(row) {
-      this.$router.push({
-        name: 'TestCaseEdit',
-        params: { testCaseId: row.testCase.id }
-      })
+    startRun() {
+      this.runCaseByOverallIndex(this.runningCaseIndex)
     },
     itemClicked(row) {
-      this.showCaseDetails(row)
+      const index = this.planItems.indexOf(row)
+      this.runCase(index, row)
+    },
+    runCase(index, row) {
+      // this.caseRunEditVisible = true
+      // this.runningCaseId = row.testCase.id
+      this.runningCaseIndex = this.toOverallIndex(index)
+      this.runCaseByIndexInPage(index)
+    },
+    toOverallIndex(index) {
+      return (this.filter.page - 1) * this.filter.pageSize + index
+    },
+    toIndexInPage(overallIndex) {
+      return overallIndex % this.filter.pageSize
+    },
+    hideTestRun() {
+      this.caseRunEditVisible = false
+    },
+    handlePrevCase() {
+      if (this.runningCaseIndex <= 0) {
+        ElMessage.warning(this.$t('test.plan.items.msg.isFirstAlready'))
+        return
+      }
+      this.runningCaseIndex--
+      this.runCaseByOverallIndex(this.runningCaseIndex)
+    },
+    handleNextCase() {
+      if (this.runningCaseIndex >= this.totalElements - 1) {
+        ElMessage.warning(this.$t('test.plan.items.msg.isLastAlready'))
+        return
+      }
+      this.runningCaseIndex++
+      this.runCaseByOverallIndex(this.runningCaseIndex)
+    },
+    runCaseByOverallIndex(overallIndex) {
+      // convert the overall index to the item index in the page,
+      // e.g. if overallIndex is 25 and pageSize is 10, indexInPage will be 5
+      const indexInPage = overallIndex % this.filter.pageSize
+      // calculate the target page, e.g. if overallIndex is 25 and pageSize is 10,
+      // targetPage will be 3 (1-based), so we need to load page 3 (1-based)
+      const targetPage = Math.ceil((overallIndex + 1) / this.filter.pageSize)
+      // if the target page is different from the current page, load the new page
+      if (targetPage !== this.filter.page) {
+        this.filter.page = targetPage
+        this.loadPlanItems().then(() => {
+          this.runCaseByIndexInPage(indexInPage)
+        })
+      } else {
+        this.runCaseByIndexInPage(indexInPage)
+      }
+    },
+    runCaseByIndexInPage(indexInPage) {
+      this.caseRunEditVisible = true
+      const itemToRun = this.planItems[indexInPage]
+      this.runningCaseId = itemToRun.testCase.id
+      this.latestRunId = itemToRun.latestRun?.id || null
+    },
+    handleTestRunSaved(run) {
+      this.loadPlanItems()
+      this.$emit('itemChanged')
+    },
+    showCaseDetails(row) {
+      this.$router.push({ name: 'TestCaseDetails', params: { testCaseId: row.testCase.id } })
     },
     deleteItem(index, row) {
       ElMessageBox.confirm(
@@ -301,6 +432,7 @@ export default {
             this.totalElements--
             ElMessage.success(this.$t('test.plan.items.msg.delSuccess'))
             this.selectedCaseIds = this.selectedCaseIds.filter((id) => id !== row.testCase.id)
+            this.$emit('itemChanged')
           })
         })
         .catch(() => {
@@ -321,6 +453,7 @@ export default {
         testPlanApi.createPlanItems(this.testPlanId, caseIds).then(() => {
           ElMessage.success(this.$t('test.plan.items.msg.addSuccess'))
           this.loadPlanItems()
+          this.$emit('itemChanged') // Emit event with added cases
         })
       }
       this.toggleCasePicker()
@@ -331,6 +464,22 @@ export default {
 
 <style lang="less">
 .test-plan-item-list {
+  .filter-row {
+    .right-part {
+      margin-left: unset;
+    }
+  }
+  .test-case-row {
+    .cursor-arrow {
+      color: var(--el-color-primary);
+    }
+    .case-name {
+      &.highlight {
+        font-weight: 500;
+        color: var(--el-color-primary);
+      }
+    }
+  }
   .owner-column {
     .cell {
       line-height: 1;

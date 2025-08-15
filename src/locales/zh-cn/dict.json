@@ -58,7 +58,7 @@
   "testRunStatuses": {
     "SUCCESS": "成功",
     "FAILED": "失败",
-    "SKIPPED": "跳过",
-    "BLOCKED": "阻塞"
+    "BLOCKED": "阻塞",
+    "SKIPPED": "跳过"
   }
 }

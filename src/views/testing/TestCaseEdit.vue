@@ -3,13 +3,13 @@
     <div class="title">
       <div class="left-part">
         <span>{{ testCase.id ? $t('test.case.edit.title.edit') : $t('test.case.edit.title.new') }}</span>
-        <el-tag type="info" class="ml-2">TC-{{ testCase.code }}</el-tag>
+        <el-tag v-if="testCase.code" type="info" class="ml-2">TC-{{ testCase.code }}</el-tag>
+      </div>
+      <div class="old-version-warning" v-if="isOldVersion">
+        <el-icon class="text-lg mr-1"><WarnTriangleFilled /></el-icon>
+        <span>{{ $t('test.case.edit.msg.oldVersion') }}</span>
       </div>
       <div class="right-part flex">
-        <div class="old-version-warning" v-if="isOldVersion">
-          <el-icon class="text-lg mr-1"><WarnTriangleFilled /></el-icon>
-          <span>{{ $t('test.case.edit.msg.oldVersion') }}</span>
-        </div>
         <el-dropdown v-if="testCase.latestVersion >= 1" trigger="click" class="ml-20px mt-2px">
           <el-tag type="info" size="small"
             >{{ $t('test.case.edit.version', { version: testCase.details.version }) }}
@@ -19,7 +19,7 @@
           </el-tag>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item v-for="version in descVersions" :key="version" @click.native="loadDetails(version)">
+              <el-dropdown-item v-for="version in listVersions" :key="version" @click.native="loadDetails(version)">
                 <span>{{ $t('test.case.edit.version', { version: version }) }}</span>
                 <el-icon v-if="version === testCase.details.version" class="ml-2"><Check /></el-icon>
               </el-dropdown-item>
@@ -188,6 +188,7 @@
         <FileUploader
           :files="testCase.files"
           :projectId="project.id"
+          :readonly="!project.isDeveloper || isOldVersion"
           targetType="TEST_CASE_ATTACHMENT"
           @fileUploaded="handleFileUploaded"
           @fileDeleted="handleFileDeleted" />
@@ -214,7 +215,7 @@
           type="primary"
           class="no-border"
           @click="saveTestCase"
-          >{{ $t('common.save') }}</el-button
+          >{{ testCase.id ? $t('common.update') : $t('common.create') }}</el-button
         >
       </div>
     </div>
@@ -293,7 +294,7 @@ export default {
     isOldVersion() {
       return this.testCase.latestVersion !== this.testCase.details.version
     },
-    descVersions() {
+    listVersions() {
       return Array.from({ length: this.testCase.latestVersion }, (_, i) => this.testCase.latestVersion - i)
     }
   },

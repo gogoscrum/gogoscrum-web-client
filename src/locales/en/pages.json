@@ -10,6 +10,7 @@
     "back": "Back",
     "close": "Close",
     "create": "Create",
+    "update": "Update",
     "edit": "Edit",
     "details": "Details",
     "copy": "Duplicate",
@@ -31,6 +32,10 @@
     "uploading": "Uploading",
     "more": "More",
     "pageSize": "Page size",
+    "createdBy": "Created by",
+    "updatedBy": "Updated by",
+    "createdTime": "Created time",
+    "updatedTime": "Updated time",
     "msg": {
       "formValidationFail": "Please fill out all required fields",
       "h5NotSupported": "Mobile not supported so far, please switch to PC",
@@ -42,6 +47,10 @@
       "delFileConfirmTitle": "Delete file",
       "delFileConfirmMsg": "You are about to delete file <strong class=\"red\">\"{name}\"</strong>, which cannot be recovered. Are you sure to proceed?",
       "delFileSuccess": "File deleted successfully."
+    },
+    "filter": {
+      "totalElements": "Total {count} items",
+      "matchedResults": "{count} matched results"
     }
   },
   "uploader": {
@@ -199,6 +208,7 @@
       "testing": "Testing",
       "testCase": "Test case",
       "testPlan": "Test plan",
+      "testRun": "Records",
       "testReport": "Test report",
       "charts": "Charts",
       "burndown": "Burndown",
@@ -837,6 +847,7 @@
           "edit": "Edit test case"
         },
         "version": "Version {version}",
+        "latestVersion": "Latest version",
         "name": "Name",
         "type": "Test type",
         "automated": "Automated",
@@ -857,6 +868,7 @@
           "moveDown": "Move down"
         },
         "files": "Attachments",
+        "filesEmpty": "No attachments in this test case",
         "uploaderDesc": "Drop file here, or click to select file",
         "msg": {
           "oldVersion": "This is an old version of the test case",
@@ -867,6 +879,10 @@
           "delConfirmMsg": "You are about to delete test case <strong class=\"red\">\"{caseName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
           "delSuccess": "Test case deleted successfully"
         }
+      },
+      "details": {
+        "title": "Test case details",
+        "tabRuns": "Execution records"
       },
       "list": {
         "filter": {
@@ -881,16 +897,18 @@
           "type": "Type",
           "priority": "Priority",
           "owner": "Owner",
-          "creator": "Creator"
+          "creator": "Creator",
+          "latestRunStatus": "Result"
         },
         "table": {
           "creatorTip": "{nickname} created at {createdTime}",
+          "latestRunTip": "{nickname} executed at {latestRunTime}",
           "emptyMsg": "No test cases in this project",
-          "run": "Run",
+          "run": "Execute",
           "records": "Records"
         },
         "msg": {
-          "issueCopied": "Test case copied successfully"
+          "caseCopied": "Test case copied successfully"
         }
       }
     },
@@ -911,6 +929,7 @@
           "nameMissing": "Please input test plan name",
           "createSuccess": "Test plan created successfully",
           "updateSuccess": "Test plan updated successfully",
+          "cloneSuccess": "Test plan copied successfully",
           "delConfirmTitle": "Delete test plan",
           "delConfirmMsg": "You are about to delete test plan <strong class=\"red\">\"{planName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
           "delSuccess": "Test plan deleted successfully"
@@ -922,8 +941,10 @@
       },
       "items": {
         "add": "Link cases",
-        "run": "Run",
-        "records": "Records",
+        "run": "Execute",
+        "startRun": "Start execute",
+        "continueRun": "Continue execute",
+        "caseDetails": "Case details",
         "emptyMsg": "No test cases in this plan",
         "msg": {
           "delConfirmTitle": "Unlink test case",
@@ -965,6 +986,8 @@
       "resultPlaceholder": "Please input actual result remark",
       "status": "Test case execution result",
       "files": "Attachments",
+      "previous": "Previous",
+      "next": "Next",
       "createdTime": "Execution result created at {timestamp}",
       "updatedTime": "Execution result updated at {timestamp}",
       "msg": {
@@ -976,12 +999,14 @@
         "caseBasics": "Test case basic info",
         "title": "Execution records",
         "filter": {
-          "new": "New record",
+          "new": "New execution",
           "totalElements": "{count} execution records"
         },
+        "caseName": "Test case",
         "createdTime": "Execution time",
         "createdBy": "Executor",
         "version": "Version",
+        "planName": "Test plan",
         "status": "Result",
         "msg": {
           "empty": "No test execution records",

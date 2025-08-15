@@ -56,9 +56,9 @@
     "OTHER": "Other"
   },
   "testRunStatuses": {
-    "SKIPPED": "Skipped",
-    "BLOCKED": "Blocked",
     "SUCCESS": "Success",
-    "FAILED": "Failed"
+    "FAILED": "Failed",
+    "BLOCKED": "Blocked",
+    "SKIPPED": "Skipped"
   }
 }

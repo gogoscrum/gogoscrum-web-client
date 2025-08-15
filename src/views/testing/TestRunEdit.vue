@@ -5,6 +5,14 @@
     class="test-run-drawer"
     @closed="$emit('testRunClosed')"
     size="960">
+    <template #header>
+      <div class="flex items-center">
+        <div class="header-content">
+          {{ testRun.id ? $t('test.run.titleEdit') : $t('test.run.titleNew') }}
+        </div>
+        <el-tag type="info" class="ml-2">TC-{{ testCase.code }}</el-tag>
+      </div>
+    </template>
     <TestCaseBasics :testCase="testCase" />
     <el-form
       ref="testRunForm"
@@ -78,16 +86,39 @@
     </el-form>
     <template #footer>
       <div class="footer">
-        <el-button
-          v-if="testCase.id && project.isDeveloper"
-          type="danger"
-          icon="Delete"
-          class="delete-case-button no-border"
-          plain
-          size="default"
-          @click="deleteTestRun"
-          >{{ $t('common.delete') }}</el-button
-        >
+        <div class="min-w-150px text-left">
+          <el-button
+            v-if="testRun.id && project.isDeveloper"
+            type="danger"
+            icon="Delete"
+            class="delete-case-button no-border"
+            plain
+            size="default"
+            @click="deleteTestRun"
+            >{{ $t('common.delete') }}</el-button
+          >
+        </div>
+        <div v-if="testPlanId" class="flex items-center">
+          <el-button
+            type="primary"
+            icon="ArrowLeft"
+            text
+            bg
+            :disabled="testCaseIndex === 0"
+            @click="$emit('prevTestRun')"
+            >{{ $t('test.run.previous') }}</el-button
+          >
+          <el-button
+            type="primary"
+            text
+            bg
+            class="!ml-20px"
+            :disabled="testCaseIndex === totalSize - 1"
+            @click="$emit('nextTestRun')"
+            >{{ $t('test.run.next') }}<el-icon class="ml-6px"><ArrowRight /></el-icon
+          ></el-button>
+          <span class="desc ml-32px">{{ testCaseIndex + 1 }} / {{ totalSize }}</span>
+        </div>
         <div class="flex items-center">
           <el-button size="default" class="no-border" @click="toggleDrawer">{{ $t('common.cancel') }}</el-button>
           <el-button
@@ -97,7 +128,7 @@
             type="primary"
             class="no-border"
             @click="saveTestRun"
-            >{{ $t('common.save') }}</el-button
+            >{{ testRun.id ? $t('common.update') : $t('common.create') }}</el-button
           >
         </div>
       </div>
@@ -124,15 +155,27 @@ export default {
     TestRunStatusSelector,
     FileUploader
   },
-  emits: ['testRunSaved', 'deleteTestRun', 'testRunClosed'],
+  emits: ['testRunSaved', 'deleteTestRun', 'testRunClosed', 'prevTestRun', 'nextTestRun'],
   props: {
     testCaseId: {
       type: String,
       required: true
     },
+    testPlanId: {
+      type: String,
+      required: false
+    },
     testRunId: {
       type: String,
-      default: 'new'
+      default: null
+    },
+    testCaseIndex: {
+      type: Number,
+      default: 0
+    },
+    totalSize: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -148,10 +191,16 @@ export default {
         stepResults: [],
         status: ''
       },
+      autoNext: true,
       saving: false,
       rules: {
-        status: [{ required: true, message: this.$t('test.run.msg.statusRequired'), trigger: 'change' }]
+        status: [{ required: true, message: this.$t('test.run.msg.statusRequired'), trigger: 'blur' }]
       }
+    }
+  },
+  watch: {
+    testCaseId(newId) {
+      this.loadCase()
     }
   },
   created() {
@@ -163,15 +212,10 @@ export default {
       testCaseApi.get(this.testCaseId).then((response) => {
         this.testCase = response.data
 
-        this.testRun.testCaseId = this.testCase.id
-        this.testRun.projectId = this.project.id
-        this.testRun.testCaseDetailsId = this.testCase.details.id
-        this.testRun.testCaseVersion = this.testCase.details.version
-
-        if (this.testRunId !== 'new') {
+        if (this.testRunId && this.testRunId !== 'new') {
           this.loadTestRun()
         } else {
-          this.initStepResults()
+          this.initTestRun()
         }
       })
     },
@@ -192,13 +236,26 @@ export default {
         }
       })
     },
-    initStepResults() {
+    initTestRun() {
+      this.testRun = {
+        testCaseId: this.testCaseId,
+        testPlanId: this.testPlanId,
+        projectId: this.project.id,
+        testCaseDetailsId: this.testCase.details.id,
+        testCaseVersion: this.testCase.details.version,
+        status: '',
+        stepResults: [],
+        files: []
+      }
+
       if (this.testCase.details?.steps?.length) {
         this.testRun.stepResults = this.testCase.details.steps.map((step) => ({
           ...step,
           status: '',
           result: ''
         }))
+      } else {
+        this.testRun.stepResults = []
       }
     },
     stepStatusChaned(status) {
@@ -243,12 +300,17 @@ export default {
           ElMessage.success(
             this.testRun.id ? this.$t('test.run.msg.updatedSuccess') : this.$t('test.run.msg.createdSuccess')
           )
+          this.testRun = res.data
           this.$emit('testRunSaved', res.data)
         })
         .finally(() => {
           setTimeout(() => {
             this.saving = false
-            this.toggleDrawer()
+            if (this.autoNext && this.testCaseIndex < this.totalSize - 1) {
+              this.$emit('nextTestRun')
+            } else {
+              this.toggleDrawer()
+            }
           }, 200)
         })
     },

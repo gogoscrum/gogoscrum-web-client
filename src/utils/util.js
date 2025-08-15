@@ -113,13 +113,17 @@ const getLastViewedOrDefaultSprint = (currentUserId, project) => {
   return sprint
 }
 
+const formatDateTime = (value) => {
+  return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+}
+
 const formatCreateUpdateTime = (entity) => {
   if (entity.createdTime) {
-    entity.createdTimeFormatted = dayjs(entity.createdTime).format('YYYY-MM-DD HH:mm:ss')
+    entity.createdTimeFormatted = formatDateTime(entity.createdTime)
   }
 
   if (entity.updatedTime) {
-    entity.updatedTimeFormatted = dayjs(entity.updatedTime).format('YYYY-MM-DD HH:mm:ss')
+    entity.updatedTimeFormatted = formatDateTime(entity.updatedTime)
   }
   return entity
 }
@@ -213,6 +217,7 @@ export default {
   downloadFile,
   loadLastViewedBoardId,
   getLastViewedOrDefaultSprint,
+  formatDateTime,
   formatCreateUpdateTime,
   formatAndCaclSprintStatus,
   isLocalhost,

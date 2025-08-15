@@ -1,23 +1,10 @@
 <template>
   <div class="test-runs-list-page page">
-    <div class="title">
+    <div class="filter-row">
       <div class="left-part">
-        <span>{{ $t('test.run.list.caseBasics') }}</span>
-      </div>
-      <div class="right-part">
-        <el-button text type="primary" @click="$router.go(-1)">
-          {{ $t('common.back') }}
-        </el-button>
-      </div>
-    </div>
-    <TestCaseBasics :testCase="testCase" />
-    <div class="title mt-50px">
-      <span>{{ $t('test.run.list.title') }}</span>
-    </div>
-    <div class="runs-list">
-      <div class="filter-row">
         <div class="left-part">
           <el-button
+            v-if="filter.caseId"
             :disabled="!project.isDeveloper"
             text
             type="primary"
@@ -27,90 +14,165 @@
             >{{ $t('test.run.list.filter.new') }}</el-button
           >
         </div>
-        <div class="right-part">
-          <div class="summary-info">
-            <el-icon v-if="loading" class="is-loading refresh-btn">
-              <Loading />
-            </el-icon>
-            <el-icon v-else @click="loadRuns" class="refresh-btn">
-              <Refresh />
-            </el-icon>
-            <span class="item-count">{{ $t('test.run.list.filter.totalElements', { count: totalElements }) }}</span>
-          </div>
-        </div>
       </div>
-      <el-table
-        :data="runs"
-        v-loading="loading"
-        :empty-text="$t('test.run.list.msg.empty')"
-        :border="false"
-        :show-header="true"
-        class="test-runs-table"
-        row-class-name="clickable"
-        @row-click="showRunEdit">
-        <el-table-column :label="$t('test.run.list.createdTime')" prop="createdTimeFormatted" min-width="70">
-        </el-table-column>
-        <el-table-column :label="$t('test.run.list.createdBy')" min-width="50">
-          <template #default="scope">
-            <Avatar
-              :name="scope.row.createdBy.nickname"
-              :showName="true"
-              :size="22"
-              :src="scope.row.createdBy.avatarUrl"
-              inline></Avatar>
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('test.run.list.version')" min-width="50">
-          <template #default="scope">
-            <el-tag type="info" size="default"
-              >{{ $t('test.case.edit.version', { version: scope.row.testCaseVersion }) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('test.run.list.status')" min-width="50">
-          <template #default="scope">
-            <TestRunStatusIcon :status="scope.row.status" />
-          </template>
-        </el-table-column>
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="right">
-          <template #default="scope">
-            <el-dropdown trigger="click" placement="bottom">
-              <div class="more-action-icon" @click.stop>
-                <el-icon><MoreFilled /></el-icon>
-              </div>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item icon="ZoomIn" @click.native="showRunEdit(scope.row)">{{
-                    $t('common.details')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item icon="Delete" @click.native="deleteRun(scope.$index, scope.row)">{{
-                    $t('common.delete')
-                  }}</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div v-if="!loading" class="table-footer">
-        <el-pagination
-          :current-page="filter.page"
-          :page-count="totalPages"
-          size="small"
-          :page-sizes="[10, 15, 20, 25, 50]"
-          :default-page-size="filter.pageSize"
-          :hide-on-single-page="filter.pageSize <= 10"
-          background
-          layout="prev, pager, next, sizes"
-          @current-change="pageChanged"
-          @size-change="pageSizeChanged">
-        </el-pagination>
+      <div class="right-part">
+        <div class="summary-info">
+          <el-icon v-if="loading" class="is-loading refresh-btn">
+            <Loading />
+          </el-icon>
+          <el-icon v-else @click="loadRuns" class="refresh-btn">
+            <Refresh />
+          </el-icon>
+          <span class="item-count">{{
+            filter.keyword
+              ? $t('common.filter.matchedResults', { count: totalElements })
+              : $t('test.run.list.filter.totalElements', { count: totalElements })
+          }}</span>
+        </div>
+        <el-form-item v-if="!filter.caseId" class="mb-0!">
+          <el-input
+            class="search-input"
+            v-model="filter.keyword"
+            clearable
+            prefix-icon="Search"
+            :placeholder="$t('test.case.list.filter.search')"
+            @input="filterChanged"></el-input>
+        </el-form-item>
       </div>
     </div>
+
+    <!-- <div class="main"> -->
+    <el-table
+      :data="runs"
+      v-loading="loading"
+      :empty-text="$t('test.run.list.msg.empty')"
+      :border="false"
+      :show-header="true"
+      class="test-runs-table"
+      row-class-name="clickable"
+      @filterChange="filterChange"
+      @sort-change="sortChange"
+      @row-click="showRunEdit">
+      <el-table-column
+        v-if="!filter.caseId"
+        :label="$t('test.case.list.header.code')"
+        prop="testCase.code"
+        sortable="custom"
+        width="85"
+        align="center">
+        <template #default="scope">
+          <el-tag type="info"
+            >TC-<span v-html="scope.row['testCase.codeHighlightLabel'] || scope.row.testCase.code"
+          /></el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="!filter.caseId"
+        :label="$t('test.run.list.caseName')"
+        prop="testCase.details.name"
+        sortable="custom"
+        min-width="100">
+        <template #default="scope">
+          <span v-html="scope.row['testCase.details.nameHighlightLabel'] || scope.row.testCase.details.name" />
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('test.run.list.createdTime')" prop="createdTime" sortable="custom" min-width="60">
+        <template #default="scope">
+          {{ scope.row.createdTimeFormatted }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        :label="$t('test.run.list.createdBy')"
+        prop="createdBy.nickname"
+        sortable="custom"
+        column-key="creators"
+        :filters="userFilters"
+        :filter-multiple="true"
+        min-width="45"
+        align="center">
+        <template #filter-icon>
+          <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
+        </template>
+        <template #default="scope">
+          <Avatar
+            :name="scope.row.createdBy.nickname"
+            :showName="false"
+            :showTooltip="true"
+            :size="22"
+            :src="scope.row.createdBy.avatarUrl"
+            inline></Avatar>
+        </template>
+      </el-table-column>
+      <el-table-column
+        :label="$t('test.run.list.planName')"
+        prop="testPlan.name"
+        sortable="custom"
+        column-key="planIds"
+        :filters="planFilters"
+        :filter-multiple="true"
+        min-width="70">
+        <template #filter-icon>
+          <el-icon class="table-header-filter-icon" :class="{ active: filter.planIds?.length }"><Filter /></el-icon>
+        </template>
+        <template #default="scope">
+          {{ scope.row.testPlan?.name }}
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        :label="$t('test.run.list.status')"
+        prop="status"
+        sortable="custom"
+        column-key="statuses"
+        :filters="runStatusFilters"
+        :filter-multiple="true"
+        min-width="40">
+        <template #filter-icon>
+          <el-icon class="table-header-filter-icon" :class="{ active: filter.statuses?.length }"><Filter /></el-icon>
+        </template>
+        <template #default="scope">
+          <TestRunStatusIcon :status="scope.row.status" />
+        </template>
+      </el-table-column>
+      <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+        <template #default="scope">
+          <el-dropdown trigger="click" placement="bottom">
+            <div class="more-action-icon" @click.stop>
+              <el-icon><MoreFilled /></el-icon>
+            </div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item icon="ZoomIn" @click.native="showRunEdit(scope.row)">{{
+                  $t('common.details')
+                }}</el-dropdown-item>
+                <el-dropdown-item icon="Delete" @click.native="deleteRun(scope.$index, scope.row)">{{
+                  $t('common.delete')
+                }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div v-if="!loading" class="table-footer">
+      <el-pagination
+        :current-page="filter.page"
+        :page-count="totalPages"
+        size="small"
+        :page-sizes="[10, 15, 20, 25, 50]"
+        :default-page-size="filter.pageSize"
+        :hide-on-single-page="filter.pageSize <= 10"
+        background
+        layout="prev, pager, next, sizes"
+        @current-change="pageChanged"
+        @size-change="pageSizeChanged">
+      </el-pagination>
+    </div>
+    <!-- </div> -->
   </div>
   <TestRunEdit
     v-if="editingRunId"
-    :test-case-id="testCaseId"
+    :test-case-id="editingRunCaseId"
     :test-run-id="editingRunId"
     @testRunSaved="testRunSaved"
     @deleteTestRun="deleteRunById"
@@ -118,19 +180,19 @@
 </template>
 
 <script>
-import { testCaseApi, testRunApi } from '@/api/testing.js'
+import { testPlanApi, testRunApi } from '@/api/testing.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import utils from '@/utils/util.js'
+import highlight from '@/utils/highlight.js'
+import dict from '@/locales/zh-cn/dict.json'
 import TestRunStatusIcon from '@/components/common/TestRunStatusIcon.vue'
 import Avatar from '@/components/common/Avatar.vue'
 import TestRunEdit from './TestRunEdit.vue'
-import TestCaseBasics from './TestCaseBasics.vue'
 
 export default {
-  name: 'TestCaseEdit',
+  name: 'TestRunList',
   components: {
     TestRunStatusIcon,
-    TestCaseBasics,
     Avatar,
     TestRunEdit
   },
@@ -139,13 +201,9 @@ export default {
     return {
       projectId: this.$route.params.projectId,
       project: {},
-      testCaseId: this.$route.params.testCaseId,
-      testCase: {
-        details: {}
-      },
       filter: {
         projectId: this.$route.params.projectId,
-        testCaseId: this.$route.params.testCaseId,
+        caseId: this.$route.params.testCaseId,
         orders: [],
         page: 1,
         pageSize: this.$store.get('testRunListPageSize') || 10
@@ -154,22 +212,40 @@ export default {
       totalPages: 0,
       loading: false,
       runs: [],
-      editingRunId: null
+      editingRunId: null,
+      editingRunCaseId: null,
+      userFilters: [],
+      runStatusFilters: [],
+      planFilters: []
     }
   },
   computed: {},
   created() {
     this.project = this.$store.get('project')
-    if (this.testCaseId) {
-      this.loadCase()
-      this.loadRuns()
-    }
+    this.loadRuns()
+    this.initColumnFilters()
   },
   mounted() {},
   methods: {
-    loadCase() {
-      testCaseApi.get(this.testCaseId).then((res) => {
-        this.testCase = res.data
+    initColumnFilters() {
+      this.userFilters = this.project.projectMembers.map((member) => ({
+        text: member.user.nickname,
+        value: member.user.id
+      }))
+
+      this.runStatusFilters = Object.keys(dict.testRunStatuses).map((key) => ({
+        text: this.$t(`testRunStatuses.${key}`),
+        value: key
+      }))
+
+      this.initPlanFilters()
+    },
+    initPlanFilters() {
+      testPlanApi.search({ projectId: this.projectId, pageSize: 100 }).then((res) => {
+        this.planFilters = res.data.results.map((plan) => ({
+          text: plan.name,
+          value: plan.id
+        }))
       })
     },
     loadRuns() {
@@ -177,7 +253,12 @@ export default {
       testRunApi
         .search(this.filter)
         .then((res) => {
-          this.runs = res.data.results
+          this.runs = highlight.highlight(
+            res.data.results,
+            this.filter.keyword,
+            'testCase.code',
+            'testCase.details.name'
+          )
           this.totalElements = res.data.totalElements
           this.totalPages = res.data.totalPages
 
@@ -196,15 +277,19 @@ export default {
     },
     newRun() {
       this.editingRunId = 'new'
+      this.editingRunCaseId = this.filter.caseId
     },
     showRunEdit(row) {
       this.editingRunId = row.id
+      this.editingRunCaseId = row.testCaseId
     },
     hideRunEdit() {
       this.editingRunId = null
+      this.editingRunCaseId = null
     },
     testRunSaved(testRun) {
       this.formatTestRun(testRun)
+      console.log('testRunSaved', testRun)
       let index = utils.indexInArray(this.runs, testRun.id)
       if (index >= 0) {
         this.runs.splice(index, 1, testRun)
@@ -240,6 +325,67 @@ export default {
           // Cancelled, do nothing
         })
     },
+    sortChange(event) {
+      this.filter.orders = []
+      if (event.prop && event.order) {
+        this.filter.orders.push({
+          property: event.prop,
+          direction: event.order === 'ascending' ? 'ASC' : 'DESC'
+        })
+      }
+      this.filterChanged()
+    },
+    filterChange(filters) {
+      // if (filters.priorities) {
+      //   if (filters.priorities.length > 0) {
+      //     this.filter.priorities = filters.priorities
+      //   } else {
+      //     this.filter.priorities = null
+      //   }
+      // }
+
+      // if (filters.types) {
+      //   if (filters.types.length > 0) {
+      //     this.filter.types = filters.types
+      //   } else {
+      //     this.filter.types = null
+      //   }
+      // }
+
+      // if (filters.owners) {
+      //   if (filters.owners.length > 0) {
+      //     this.filter.owners = filters.owners
+      //   } else {
+      //     this.filter.owners = null
+      //   }
+      // }
+
+      if (filters.creators) {
+        if (filters.creators.length > 0) {
+          this.filter.creators = filters.creators
+        } else {
+          this.filter.creators = null
+        }
+      }
+
+      if (filters.statuses) {
+        if (filters.statuses.length > 0) {
+          this.filter.statuses = filters.statuses
+        } else {
+          this.filter.statuses = null
+        }
+      }
+
+      if (filters.planIds) {
+        if (filters.planIds.length > 0) {
+          this.filter.planIds = filters.planIds
+        } else {
+          this.filter.planIds = null
+        }
+      }
+
+      this.filterChanged()
+    },
     filterChanged() {
       this.filter.page = 1
       this.loadRuns()
@@ -259,10 +405,5 @@ export default {
 
 <style lang="less" scoped>
 .test-runs-list-page {
-  .title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
 }
 </style>
