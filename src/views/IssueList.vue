@@ -10,7 +10,7 @@
             @click="newIssue"
             class="text-icon-btn"
             icon="CirclePlusFilled"
-            >{{ $t('issueList.header.new') }}</el-button
+            >{{ $t('issueList.header.newIssue') }}</el-button
           >
           <el-button
             :disabled="!project.isDeveloper || loading || !issues?.length"
@@ -185,7 +185,7 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="DocumentCopy" @click.native="cloneIssue(scope.row)">{{
+                  <el-dropdown-item icon="DocumentCopy" @click.native="cloneIssue(scope.$index, scope.row)">{{
                     $t('common.copy')
                   }}</el-dropdown-item>
                   <el-dropdown-item
@@ -220,16 +220,11 @@
                             :divided="index === 0"
                             :key="member.id"
                             @click.native="assignIssueToUser(scope.row, member.user)">
-                            <div class="user-select-option">
-                              <div class="user-avatar">
-                                <avatar
-                                  :name="member.user.nickname"
-                                  :size="20"
-                                  inline
-                                  :src="member.user.avatarUrl"></avatar>
-                              </div>
-                              <div class="username">{{ member.user.nickname }}</div>
-                            </div>
+                            <avatar
+                              :name="member.user.nickname"
+                              :size="20"
+                              showName
+                              :src="member.user.avatarUrl"></avatar>
                           </el-dropdown-item>
                         </el-dropdown-menu>
                       </template>
@@ -243,12 +238,12 @@
         <template v-slot:empty>
           <el-empty :image-size="100" :description="$t('issueList.list.emptyMsg')">
             <el-button :disabled="!project.isDeveloper" type="primary" icon="Plus" size="default" @click="newIssue">{{
-              $t('issueList.header.new')
+              $t('issueList.header.newIssue')
             }}</el-button>
           </el-empty>
         </template>
       </el-table>
-      <div v-if="!loading" class="table-footer">
+      <div class="table-footer">
         <el-pagination
           :current-page="filter.page"
           :page-count="totalPages"
@@ -557,14 +552,16 @@ export default {
     issueDialogClosed() {
       this.editingIssue = null
     },
-    cloneIssue(issue) {
+    cloneIssue(index, issue) {
       issueApi.clone(issue.id).then((res) => {
-        this.issueSaved(res.data)
         ElMessage.success({
           message: this.$t('issueList.msg.issueCopied', {
             issueName: issue.code
           })
         })
+        // insert the cloned issue right after the original issue
+        this.issues.splice(index + 1, 0, res.data)
+        this.totalElements++
       })
     },
     assignIssueToUser(issue, user) {
@@ -640,18 +637,18 @@ export default {
   align-items: center;
 }
 
-.user-select-option {
-  display: flex;
+// .user-select-option {
+//   display: flex;
 
-  .user-avatar {
-    display: flex;
-    align-items: center;
-  }
+//   .user-avatar {
+//     display: flex;
+//     align-items: center;
+//   }
 
-  .username {
-    margin-left: 10px;
-  }
-}
+//   .username {
+//     margin-left: 10px;
+//   }
+// }
 </style>
 
 <style lang="less">

@@ -94,6 +94,52 @@
             ><span>{{ $t('projectLayout.menu.doc') }}</span></template
           >
         </el-menu-item>
+
+        <el-sub-menu index="Testing" class="menu-item">
+          <template #title>
+            <el-icon><Odometer /></el-icon>
+            <span>{{ $t('projectLayout.menu.testing') }}</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item
+              index="TestCaseList"
+              :route="{
+                name: 'TestCaseList',
+                params: { projectId: projectId }
+              }"
+              :class="{ 'menu-selected': ['TestCaseList', 'TestCaseEdit', 'TestCaseDetails'].includes($route.name) }">
+              <span>{{ $t('projectLayout.menu.testCase') }}</span>
+            </el-menu-item>
+            <el-menu-item
+              index="TestPlanList"
+              :route="{
+                name: 'TestPlanList',
+                params: { projectId: projectId }
+              }"
+              :class="{ 'menu-selected': ['TestPlanList', 'TestPlanDetails'].includes($route.name) }">
+              <span>{{ $t('projectLayout.menu.testPlan') }}</span>
+            </el-menu-item>
+            <el-menu-item
+              index="TestRunList"
+              :route="{
+                name: 'TestRunList',
+                params: { projectId: projectId }
+              }"
+              :class="$route.name == 'TestRunList' ? 'menu-selected' : ''">
+              <span>{{ $t('projectLayout.menu.testRun') }}</span>
+            </el-menu-item>
+            <el-menu-item
+              index="TestReportList"
+              :route="{
+                name: 'TestReportList',
+                params: { projectId: projectId }
+              }"
+              :class="$route.name == 'TestReportList' ? 'menu-selected' : ''">
+              <span>{{ $t('projectLayout.menu.testReport') }}</span>
+            </el-menu-item>
+          </el-menu-item-group>
+        </el-sub-menu>
+
         <el-sub-menu index="Charts" class="menu-item">
           <template #title>
             <el-icon><DataLine /></el-icon>
@@ -268,6 +314,8 @@ export default {
         this.$refs.menu.open('more')
       } else if (['IssueList'].includes(route)) {
         this.$refs.menu.open('Issues')
+      } else if (route.startsWith('Test')) {
+        this.$refs.menu.open('Testing')
       }
     },
     setMenuCollpaseFlag() {

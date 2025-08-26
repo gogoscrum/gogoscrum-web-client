@@ -17,12 +17,11 @@
             clearable
             :class="transferProjectForm.owner ? 'has-owner-avatar' : ''">
             <template #prefix>
-              <div class="user-avatar" v-if="transferProjectForm.owner">
-                <avatar
-                  :name="transferProjectForm.owner.nickname"
-                  :size="24"
-                  :src="transferProjectForm.owner.avatarUrl"></avatar>
-              </div>
+              <avatar
+                v-if="transferProjectForm.owner"
+                :name="transferProjectForm.owner.nickname"
+                :size="22"
+                :src="transferProjectForm.owner.avatarUrl"></avatar>
             </template>
 
             <el-option
@@ -31,12 +30,7 @@
               :label="member.user.nickname"
               :value="member.user"
               :disabled="member.user.id == currentUser.id">
-              <div class="user-select-option">
-                <div class="user-avatar">
-                  <avatar :name="member.user.nickname" :size="24" inline :src="member.user.avatarUrl"></avatar>
-                </div>
-                <div class="username">{{ member.user.nickname }}</div>
-              </div>
+              <avatar :name="member.user.nickname" :size="22" showName :src="member.user.avatarUrl"></avatar>
             </el-option>
           </el-select>
         </el-form-item>

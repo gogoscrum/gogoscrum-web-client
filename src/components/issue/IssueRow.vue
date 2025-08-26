@@ -37,12 +37,7 @@
           v-if="issue.owner && issue.owner.nickname"
           :content="$t('issueRow.assignee', { assignee: issue.owner.nickname })"
           placement="left">
-          <avatar
-            :name="issue.owner.nickname"
-            :size="22"
-            :src="issue.owner.avatarUrl"
-            inline
-            class="h-header-user-avatar"></avatar>
+          <avatar :name="issue.owner.nickname" :size="22" :src="issue.owner.avatarUrl"></avatar>
         </el-tooltip>
       </el-col>
       <el-col :xs="8" :sm="2" class="flex-row">

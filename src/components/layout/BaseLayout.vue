@@ -23,7 +23,7 @@
           <template #dropdown>
             <el-dropdown-menu class="header-project-dropdown-list" :class="{ wider: projects?.length }">
               <el-dropdown-item command="newProject">
-                <div class="flex items-center py-1">
+                <div class="flex items-center py-1 font-medium">
                   <el-icon size="16" class="ml-4px !mr-10px"><Plus /></el-icon>
                   {{ $t('baseLayout.header.newProject') }}
                 </div>
@@ -69,7 +69,7 @@
           <template #dropdown>
             <el-dropdown-menu class="header-sprint-dropdown-list">
               <el-dropdown-item command="newSprint">
-                <div class="flex items-center py-1">
+                <div class="flex items-center py-1 font-medium">
                   <el-icon size="16" class="ml-4px !mr-10px"><Plus /></el-icon>
                   {{ $t('baseLayout.header.newSprint') }}
                 </div>
@@ -101,7 +101,7 @@
                 </div>
               </el-dropdown-item>
               <el-dropdown-item command="viewProjectSprints">
-                <div class="flex items-center py-1">
+                <div class="flex items-center py-1 font-medium">
                   <el-icon size="16" class="ml-4px !mr-10px"><Timer /></el-icon>
                   {{ $t('baseLayout.header.listSprints') }}
                 </div>
@@ -257,9 +257,9 @@
         <language-selector class="selector" @languageChanged="languageChanged" />
         <el-dropdown trigger="click" @command="userDropCommand">
           <div class="selector current-user-info">
-            <avatar :name="currentUser.nickname" :src="currentUser.avatar?.url" :size="20" inline />
-            <span class="user-name hidden-xs-only">{{ currentUser.nickname }}</span>
-            <el-icon><CaretBottom /></el-icon>
+            <avatar :name="currentUser.nickname" :src="currentUser.avatar?.url" :size="20" showName />
+            <!-- <span class="user-name hidden-xs-only">{{ currentUser.nickname }}</span> -->
+            <el-icon class="ml-1"><CaretBottom /></el-icon>
           </div>
           <template #dropdown>
             <el-dropdown-menu>

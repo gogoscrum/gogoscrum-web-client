@@ -128,7 +128,7 @@ a {
   .el-select {
     --el-border-color: transparent;
     --el-border-color-hover: transparent;
-    --el-color-primary: transparent;
+    // --el-color-primary: transparent;
   }
 
   .el-input__wrapper,
@@ -238,8 +238,13 @@ a {
 .el-empty {
   .el-empty__description p {
     font-size: 13px;
-    color: #cccccc;
+    color: #b0b0b0;
   }
+}
+
+.el-table__empty-text {
+  font-size: 13px;
+  color: #b0b0b0;
 }
 
 .el-table {
@@ -257,16 +262,17 @@ a {
 
   .cell {
     word-break: break-word;
+  }
+}
 
-    .more-action-icon {
-      padding: 5px;
-      cursor: pointer;
-      border-radius: 5px;
+.more-action-icon {
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
 
-      &:hover {
-        background-color: var(--el-color-primary-light-9);
-      }
-    }
+  &:hover {
+    color: var(--el-color-primary);
+    background-color: var(--el-color-primary-light-9);
   }
 }
 
@@ -381,12 +387,6 @@ a {
   justify-content: space-between;
   margin-bottom: 20px;
 
-  .filter-tags {
-    :not(:first-child) {
-      margin-left: 10px;
-    }
-  }
-
   .left-part {
     display: flex;
     align-items: center;
@@ -460,8 +460,73 @@ a {
   background: url('/logo.png') no-repeat center;
   background-size: 18px 18px;
   background-position-y: 12px;
+
+  .path {
+    stroke-width: 5;
+  }
 }
 
 .el-loading-mask {
   backdrop-filter: blur(3px);
+}
+
+.el-form-item__label {
+  font-weight: 500;
+}
+
+.seq-badge {
+  background-color: #eeeeee;
+  color: #666666;
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.table-header-filter-icon {
+  padding-bottom: 3px;
+
+  &.active {
+    color: var(--el-color-primary);
+  }
+}
+
+.el-table-filter {
+  .el-table-filter__content {
+    min-width: 150px;
+  }
+
+  .el-table-filter__bottom {
+    border-top: 1px solid var(--el-border-color-lighter);
+    padding: 8px;
+    display: flex;
+    justify-content: space-evenly;
+  }
+}
+
+.el-image-viewer__actions,
+.el-image-viewer__btn {
+  &:not(.el-image-viewer__progress) {
+    background-color: #222222;
+  }
+}
+
+.el-table.tight-table {
+  .el-table__cell {
+    padding: 6px 0;
+  }
+}
+
+.el-message-box__status {
+  font-size: 40px;
+}
+
+.too-many-match-warning {
+  display: flex;
+  align-items: center;
+  color: orange;
+  font-weight: 500;
+  font-size: 13px;
 }

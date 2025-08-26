@@ -10,7 +10,7 @@
     "DONE": "已结束"
   },
   "issuePriorities": {
-    "CRITICAL": "紧急",
+    "CRITICAL": "关键",
     "MAJOR": "重要",
     "NORMAL": "普通",
     "LOW": "较低",
@@ -41,5 +41,24 @@
     "OWNER": "所有者",
     "DEVELOPER": "成员",
     "GUEST": "访客"
+  },
+  "testTypes": {
+    "API": "接口测试",
+    "INTEGRATION": "集成测试",
+    "ACCEPTANCE": "验收测试",
+    "FUNCTIONAL": "功能测试",
+    "SMOKE": "冒烟测试",
+    "REGRESSION": "回归测试",
+    "PERFORMANCE": "性能测试",
+    "SECURITY": "安全测试",
+    "USABILITY": "可用性测试",
+    "COMPATIBILITY": "兼容性测试",
+    "OTHER": "其他"
+  },
+  "testRunStatuses": {
+    "SUCCESS": "成功",
+    "FAILED": "失败",
+    "BLOCKED": "阻塞",
+    "SKIPPED": "跳过"
   }
 }

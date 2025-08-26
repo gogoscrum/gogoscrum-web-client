@@ -1,11 +1,18 @@
 <template>
-  <div class="vue-avatar--wrapper" :class="{ colorBox: !isImage }" :style="[style, customStyle]" aria-hidden="true">
-    <img v-if="isImage" style="display: none" :src="src" @error="onImgError" />
-    <div
-      v-show="!isImage"
-      class="color-box"
-      :style="`word-break: keep-all; transform: scale(${1 / Math.sqrt(userInitial.length)});`">
-      {{ userInitial }}
+  <div class="vue-avatar--wrapper" aria-hidden="true">
+    <el-tooltip :content="name" :disabled="!showTooltip" :placement="tooltipPlacement">
+      <div class="avator-icon" :class="{ colorBox: !isImage }" :style="[style, customStyle]">
+        <img v-if="isImage" style="display: none" :src="src" @error="onImgError" />
+        <div
+          v-show="!isImage"
+          class="color-box"
+          :style="`word-break: keep-all; transform: scale(${1 / Math.sqrt(userInitial.length)});`">
+          {{ userInitial }}
+        </div>
+      </div>
+    </el-tooltip>
+    <div v-if="showName" class="vue-avatar-name">
+      {{ name }}
     </div>
   </div>
 </template>
@@ -35,6 +42,18 @@ const props = defineProps({
   name: {
     type: String
   },
+  showName: {
+    type: Boolean,
+    default: false
+  },
+  showTooltip: {
+    type: Boolean,
+    default: false
+  },
+  tooltipPlacement: {
+    type: String,
+    default: 'left'
+  },
   initials: {
     type: String
   },
@@ -47,9 +66,9 @@ const props = defineProps({
   customStyle: {
     type: Object
   },
-  inline: {
-    type: Boolean
-  },
+  // inline: {
+  //   type: Boolean
+  // },
   size: {
     type: Number,
     default: 50
@@ -118,7 +137,8 @@ const isImage = computed(() => {
 })
 const style = computed(() => {
   const style = {
-    display: props.inline ? 'inline-flex' : 'flex',
+    // display: props.inline ? 'inline-flex' : 'flex',
+    display: 'flex',
     width: `${props.size}px`,
     height: `${props.size}px`,
     minWidth: `${props.size}px`,
@@ -194,7 +214,18 @@ const lightenColor = (hex, amt) => {
 </script>
 
 <style lang="less" scoped>
-.vue-avatar--wrapper.colorBox {
-  background-image: linear-gradient(180deg, #00000000 0%, #00000000 50%, #0000002f 100%) !important;
+.vue-avatar--wrapper {
+  // display: inline-flex;
+  display: flex;
+  align-items: center;
+  // justify-content: center;
+
+  .avator-icon.colorBox {
+    background-image: linear-gradient(180deg, #00000000 0%, #00000000 50%, #0000002f 100%) !important;
+  }
+
+  .vue-avatar-name {
+    margin-left: 8px;
+  }
 }
 </style>

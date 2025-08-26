@@ -7,17 +7,22 @@
   "common": {
     "slogan": "Lightweight Open-Source Scrum Tool",
     "empty": "No data",
+    "back": "Back",
     "close": "Close",
     "create": "Create",
+    "update": "Update",
     "edit": "Edit",
+    "details": "Details",
     "copy": "Duplicate",
     "refresh": "Refresh",
     "delete": "Delete",
     "cancel": "Cancel",
+    "unlink": "Unlink",
     "upload": "Upload",
     "download": "Download",
     "save": "Save",
     "ok": "OK",
+    "done": "Done",
     "to": "to",
     "actions": "Actions",
     "move": "Move to",
@@ -27,17 +32,40 @@
     "uploading": "Uploading",
     "more": "More",
     "pageSize": "Page size",
+    "createdBy": "Created by",
+    "updatedBy": "Updated by",
+    "createdTime": "Created time",
+    "updatedTime": "Updated time",
     "msg": {
       "formValidationFail": "Please fill out all required fields",
       "h5NotSupported": "Mobile not supported so far, please switch to PC",
       "shortcutKeys": "Esc to cancel, Ctrl + Enter to submit",
-      "uploadFailed": "Upload failed"
+      "uploadFailed": "Upload failed",
+      "pickedItems": "{count} items selected",
+      "fileSizeLimit": "File size cannot exceed {maxSize}",
+      "tooManyFiles": "Cannot upload more than {maxCount} files at a time",
+      "delFileConfirmTitle": "Delete file",
+      "delFileConfirmMsg": "You are about to delete file <strong class=\"red\">\"{name}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+      "delFileSuccess": "File deleted successfully."
+    },
+    "filter": {
+      "totalElements": "Total {count} items",
+      "matchedResults": "{count} matched results",
+      "noMatch": "No matched results",
+      "tooManyMatches": "Too many matches, please refine the search"
     }
+  },
+  "uploader": {
+    "uploaderDesc": "Drop file here, or click to select file",
+    "switchToCardView": "Switch to card view",
+    "switchToTableView": "Switch to table view",
+    "thumbnail": "Thumbnail"
   },
   "homepage": {
     "header": {
       "signin": "Sign in",
-      "signup": "Sign up"
+      "signup": "Sign up",
+      "opensource": "Open Source"
     },
     "start": "Start Now",
     "intro": "Keep track of everything on sprint board, drag and drop to update task status, report and track bugs, view sprint burn-down chart, share files and documents - all features needed by an agile team, free for everyone with unlimited number of projects and team members",
@@ -68,6 +96,23 @@
     "startnow": {
       "title": "Start to use gogoscrum now",
       "intro": "Ease scrum team's work by this easy-to-use scrum tool"
+    },
+    "footer": {
+      "company": "Copyright © Hangzhou Shimi Network Technology"
+    }
+  },
+  "opensource": {
+    "title": "Open Source",
+    "intro": "gogoscrum is a lightweight agile project management tool that follows Scrum agile practices. The system is built with Java and the Spring Boot framework, and Vue 3 for the front end. Developers are welcome to clone the codebase and star the project.",
+    "download": {
+      "title": "Local Deployment",
+      "intro": "1. Download and unzip to the local directory <br/>2. Run 'docker compose up' to start the service <br/>3. Visit http://localhost to start using gogoscrum"
+    },
+    "demo": {
+      "title": "Demo Site",
+      "intro": "Visit the demo site to explore all features of gogoscrum <br/>Login account: demo, Password: demo1234",
+      "desc": "The demo site data is regularly cleared, fell free to create projects, sprints, issues, files, documents and other data after loggin in.",
+      "btnLable": "Demo Site"
     },
     "footer": {
       "company": "Copyright © Hangzhou Shimi Network Technology"
@@ -162,10 +207,15 @@
       "issue": "Issues",
       "file": "Files",
       "doc": "Documents",
+      "testing": "Testing",
+      "testCase": "Test case",
+      "testPlan": "Test plan",
+      "testRun": "Executions",
+      "testReport": "Test report",
       "charts": "Charts",
       "burndown": "Burndown",
       "velocity": "Velocity",
-      "cumulative": "Cumulative Flow",
+      "cumulative": "Cumulative flow",
       "setting": "Settings",
       "projectDetails": "Project details",
       "component": "Components",
@@ -236,8 +286,7 @@
     }
   },
   "issueEdit": {
-    "titleEdit": "Edit issue",
-    "titleNew": "New issue",
+    "titleNew": "New {typeName}",
     "copyCode": "Copy issue code",
     "name": "Name",
     "namePlaceholder": "Please input issue title",
@@ -261,6 +310,10 @@
     "estimatedHours": "Est. hours",
     "actualHours": "Actual hours",
     "hoursPlaceholder": "Please input hours",
+    "testCase": "Test case",
+    "testCasePlaceholder": "Link to a test case",
+    "testPlan": "Test plan",
+    "testPlanPlaceholder": "Link to a test plan",
     "tag": "Tags",
     "dueTime": "Due date",
     "dueTimePlaceholder": "Select date and time",
@@ -310,10 +363,6 @@
       "invalidHours": "Please input a number",
       "tooManyFilesPasted": "Please paste less than 5 files at a time"
     }
-  },
-  "issueFinder": {
-    "noMatch": "No matched issues",
-    "tooManyMatches": "Too many matches, please refine the search"
   },
   "issueGroupEdit": {
     "titleEdit": "Edit group",
@@ -509,12 +558,13 @@
   },
   "issueList": {
     "header": {
-      "new": "New issue",
+      "newIssue": "New issue",
+      "newBug": "New bug",
       "export": "Export",
       "expandFilter": "Show filter",
       "collapseFilter": "Hide filter",
       "count": "{count} issues",
-      "issueType": "Issu type",
+      "issueType": "Issue type",
       "priority": "Priority",
       "sprint": "Sprint",
       "status": "Status",
@@ -526,7 +576,11 @@
       "saveFilter": "Save"
     },
     "list": {
+      "code": "Code",
       "name": "Name",
+      "priority": "Priority",
+      "owner": "Owner",
+      "status": "Status",
       "assignee": "Assigned to",
       "assignToMe": "Assign to me",
       "unassign": "Unassign",
@@ -676,7 +730,7 @@
       "disabled": "Disabled",
       "neverExpire": "Never expire",
       "actions": {
-        "copyUrl": "Copy Invitation",
+        "copyUrl": "Copy invitation",
         "disable": "Disable",
         "enable": "Enable"
       }
@@ -739,7 +793,7 @@
     "edit": {
       "titleNew": "New component",
       "titleEdit": "Edit component",
-      "name": "name"
+      "name": "Name"
     },
     "msg": {
       "delConfirmTitle": "Delete component",
@@ -757,7 +811,7 @@
   "userInfo": {
     "title": "My account",
     "profile": {
-      "title": "User Profile",
+      "title": "User profile",
       "username": "Username",
       "usernameNotEditable": "Username cannot be modified",
       "usernameTip": "4-16 letters or numbers, there's only one chance to set you username, please be careful.",
@@ -789,6 +843,272 @@
       "delAvatarConfirmTitle": "Delete user avatar",
       "delAvatarConfirmMsg": "You are about to delete user avatar, which cannot be recovered. Are you sure to proceed?",
       "delAvatarSuccess": "User avatar deleted"
+    }
+  },
+  "test": {
+    "case": {
+      "edit": {
+        "title": {
+          "new": "Create test case",
+          "edit": "Edit test case"
+        },
+        "version": "Version {version}",
+        "latestVersion": "Latest version",
+        "name": "Name",
+        "type": "Test type",
+        "automated": "Automated",
+        "component": "Component",
+        "priority": "Priority",
+        "owner": "Owner",
+        "ownerPlaceholder": "Select owner",
+        "description": "Description",
+        "preconditions": "Preconditions",
+        "steps": {
+          "label": "Test steps",
+          "description": "Description",
+          "expectation": "Expectation",
+          "empty": "No test steps, please add test steps",
+          "add": "Add step",
+          "insert": "Insert step",
+          "moveUp": "Move up",
+          "moveDown": "Move down"
+        },
+        "files": "Attachments",
+        "filesEmpty": "No attachments in this test case",
+        "uploaderDesc": "Drop file here, or click to select file",
+        "msg": {
+          "oldVersion": "This is an old version of the test case",
+          "nameMissing": "Please input test case name",
+          "createSuccess": "Test case created successfully",
+          "updateSuccess": "Test case updated successfully",
+          "delConfirmTitle": "Delete test case",
+          "delConfirmMsg": "You are about to delete test case <strong class=\"red\">\"{caseName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+          "delSuccess": "Test case deleted successfully"
+        }
+      },
+      "details": {
+        "title": "Test case details",
+        "tabRuns": "Execution records",
+        "tabBugs": "Related bugs",
+        "noBugs": "No related bugs"
+      },
+      "list": {
+        "filter": {
+          "new": "New test case",
+          "totalElements": "{count} test cases",
+          "matchedResults": "{count} matched results",
+          "search": "Search"
+        },
+        "header": {
+          "code": "Code",
+          "name": "Name",
+          "type": "Type",
+          "priority": "Priority",
+          "owner": "Owner",
+          "creator": "Creator",
+          "latestRunStatus": "Result"
+        },
+        "table": {
+          "creatorTip": "{nickname} created at {createdTime}",
+          "latestRunTip": "{nickname} executed at {latestRunTime}",
+          "emptyMsg": "No test cases in this project",
+          "run": "Execute"
+        },
+        "msg": {
+          "caseCopied": "Test case copied successfully"
+        }
+      }
+    },
+    "plan": {
+      "edit": {
+        "title": {
+          "new": "New test plan",
+          "edit": "Edit test plan"
+        },
+        "name": "Name",
+        "type": "Test type",
+        "typePlaceholder": "Select type",
+        "owner": "Owner",
+        "ownerPlaceholder": "Select owner",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "msg": {
+          "nameMissing": "Please input test plan name",
+          "createSuccess": "Test plan created successfully",
+          "updateSuccess": "Test plan updated successfully",
+          "cloneSuccess": "Test plan copied successfully",
+          "delConfirmTitle": "Delete test plan",
+          "delConfirmMsg": "You are about to delete test plan <strong class=\"red\">\"{planName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+          "delSuccess": "Test plan deleted successfully"
+        }
+      },
+      "details": {
+        "title": "Test plan details",
+        "caseCount": "Total cases",
+        "executedCount": "Executed",
+        "progress": "Progress",
+        "tabCases": "Test cases",
+        "tabBugs": "Related bugs",
+        "tabReports": "Test reports",
+        "noBugs": "No related bugs"
+      },
+      "items": {
+        "add": "Link cases",
+        "newRun": "New execution",
+        "startRun": "Start execute",
+        "continueRun": "Continue execute",
+        "caseDetails": "Case details",
+        "emptyMsg": "No test cases in this plan",
+        "msg": {
+          "delConfirmTitle": "Unlink test case",
+          "delConfirmMsg": "You are about to unlink test case <strong class=\"red\">\"{caseName}\"</strong> from this test plan. After unlinking, the execution results of this test case will not be included in the test report for this plan. Are you sure to proceed?",
+          "delSuccess": "Test case unlinked successfully",
+          "addSuccess": "Test cases linked successfully"
+        }
+      },
+      "list": {
+        "filter": {
+          "new": "New test plan",
+          "totalElements": "{count} test plans",
+          "matchedResults": "{count} matched results",
+          "search": "Search plan"
+        },
+        "header": {
+          "name": "Name",
+          "type": "Type",
+          "owner": "Owner",
+          "progress": "Progress"
+        },
+        "table": {
+          "creatorTip": "{nickname} created at {createdTime}",
+          "progressTip": "Executed {executedCount} of {caseCount} cases",
+          "emptyMsg": "No test plans in this project"
+        }
+      },
+      "selector": {
+        "placeholder": "Select test plan"
+      }
+    },
+    "run": {
+      "titleNew": "Create test execution record",
+      "titleEdit": "Edit test execution record",
+      "newRun": "Execute again",
+      "steps": {
+        "status": "Status",
+        "result": "Step actual Result",
+        "resultPlaceholder": "Please input step actual result"
+      },
+      "result": "Result remark",
+      "resultPlaceholder": "Please input actual result remark",
+      "status": "Test case execution result",
+      "files": "Attachments",
+      "raiseBug": "Raise bug",
+      "previous": "Previous",
+      "next": "Next",
+      "createdTime": "Created at {timestamp}",
+      "updatedTime": "Updated at {timestamp}",
+      "msg": {
+        "statusRequired": "Please select test case execution result",
+        "createdSuccess": "Test execution record created successfully",
+        "updatedSuccess": "Test execution record updated successfully"
+      },
+      "list": {
+        "caseBasics": "Test case basic info",
+        "title": "Execution records",
+        "filter": {
+          "new": "New execution",
+          "totalElements": "{count} execution records"
+        },
+        "caseName": "Test case",
+        "createdTime": "Execution time",
+        "createdBy": "Executor",
+        "version": "Version",
+        "planName": "Test plan",
+        "status": "Result",
+        "msg": {
+          "empty": "No test execution records",
+          "delConfirmTitle": "Delete test execution record",
+          "delConfirmMsg": "You are about to delete test execution created at {runTime} for test case <strong class=\"red\">\"{caseName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+          "delSuccess": "Test execution record deleted successfully"
+        }
+      }
+    },
+    "report": {
+      "list": {
+        "filter": {
+          "new": "New report",
+          "totalElements": "{count} test reports",
+          "search": "Search report"
+        },
+        "header": {
+          "name": "Report name",
+          "createdTime": "Created time",
+          "createdBy": "Creator",
+          "planName": "Test plan"
+        },
+        "msg": {
+          "empty": "No test reports"
+        }
+      },
+      "details": {
+        "titleNew": "Create test report",
+        "titleEdit": "Test report details",
+        "planName": "Test plan",
+        "testPlanMissing": "Test plan is required",
+        "description": "Summary",
+        "descriptionPlaceholder": "Please enter report summary",
+        "reportName": "Report name",
+        "reportNameMissing": "Report name is required",
+        "reportNameTemplate": "{planName} Test Report",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "owner": "Owner",
+        "ownerMissing": "Owner is required",
+        "ownerPlaceholder": "Select owner",
+        "summary": "Summary",
+        "caseCount": "Total cases",
+        "executedCaseCount": "Executed cases",
+        "executionRecordCount": "Total executions",
+        "failedCaseCount": "Failed cases",
+        "testRate": "Test rate",
+        "testRateTip": "Test rate = (Executed cases / Total cases) * 100%",
+        "passRate": "Pass rate",
+        "passRateTip": "Pass rate = (Passed cases / Total cases) * 100%",
+        "bugCount": "Total bugs",
+        "caseList": "Test case list",
+        "bugList": "Bug list",
+        "noBugs": "No related bugs",
+        "caseStatisticsTitle": "Case statistics",
+        "caseByStatusTitle": "Case distribution by execution result",
+        "executionResult": "Execution result",
+        "count": "Count",
+        "percentage": "Percentage",
+        "caseNotTested": "Not tested",
+        "caseByTypeTitle": "Case distribution by test type",
+        "testType": "Test type",
+        "caseWithoutType": "Without type",
+        "caseByComponentTitle": "Case distribution by component",
+        "component": "Component",
+        "caseByExecutorTitle": "Case distribution by executor",
+        "executor": "Executor",
+        "bugStatisticsTitle": "Bug statistics",
+        "bugByPriorityTitle": "Bug distribution by priority",
+        "priority": "Priority",
+        "bugByStatusTitle": "Bug distribution by status",
+        "bugStatus": "Bug status",
+        "bugByComponentTitle": "Bug distribution by component",
+        "componentNotSet": "Component not set",
+        "bugByCreatorTitle": "Bug distribution by creator",
+        "creator": "Creator",
+        "bugByAssigneeTitle": "Bug distribution by assignee",
+        "assignee": "Assignee",
+        "assigneeNotSet": "Unassigned",
+        "createdSuccess": "Test report created successfully",
+        "updatedSuccess": "Test report updated successfully",
+        "delSuccess": "Test report deleted successfully",
+        "delConfirmMsg": "You are about to delete test report <strong class=\"red\">\"{reportName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+        "delConfirmTitle": "Delete test report"
+      }
     }
   }
 }

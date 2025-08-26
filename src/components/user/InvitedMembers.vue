@@ -15,15 +15,7 @@
         :show-header="true">
         <el-table-column prop="user.nickname" :label="$t('invitedMemberList.header.name')" min-width="80">
           <template #default="scope">
-            <div class="flex items-center">
-              <avatar
-                :name="scope.row.user.nickname"
-                :size="22"
-                :src="scope.row.user.avatarUrl"
-                inline
-                class="mr-2"></avatar>
-              <span>{{ scope.row.user.nickname }}</span>
-            </div>
+            <avatar :name="scope.row.user.nickname" :size="22" :src="scope.row.user.avatarUrl" showName></avatar>
           </template>
         </el-table-column>
 

@@ -58,7 +58,7 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="DocumentCopy" @click.native="cloneIssue(scope.row)">{{
+                  <el-dropdown-item icon="DocumentCopy" @click.native="cloneIssue(scope.$index, scope.row)">{{
                     $t('common.copy')
                   }}</el-dropdown-item>
                   <el-dropdown-item
@@ -105,7 +105,7 @@
           </el-empty>
         </template>
       </el-table>
-      <div v-if="!loading" class="table-footer">
+      <div class="table-footer">
         <el-pagination
           class="flex justify-center my-2"
           :current-page="filter.page"
@@ -208,14 +208,16 @@ export default {
     issueDialogClosed() {
       this.editingIssue = null
     },
-    cloneIssue(issue) {
+    cloneIssue(index, issue) {
       issueApi.clone(issue.id).then((res) => {
-        this.issueSaved(res.data)
         ElMessage.success({
           message: this.$t('backlog.msg.issueCopied', {
             issueName: issue.code
           })
         })
+        // insert the cloned issue right after the original issue
+        this.issues.splice(index + 1, 0, res.data)
+        this.totalElements++
       })
     },
     issueSaved(issue) {
@@ -252,7 +254,7 @@ export default {
 
       if (index >= 0) {
         this.issues.splice(index, 1)
-        this.totalElements
+        this.totalElements--
       }
     },
     deleteIssue: function (index, row) {
@@ -267,8 +269,8 @@ export default {
       )
         .then(() => {
           issueApi.delete(row.id).then((response) => {
-            this.totalElements--
             this.issues.splice(index, 1)
+            this.totalElements--
             ElMessage.success({
               message: this.$t('backlog.msg.delSuccess')
             })

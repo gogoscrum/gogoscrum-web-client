@@ -41,5 +41,24 @@
     "OWNER": "Owner",
     "DEVELOPER": "Developer",
     "GUEST": "Guest"
+  },
+  "testTypes": {
+    "API": "API",
+    "INTEGRATION": "Integration",
+    "ACCEPTANCE": "Acceptance",
+    "FUNCTIONAL": "Functional",
+    "SMOKE": "Smoke",
+    "REGRESSION": "Regression",
+    "PERFORMANCE": "Performance",
+    "SECURITY": "Security",
+    "USABILITY": "Usability",
+    "COMPATIBILITY": "Compatibility",
+    "OTHER": "Other"
+  },
+  "testRunStatuses": {
+    "SUCCESS": "Success",
+    "FAILED": "Failed",
+    "BLOCKED": "Blocked",
+    "SKIPPED": "Skipped"
   }
 }

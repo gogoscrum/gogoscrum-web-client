@@ -10,6 +10,7 @@
     "429": "请求超出上限",
     "500": "服务器出现错误，请稍后重试或联系管理员",
     "502": "无法连接服务器，请稍后重试或联系管理员",
+    "invalidRequestData": "请求参数无效",
     "wrongPassword": "密码验证失败",
     "duplicatedUsername": "用户名已存在",
     "duplicatedGroup": "项目中已存在相同名称的任务列表",

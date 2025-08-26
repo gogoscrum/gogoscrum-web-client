@@ -67,11 +67,7 @@
                 })
               "
               placement="left">
-              <avatar
-                :name="scope.row.createdBy.nickname"
-                :size="22"
-                :src="scope.row.createdBy.avatarUrl"
-                inline></avatar>
+              <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -108,7 +104,7 @@
           </el-empty>
         </template>
       </el-table>
-      <div v-if="!loading" class="table-footer">
+      <div class="table-footer">
         <el-pagination
           :current-page="filter.page"
           :page-count="totalPages"
@@ -224,6 +220,7 @@ export default {
         .then(() => {
           docApi.delete(row.id).then((response) => {
             this.docs.splice(index, 1)
+            this.totalElements--
             ElMessage.success({
               message: this.$t('docList.msg.delSuccess')
             })

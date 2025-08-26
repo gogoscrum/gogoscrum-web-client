@@ -11,8 +11,10 @@ html.dark {
   --el-text-color-regular: #dddddd;
   --el-bg-color: #242424;
 
+
   .el-table {
-    --el-table-border: 1px solid #303030;
+    --el-table-border: 1px solid #333333;
+    --el-table-border-color: #333333;
   }
 
   body {
@@ -143,7 +145,7 @@ html.dark {
     }
   }
 
-  .cell .more-action-icon {
+  .more-action-icon {
     &:hover {
       color: var(--el-color-primary);
       background-color: #202020 !important;
@@ -387,6 +389,26 @@ html.dark {
     .blank-file-img {
       opacity: unset;
     }
+  }
+
+  .seq-badge {
+    background-color: #393939;
+    color: #cccccc;
+  }
+
+  .el-image-viewer__actions,
+  .el-image-viewer__btn {
+    &:not(.el-image-viewer__progress) {
+      background-color: #444444;
+    }
+  }
+
+  .el-popper.el-tooltip.is-dark,
+  .el-popper.is-dark>.el-popper__arrow:before {
+    background: #33333399;
+    border: 1px solid #555555;
+    color: #f5f5f5;
+    backdrop-filter: blur(3px);
   }
 }
 

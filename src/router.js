@@ -8,6 +8,11 @@ const routes = [
     component: () => import('@/views/Index.vue')
   },
   {
+    path: '/opensource',
+    name: 'OpenSource',
+    component: () => import('@/views/OpenSource.vue')
+  },
+  {
     path: '/layout',
     name: 'Layout',
     component: () => import('@/components/layout/BaseLayout.vue'),
@@ -107,6 +112,51 @@ const routes = [
             path: 'details',
             name: 'ProjectDetails',
             component: () => import('@/views/ProjectDetails.vue')
+          },
+          {
+            path: 'test/cases',
+            name: 'TestCaseList',
+            component: () => import('@/views/testing/TestCaseList.vue')
+          },
+          {
+            path: 'test/cases/:testCaseId/edit',
+            name: 'TestCaseEdit',
+            component: () => import('@/views/testing/TestCaseEdit.vue')
+          },
+          {
+            path: 'test/cases/:testCaseId',
+            name: 'TestCaseDetails',
+            component: () => import('@/views/testing/TestCaseDetails.vue')
+          },
+          {
+            path: 'test/plans',
+            name: 'TestPlanList',
+            component: () => import('@/views/testing/TestPlanList.vue')
+          },
+          {
+            path: 'test/plans/:testPlanId',
+            name: 'TestPlanDetails',
+            component: () => import('@/views/testing/TestPlanDetails.vue')
+          },
+          {
+            path: 'test/plans/:testPlanId/reports/preview',
+            name: 'TestReportPreview',
+            component: () => import('@/views/testing/TestReportDetails.vue')
+          },
+          {
+            path: 'test/runs',
+            name: 'TestRunList',
+            component: () => import('@/views/testing/TestRunList.vue')
+          },
+          {
+            path: 'test/reports',
+            name: 'TestReportList',
+            component: () => import('@/views/testing/TestReportList.vue')
+          },
+          {
+            path: 'test/reports/:reportId',
+            name: 'TestReportDetails',
+            component: () => import('@/views/testing/TestReportDetails.vue')
           }
         ]
       }
@@ -140,7 +190,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   let user = store.get('user')
-  const publicRoutes = ['Homepage', 'Login', 'Register']
+  const publicRoutes = ['Homepage', 'OpenSource', 'Login', 'Register']
   if (!publicRoutes.includes(to.name) && !user) {
     localStorage.setItem('lastUrl', to.fullPath)
     console.warn('Requested url rejected: ' + to.fullPath)

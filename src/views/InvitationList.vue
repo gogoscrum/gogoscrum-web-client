@@ -93,13 +93,9 @@
             >
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" :label="$t('invitationList.list.creator')" min-width="30" align="center">
+        <el-table-column v-if="!isInMobile" :label="$t('invitationList.list.creator')" min-width="30">
           <template #default="scope">
-            <avatar
-              :name="scope.row.createdBy.nickname"
-              :size="22"
-              :src="scope.row.createdBy.avatarUrl"
-              inline></avatar>
+            <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
           </template>
         </el-table-column>
         <el-table-column
@@ -165,7 +161,7 @@
           </el-empty>
         </template>
       </el-table>
-      <div v-if="!loading" class="table-footer">
+      <div class="table-footer">
         <el-pagination
           :current-page="filter.page"
           :page-count="totalPages"

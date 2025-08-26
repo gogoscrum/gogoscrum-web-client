@@ -1,0 +1,485 @@
+<template>
+  <el-drawer
+    :title="testRun.id ? $t('test.run.titleEdit') : $t('test.run.titleNew')"
+    v-model="drawerVisible"
+    class="test-run-drawer"
+    @closed="$emit('testRunClosed')"
+    size="960">
+    <template #header>
+      <div class="flex items-center">
+        <span>
+          {{ testRun.id ? $t('test.run.titleEdit') : $t('test.run.titleNew') }}
+        </span>
+        <el-tag type="info" class="ml-2">TC-{{ testCase.code }}</el-tag>
+        <div v-if="testRun.updatedTimeFormatted" class="ml-30px desc">
+          {{
+            testRun.createdTime === testRun.updatedTime
+              ? $t('test.run.createdTime', { timestamp: testRun.createdTimeFormatted })
+              : $t('test.run.updatedTime', { timestamp: testRun.updatedTimeFormatted })
+          }}
+        </div>
+      </div>
+
+      <div class="flex items-center mr-32px">
+        <el-button
+          v-if="testRun.id"
+          text
+          type="primary"
+          icon="RefreshRight"
+          class="header-run-again-btn"
+          @click="newRun"
+          >{{ $t('test.run.newRun') }}</el-button
+        >
+        <el-dropdown v-if="testRun.id" trigger="click" placement="bottom">
+          <el-icon class="more-action-icon"><MoreFilled /></el-icon>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item icon="Delete" @click.native="deleteTestRun">{{ $t('common.delete') }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+    </template>
+    <TestCaseBasics :testCase="testCase" />
+    <el-form
+      ref="testRunForm"
+      :model="testRun"
+      :rules="rules"
+      label-position="top"
+      require-asterisk-position="right"
+      label-width="auto"
+      class="test-run-form"
+      :label-position="isInMobile ? 'top' : 'top'">
+      <el-form-item :label="$t('test.case.edit.steps.label')" label-position="top" class="!my-10">
+        <el-table
+          :data="testRun.stepResults"
+          :empty-text="$t('test.case.edit.steps.empty')"
+          :border="true"
+          class="test-case-steps-table">
+          <el-table-column label="#" width="45" align="center">
+            <template #default="scope">
+              <div class="seq-badge">{{ scope.$index + 1 }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('test.case.edit.steps.description')" prop="description"> </el-table-column>
+          <el-table-column :label="$t('test.case.edit.steps.expectation')" prop="expectation"> </el-table-column>
+          <el-table-column :label="$t('test.run.steps.status')" width="125">
+            <template #default="scope">
+              <TestRunStatusSelector v-model="scope.row.status" @change="stepStatusChaned" />
+            </template>
+          </el-table-column>
+
+          <el-table-column :label="$t('test.run.steps.result')">
+            <template #default="scope">
+              <el-input
+                v-model="scope.row.result"
+                :rows="1"
+                :autosize="true"
+                :placeholder="$t('test.run.steps.resultPlaceholder')"
+                resize="none"
+                maxlength="500"
+                type="textarea"></el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form-item>
+      <el-form-item :label="$t('test.run.status')" prop="status" class="!mt-10">
+        <TestRunStatusSelector v-model="testRun.status" class="!w-150px" />
+      </el-form-item>
+      <el-form-item :label="$t('test.run.result')">
+        <el-input
+          v-model="testRun.result"
+          :autosize="{ minRows: 3 }"
+          :placeholder="$t('test.run.resultPlaceholder')"
+          resize="vertical"
+          maxlength="500"
+          type="textarea"></el-input>
+      </el-form-item>
+
+      <el-form-item :label="$t('test.run.files')">
+        <FileUploader
+          :files="testRun.files"
+          :projectId="project.id"
+          targetType="TEST_RUN_ATTACHMENT"
+          @fileUploaded="handleFileUploaded"
+          @fileDeleted="handleFileDeleted" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="footer">
+        <div class="min-w-150px text-left">
+          <el-button
+            v-if="testRun.id && testRun.status !== 'SUCCESS'"
+            type="danger"
+            class="raise-bug-button no-border"
+            plain
+            @click="raiseBug"
+            ><span class="iconfont icon-bug mr-1"></span>{{ $t('test.run.raiseBug') }}</el-button
+          >
+        </div>
+        <div v-if="testPlanId" class="flex items-center">
+          <el-button
+            type="primary"
+            icon="ArrowLeft"
+            text
+            bg
+            :disabled="testCaseIndex === 0"
+            @click="$emit('prevTestRun')"
+            >{{ $t('test.run.previous') }}</el-button
+          >
+          <el-button
+            type="primary"
+            text
+            bg
+            class="!ml-20px"
+            :disabled="testCaseIndex === totalSize - 1"
+            @click="$emit('nextTestRun')"
+            >{{ $t('test.run.next') }}<el-icon class="ml-6px"><ArrowRight /></el-icon
+          ></el-button>
+          <span class="desc ml-32px">{{ testCaseIndex + 1 }} / {{ totalSize }}</span>
+        </div>
+        <div class="flex items-center">
+          <el-button size="default" class="no-border" @click="toggleDrawer">{{ $t('common.cancel') }}</el-button>
+          <el-button
+            :disabled="!project.isDeveloper"
+            :loading="saving"
+            size="default"
+            type="primary"
+            class="no-border"
+            @click="saveTestRun"
+            >{{ testRun.id ? $t('common.update') : $t('common.create') }}</el-button
+          >
+        </div>
+      </div>
+    </template>
+  </el-drawer>
+  <IssueEdit
+    v-if="editingIssue"
+    :issue="editingIssue"
+    :projectId="testCase.projectId"
+    @issueFormClosed="issueDialogClosed" />
+</template>
+<script>
+import { testCaseApi, testRunApi } from '@/api/testing.js'
+import PriorityIcon from '@/components/common/PriorityIcon.vue'
+import TestRunStatusSelector from '@/components/testing/TestRunStatusSelector.vue'
+import Avatar from '@/components/common/Avatar.vue'
+import dict from '@/locales/zh-cn/dict.json'
+import utils from '@/utils/util.js'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import TestCaseBasics from './TestCaseBasics.vue'
+import FileUploader from '@/components/common/FileUploader.vue'
+import IssueEdit from '@/components/issue/IssueEdit.vue'
+
+export default {
+  name: 'TestRunEdit',
+  components: {
+    PriorityIcon,
+    TestCaseBasics,
+    Avatar,
+    TestRunStatusSelector,
+    FileUploader,
+    IssueEdit
+  },
+  emits: ['testRunSaved', 'testRunDeleted', 'testRunClosed', 'prevTestRun', 'nextTestRun'],
+  props: {
+    testCaseId: {
+      type: String,
+      required: true
+    },
+    testPlanId: {
+      type: String,
+      required: false
+    },
+    testRunId: {
+      type: String,
+      default: null
+    },
+    testCaseIndex: {
+      type: Number,
+      default: 0
+    },
+    totalSize: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      isInMobile: utils.isInMobile(),
+      dict: dict,
+      drawerVisible: true,
+      project: this.$store.get('project'),
+      testCase: {
+        details: {}
+      },
+      testRun: {
+        stepResults: [],
+        status: ''
+      },
+      autoNext: true,
+      saving: false,
+      rules: {
+        status: [{ required: true, message: this.$t('test.run.msg.statusRequired'), trigger: 'blur' }]
+      },
+      editingIssue: null
+    }
+  },
+  watch: {
+    testCaseId(newId) {
+      this.loadCase()
+    }
+  },
+  created() {
+    this.loadCase()
+  },
+  mounted() {},
+  methods: {
+    loadCase() {
+      testCaseApi.get(this.testCaseId).then((response) => {
+        this.testCase = response.data
+
+        if (this.testRunId && this.testRunId !== 'new') {
+          this.loadTestRun()
+        } else {
+          this.initTestRun()
+        }
+      })
+    },
+    loadTestRun() {
+      testRunApi.get(this.testRunId).then((response) => {
+        this.testRun = response.data
+        utils.formatCreateUpdateTime(this.testRun)
+
+        if (!this.testRun.files) {
+          this.testRun.files = []
+        }
+
+        if (this.testRun.stepResults?.length) {
+          for (const i in this.testRun.stepResults) {
+            this.testRun.stepResults[i].description = this.testCase.details.steps[i]?.description || ''
+            this.testRun.stepResults[i].expectation = this.testCase.details.steps[i]?.expectation || ''
+          }
+        }
+      })
+    },
+    initTestRun() {
+      this.testRun = {
+        testCaseId: this.testCaseId,
+        testPlanId: this.testPlanId,
+        projectId: this.project.id,
+        testCaseDetailsId: this.testCase.details.id,
+        testCaseVersion: this.testCase.details.version,
+        status: '',
+        stepResults: [],
+        files: []
+      }
+
+      if (this.testCase.details?.steps?.length) {
+        this.testRun.stepResults = this.testCase.details.steps.map((step) => ({
+          ...step,
+          status: '',
+          result: ''
+        }))
+      } else {
+        this.testRun.stepResults = []
+      }
+    },
+    stepStatusChaned(status) {
+      if (this.testRun.stepResults.every((step) => step.status === 'SUCCESS')) {
+        this.testRun.status = 'SUCCESS'
+      } else if (this.testRun.stepResults.some((step) => step.status === 'FAILED')) {
+        this.testRun.status = 'FAILED'
+      } else if (this.testRun.stepResults.some((step) => step.status === 'BLOCKED')) {
+        this.testRun.status = 'BLOCKED'
+      } else if (this.testRun.stepResults.some((step) => step.status === 'SKIPPED')) {
+        this.testRun.status = 'SKIPPED'
+      } else {
+        this.testRun.status = ''
+      }
+    },
+    handleFileUploaded(file) {
+      this.testRun.files.push(file)
+    },
+    handleFileDeleted(file) {
+      const index = this.testRun.files.findIndex((f) => f.id === file.id)
+      if (index !== -1) {
+        this.testRun.files.splice(index, 1)
+      }
+    },
+    saveTestRun() {
+      if (!this.validate()) {
+        return
+      }
+
+      // Convert the empty values to null to avoid backend validation errors
+      this.testRun.stepResults.forEach((step) => {
+        step.status = step.status || null
+        step.result = step.result || null
+      })
+
+      this.saving = true
+      const apiCall = this.testRun.id
+        ? testRunApi.update(this.testRun.id, this.testRun)
+        : testRunApi.create(this.testRun)
+      apiCall
+        .then((res) => {
+          ElMessage.success(
+            this.testRun.id ? this.$t('test.run.msg.updatedSuccess') : this.$t('test.run.msg.createdSuccess')
+          )
+          this.testRun = res.data
+          this.$emit('testRunSaved', res.data)
+        })
+        .finally(() => {
+          setTimeout(() => {
+            this.saving = false
+            if (this.autoNext && this.testCaseIndex < this.totalSize - 1) {
+              this.$emit('nextTestRun')
+            } else {
+              this.toggleDrawer()
+            }
+          }, 200)
+        })
+    },
+    validate() {
+      if (!this.testRun.status) {
+        ElMessage.warning(this.$t('test.run.msg.statusRequired'))
+        return false
+      }
+
+      return true
+    },
+    newRun() {
+      this.initTestRun()
+    },
+    deleteTestRun() {
+      ElMessageBox.confirm(
+        this.$t('test.run.list.msg.delConfirmMsg', {
+          runTime: this.testRun.createdTimeFormatted,
+          caseName: this.testCase.details.name
+        }),
+        this.$t('test.run.list.msg.delConfirmTitle'),
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true,
+          draggable: true
+        }
+      )
+        .then(() => {
+          testRunApi.delete(this.testRunId).then(() => {
+            ElMessage.success(this.$t('test.run.list.msg.delSuccess'))
+            this.toggleDrawer()
+            this.$emit('testRunDeleted', this.testRun)
+          })
+        })
+        .catch(() => {
+          // Cancelled, do nothing
+        })
+    },
+    toggleDrawer() {
+      this.drawerVisible = !this.drawerVisible
+    },
+    raiseBug() {
+      this.editingIssue = {
+        projectId: this.project.id,
+        type: 'BUG',
+        name: this.testCase.details.name,
+        description: this.getBugDesc() || '',
+        testCase: this.testCase,
+        testPlan: this.testRun.testPlan
+      }
+    },
+    getBugDesc() {
+      const stepsDesc = this.testRun.stepResults.map((step, index) => {
+        return (
+          '**[' +
+          this.$t('test.case.edit.steps.label') +
+          ' ' +
+          (index + 1) +
+          ']**\n' +
+          this.$t('test.case.edit.steps.description') +
+          ': ' +
+          (step.description || '--') +
+          '\n' +
+          this.$t('test.case.edit.steps.expectation') +
+          ': ' +
+          (step.expectation || '--') +
+          '\n' +
+          this.$t('test.run.steps.status') +
+          ': ' +
+          (step.status ? this.$t(`testRunStatuses['${step.status}']`) : '--') +
+          '\n' +
+          this.$t('test.run.steps.result') +
+          ': ' +
+          (step.result || '--')
+        )
+      })
+
+      return (
+        stepsDesc.join('\n\n') +
+        '\n\n' +
+        this.$t('test.run.status') +
+        ': ' +
+        (this.testRun.status ? this.$t(`testRunStatuses['${this.testRun.status}']`) : '--') +
+        '\n' +
+        this.$t('test.run.result') +
+        ': ' +
+        (this.testRun.result || '--')
+      )
+    },
+    issueDialogClosed() {
+      this.editingIssue = null
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.test-run-drawer {
+  .header-run-again-btn {
+    margin-right: 8px;
+    font-size: 13px;
+    height: 24px;
+  }
+  .footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+</style>
+
+<style lang="less">
+.test-run-drawer {
+  .el-drawer__header {
+    margin-bottom: 10px;
+  }
+
+  .test-case-steps-table {
+    thead {
+      .el-table__cell {
+        background-color: unset !important;
+      }
+    }
+
+    .el-table__cell {
+      background-color: unset !important;
+      padding: 4px 0 !important;
+    }
+
+    textarea,
+    .el-select__wrapper {
+      box-shadow: none !important;
+      padding: 5px 0;
+      background-color: unset !important;
+    }
+
+    .el-table__empty-block {
+      min-height: unset;
+      .el-table__empty-text {
+        line-height: 40px;
+      }
+    }
+  }
+}
+</style>
