@@ -54,6 +54,7 @@
         <el-table-column prop="createdBy.nickname" :label="$t('fileList.list.creator')" min-width="40">
           <template #default="scope">
             <Avatar
+              v-if="scope.row.createdBy"
               :name="scope.row.createdBy.nickname"
               :size="22"
               :src="scope.row.createdBy.avatarUrl"

@@ -68,7 +68,7 @@
                 })
               "
               placement="left">
-              <avatar :name="scope.row.owner.nickname" :size="24" :src="scope.row.owner.avatarUrl" inline></avatar>
+              <avatar :name="scope.row.owner.nickname" :size="24" :src="scope.row.owner.avatarUrl"></avatar>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -125,7 +125,7 @@
           </el-empty>
         </template>
       </el-table>
-      <div v-if="!loading && totalElements >= 1" class="table-footer">
+      <div class="table-footer">
         <el-pagination
           class="flex justify-center my-2"
           :current-page="filter.page"

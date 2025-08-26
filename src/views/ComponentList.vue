@@ -43,11 +43,7 @@
                 })
               "
               placement="left">
-              <avatar
-                :name="scope.row.createdBy.nickname"
-                :size="22"
-                :src="scope.row.createdBy.avatarUrl"
-                inline></avatar>
+              <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
             </el-tooltip>
           </template>
         </el-table-column>

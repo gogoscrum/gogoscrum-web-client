@@ -25,7 +25,7 @@
           row-class-name="project-member-row">
           <el-table-column min-width="35" class-name="avatar-column">
             <template #default="scope">
-              <avatar :name="scope.row.user.nickname" :src="scope.row.user.avatarUrl" :size="30" inline></avatar>
+              <avatar :name="scope.row.user.nickname" :src="scope.row.user.avatarUrl" :size="30"></avatar>
             </template>
           </el-table-column>
           <el-table-column min-width="120">

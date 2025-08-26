@@ -31,3 +31,12 @@ export const testRunApi = {
   delete: (id) => del(`/api/testing/runs/${id}`),
   search: (filter) => post('/api/testing/runs/search', filter)
 }
+
+export const testReportApi = {
+  preview: (testPlanId) => get(`/api/testing/reports/preview/${testPlanId}`),
+  get: (id) => get(`/api/testing/reports/${id}`),
+  create: (testReport) => post('/api/testing/reports', testReport),
+  update: (id, testReport) => put(`/api/testing/reports/${id}`, testReport),
+  delete: (id) => del(`/api/testing/reports/${id}`),
+  search: (filter) => post('/api/testing/reports/search', filter)
+}

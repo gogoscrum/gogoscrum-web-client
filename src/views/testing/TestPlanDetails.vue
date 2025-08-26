@@ -5,11 +5,11 @@
         <span>{{ $t('test.plan.details.title') }}</span>
       </div>
       <div class="right-part">
-        <el-button text type="primary" @click="$router.go(-1)" class="mr-2">
+        <el-button text type="primary" @click="$router.go(-1)" class="mr-1">
           {{ $t('common.back') }}
         </el-button>
         <el-dropdown trigger="click" placement="bottom">
-          <el-button text icon="MoreFilled"> </el-button>
+          <el-icon class="more-action-icon"><MoreFilled /></el-icon>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item icon="Edit" @click.native="togglePlanEdit">{{ $t('common.edit') }}</el-dropdown-item>
@@ -22,9 +22,21 @@
     </div>
     <div class="basics">
       <el-row>
-        <el-col :span="24" class="flex">
+        <el-col :span="6" class="flex">
           <div class="label">{{ $t('test.plan.edit.name') }}</div>
           <div class="value">{{ testPlan.name }}</div>
+        </el-col>
+        <el-col :span="6" class="flex items-center">
+          <div class="label">{{ $t('test.plan.details.caseCount') }}</div>
+          <div class="value">{{ testPlan.caseCount }}</div>
+        </el-col>
+        <el-col :span="6" class="flex items-center">
+          <div class="label">{{ $t('test.plan.details.executedCount') }}</div>
+          <div class="value">{{ testPlan.executedCount }}</div>
+        </el-col>
+        <el-col :span="6" class="flex items-center">
+          <div class="label">{{ $t('test.plan.details.progress') }}</div>
+          <div class="value"><el-progress :percentage="testPlan.progress" class="max-w-130px" /></div>
         </el-col>
       </el-row>
       <el-row>
@@ -60,6 +72,17 @@
       <el-tab-pane :label="$t('test.plan.details.tabCases')" name="cases">
         <TestPlanItems :test-plan-id="testPlan.id" :testPlan="testPlan" @itemChanged="loadPlan" />
       </el-tab-pane>
+      <el-tab-pane lazy :label="$t('test.plan.details.tabBugs')" name="bugs">
+        <IssueListNew
+          :project-id="projectId"
+          :test-plan="testPlan"
+          :issue-filter="issueFilter"
+          :show-export-btn="false"
+          :empty-text="$t('test.plan.details.noBugs')" />
+      </el-tab-pane>
+      <el-tab-pane lazy :label="$t('test.plan.details.tabReports')" name="reports">
+        <TestReportList :showEmptyIcon="false" />
+      </el-tab-pane>
     </el-tabs>
   </div>
   <TestPlanEdit
@@ -78,13 +101,17 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import Avatar from '@/components/common/Avatar.vue'
 import TestPlanItems from './TestPlanItems.vue'
 import TestPlanEdit from './TestPlanEdit.vue'
+import IssueListNew from '@/components/issue/IssueListNew.vue'
+import TestReportList from './TestReportList.vue'
 
 export default {
   name: 'TestPlanDetails',
   components: {
     Avatar,
     TestPlanItems,
-    TestPlanEdit
+    TestPlanEdit,
+    IssueListNew,
+    TestReportList
   },
   props: {},
   data() {
@@ -94,6 +121,10 @@ export default {
       testPlanId: this.$route.params.testPlanId,
       testPlan: {},
       activeTab: 'cases',
+      issueFilter: {
+        testPlanId: this.$route.params.testPlanId,
+        types: ['BUG']
+      },
       planEditVisible: false
     }
   },
@@ -198,6 +229,14 @@ export default {
         flex: 1;
       }
     }
+  }
+}
+</style>
+
+<style lang="less">
+.test-plan-details-page {
+  .test-reports-list-page {
+    padding: unset !important;
   }
 }
 </style>

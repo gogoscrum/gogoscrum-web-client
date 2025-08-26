@@ -42,12 +42,7 @@
                     :key="member.id"
                     :disabled="issue.owner && member.user.id == issue.owner.id"
                     @click.native="assignIssueToUser(member.user)">
-                    <div class="user-select-option">
-                      <div class="user-avatar flex">
-                        <avatar :name="member.user.nickname" :size="20" inline :src="member.user.avatarUrl"></avatar>
-                      </div>
-                      <div class="username">{{ member.user.nickname }}</div>
-                    </div>
+                    <avatar :name="member.user.nickname" :size="20" showName :src="member.user.avatarUrl"></avatar>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -154,18 +149,12 @@
             </div>
           </div>
           <div class="issue-avatar issue-icon">
-            <el-tooltip
-              v-if="issue.owner && issue.owner.nickname"
-              class="item"
-              :content="issue.owner.nickname"
-              placement="bottom">
-              <avatar
-                :name="issue.owner.nickname"
-                :size="22"
-                :src="issue.owner.avatarUrl"
-                inline
-                class="h-header-user-avatar"></avatar>
-            </el-tooltip>
+            <avatar
+              v-if="issue.owner"
+              :name="issue.owner.nickname"
+              :size="22"
+              :src="issue.owner.avatarUrl"
+              showTooltip></avatar>
           </div>
         </div>
       </div>
@@ -348,19 +337,6 @@ export default {
 .sprint-candidates {
   max-height: 350px;
   overflow: scroll;
-}
-
-.user-select-option {
-  display: flex;
-
-  .user-avatar {
-    display: flex;
-    align-items: center;
-  }
-
-  .username {
-    margin-left: 10px;
-  }
 }
 
 .issue-card-outter-container {

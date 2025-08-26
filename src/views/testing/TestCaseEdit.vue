@@ -34,6 +34,7 @@
       :disabled="!project.isDeveloper || isOldVersion"
       :rules="rules"
       label-position="top"
+      require-asterisk-position="right"
       label-width="105px"
       class="test-case-form"
       :label-position="isInMobile ? 'top' : 'right'">

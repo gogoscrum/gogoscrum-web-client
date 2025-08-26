@@ -1,6 +1,6 @@
 <template>
   <div class="test-plan-item-list">
-    <div class="filter-row">
+    <div v-if="!hideFilter" class="filter-row">
       <div class="left-part">
         <el-button
           :disabled="!project.isDeveloper"
@@ -21,7 +21,7 @@
           >{{ runningCaseIndex ? $t('test.plan.items.continueRun') : $t('test.plan.items.startRun') }}</el-button
         >
       </div>
-      <TestPlanStatistics :testPlan="testPlan" class="statistics" />
+      <TestPlanStatistics :testPlan="testPlan" />
       <div class="right-part">
         <div class="summary-info">
           <el-icon v-if="loading" class="is-loading refresh-btn">
@@ -56,24 +56,23 @@
         :show-header="true"
         @row-click="itemClicked"
         @sort-change="sortChange">
-        <el-table-column width="25">
-          <template #default="scope">
-            <!-- <el-tag :type="runningCaseId === scope.row.testCase.id ? 'success' : 'info'"
-              >TC-{{ scope.row.testCase.code }}</el-tag
-            > -->
-            <el-icon v-if="runningCaseId === scope.row.testCase.id" class="cursor-arrow"><CaretRight /></el-icon>
-          </template>
-        </el-table-column>
         <el-table-column
           :label="$t('test.case.list.header.code')"
           prop="testCase.code"
           sortable="custom"
-          width="85"
+          width="100"
           align="center">
           <template #default="scope">
-            <el-tag :type="runningCaseId === scope.row.testCase.id ? 'success' : 'info'"
-              >TC-{{ scope.row.testCase.code }}</el-tag
-            >
+            <div class="flex items-center">
+              <el-icon v-if="runningCaseId === scope.row.testCase.id" class="cursor-arrow mr-4px"
+                ><CaretRight
+              /></el-icon>
+              <el-tag
+                :type="runningCaseId === scope.row.testCase.id ? 'success' : 'info'"
+                :class="{ 'ml-18px': runningCaseId !== scope.row.testCase.id }">
+                TC-{{ scope.row.testCase.code }}</el-tag
+              >
+            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -111,26 +110,6 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column
-          :label="$t('test.case.list.header.owner')"
-          prop="testCase.details.owner.nickname"
-          sortable="custom"
-          min-width="30"
-          align="center"
-          class-name="owner-column">
-          <template #default="scope">
-            <el-tooltip
-              v-if="scope.row.testCase.details.owner"
-              :content="scope.row.testCase.details.owner.nickname"
-              placement="left">
-              <Avatar
-                :name="scope.row.testCase.details.owner.nickname"
-                :size="22"
-                :src="scope.row.testCase.details.owner.avatarUrl"
-                inline />
-            </el-tooltip>
-          </template>
-        </el-table-column> -->
         <el-table-column
           :label="$t('test.case.list.header.latestRunStatus')"
           prop="latestRun.status"
@@ -151,7 +130,11 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+        <el-table-column
+          v-if="project.isDeveloper && !readonly"
+          :label="$t('common.actions')"
+          width="80"
+          align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -159,10 +142,10 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="VideoPlay" @click.native="runCase(scope.$index, scope.row)">{{
-                    $t('test.plan.items.run')
+                  <el-dropdown-item icon="VideoPlay" @click.native="runCase(scope.$index, scope.row, true)">{{
+                    $t('test.plan.items.newRun')
                   }}</el-dropdown-item>
-                  <el-dropdown-item icon="Edit" @click.native="showCaseDetails(scope.row)">{{
+                  <el-dropdown-item icon="ZoomIn" @click.native="showCaseDetails(scope.row)">{{
                     $t('test.plan.items.caseDetails')
                   }}</el-dropdown-item>
                   <el-dropdown-item icon="Delete" @click.native="deleteItem(scope.$index, scope.row)">{{
@@ -181,7 +164,7 @@
           </el-empty>
         </template>
       </el-table>
-      <div v-if="!loading" class="table-footer">
+      <div class="table-footer">
         <el-pagination
           :current-page="filter.page"
           :page-count="totalPages"
@@ -212,6 +195,7 @@
     @prevTestRun="handlePrevCase"
     @nextTestRun="handleNextCase"
     @testRunSaved="handleTestRunSaved"
+    @testRunDeleted="handleTestRunDeleted"
     @testRunClosed="hideTestRun" />
 </template>
 
@@ -224,7 +208,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import TestCasePicker from './TestCasePicker.vue'
 import TestRunEdit from './TestRunEdit.vue'
-import TestRunStatusIcon from '@/components/common/TestRunStatusIcon.vue'
+import TestRunStatusIcon from '@/components/testing/TestRunStatusIcon.vue'
 import TestPlanStatistics from './TestPlanStatistics.vue'
 
 export default {
@@ -243,9 +227,17 @@ export default {
       type: String,
       default: null
     },
+    hideFilter: {
+      type: Boolean,
+      default: false
+    },
     testPlan: {
       type: Object,
       default: () => ({})
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -320,6 +312,7 @@ export default {
       utils.formatCreateUpdateTime(item.testCase)
     },
     sortChange(event) {
+      // Only support single column sorting
       this.runningCaseId = null
       this.runningCaseIndex = 0
       this.filter.orders = []
@@ -353,13 +346,11 @@ export default {
     },
     itemClicked(row) {
       const index = this.planItems.indexOf(row)
-      this.runCase(index, row)
+      this.runCase(index, row, false)
     },
-    runCase(index, row) {
-      // this.caseRunEditVisible = true
-      // this.runningCaseId = row.testCase.id
+    runCase(index, row, forceNewRun) {
       this.runningCaseIndex = this.toOverallIndex(index)
-      this.runCaseByIndexInPage(index)
+      this.runCaseByIndexInPage(index, forceNewRun)
     },
     toOverallIndex(index) {
       return (this.filter.page - 1) * this.filter.pageSize + index
@@ -403,11 +394,15 @@ export default {
         this.runCaseByIndexInPage(indexInPage)
       }
     },
-    runCaseByIndexInPage(indexInPage) {
+    runCaseByIndexInPage(indexInPage, forceNewRun) {
       this.caseRunEditVisible = true
       const itemToRun = this.planItems[indexInPage]
       this.runningCaseId = itemToRun.testCase.id
-      this.latestRunId = itemToRun.latestRun?.id || null
+      if (forceNewRun) {
+        this.latestRunId = null
+      } else {
+        this.latestRunId = itemToRun.latestRun?.id || null
+      }
     },
     handleTestRunSaved(run) {
       this.loadPlanItems()
@@ -438,6 +433,10 @@ export default {
         .catch(() => {
           // Cancelled, do nothing
         })
+    },
+    handleTestRunDeleted() {
+      this.loadPlanItems()
+      this.$emit('itemChanged')
     },
     loadAllPlanCaseIds() {
       testPlanApi.getTestCaseIds(this.testPlanId).then((response) => {

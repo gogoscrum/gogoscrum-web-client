@@ -129,11 +129,7 @@
               v-if="scope.row.createdBy"
               :content="$t('fileList.list.creatorTip', { nickname: scope.row.createdBy.nickname })"
               placement="left">
-              <avatar
-                :name="scope.row.createdBy.nickname"
-                :size="22"
-                :src="scope.row.createdBy.avatarUrl"
-                inline></avatar>
+              <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -504,6 +500,7 @@ export default {
         .then(() => {
           fileApi.delete(row.id).then((response) => {
             this.files.splice(index, 1)
+            this.totalElements--
             ElMessage.success({
               message: this.$t('fileList.msg.delSuccess', { type: type })
             })

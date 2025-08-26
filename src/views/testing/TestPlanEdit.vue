@@ -12,6 +12,7 @@
       :model="testPlan"
       :rules="rules"
       label-width="88px"
+      require-asterisk-position="right"
       class="test-plan-form"
       :label-position="isInMobile ? 'top' : 'right'">
       <el-form-item :label="$t('test.plan.edit.name')" prop="name">

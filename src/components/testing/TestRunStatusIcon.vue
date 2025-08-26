@@ -2,12 +2,13 @@
   <div :class="`test-run-status-icon-container ${size}`">
     <div v-if="status" class="flex items-center" :title="$t(`testRunStatuses.${status}`)">
       <el-tooltip :content="$t(`testRunStatuses.${status}`)" :disabled="showLabel" placement="top">
-        <el-icon :class="`status-icon ${status}`">
+        <el-icon :class="`status-icon ${status} ${dummy ? 'dummy' : ''}`">
           <SuccessFilled v-if="status === 'SUCCESS'" />
           <CircleCloseFilled v-else-if="status === 'FAILED'" />
           <RemoveFilled v-else-if="status === 'BLOCKED'" />
-          <WarningFilled v-else-if="status === 'SKIPPED'" /> </el-icon
-      ></el-tooltip>
+          <WarningFilled v-else-if="status === 'SKIPPED'" />
+        </el-icon>
+      </el-tooltip>
       <div v-if="showLabel" class="status-label">{{ $t(`testRunStatuses.${status}`) }}</div>
     </div>
   </div>
@@ -27,6 +28,10 @@ export default {
     size: {
       type: String,
       default: 'default'
+    },
+    dummy: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -41,6 +46,10 @@ export default {
 .test-run-status-icon-container {
   .status-icon {
     font-size: 18px;
+
+    &.dummy {
+      color: #d9d9d9;
+    }
   }
 
   &.small {
@@ -67,6 +76,7 @@ export default {
 
   .status-label {
     margin-left: 8px;
+    min-width: 60px;
   }
 }
 </style>

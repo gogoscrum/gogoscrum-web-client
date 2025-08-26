@@ -50,7 +50,9 @@
     },
     "filter": {
       "totalElements": "共 {count} 条",
-      "matchedResults": "{count} 个符合条件的结果"
+      "matchedResults": "{count} 个符合条件的结果",
+      "noMatch": "没有匹配的结果",
+      "tooManyMatches": "匹配结果过多，请细化搜索条件"
     }
   },
   "uploader": {
@@ -284,8 +286,7 @@
     }
   },
   "issueEdit": {
-    "titleEdit": "修改任务",
-    "titleNew": "新建任务",
+    "titleNew": "新建{typeName}",
     "copyCode": "复制任务编号",
     "name": "名称",
     "namePlaceholder": "请输入任务标题",
@@ -309,6 +310,10 @@
     "estimatedHours": "预估工时",
     "actualHours": "实际工时",
     "hoursPlaceholder": "请输入工时",
+    "testCase": "测试用例",
+    "testCasePlaceholder": "关联测试用例",
+    "testPlan": "测试计划",
+    "testPlanPlaceholder": "关联测试计划",
     "tag": "标签",
     "dueTime": "截止时间",
     "dueTimePlaceholder": "选择日期和时间",
@@ -358,10 +363,6 @@
       "invalidHours": "工时必须为数字",
       "tooManyFilesPasted": "一次粘贴不能超过5个文件"
     }
-  },
-  "issueFinder": {
-    "noMatch": "没有匹配的结果",
-    "tooManyMatches": "匹配结果过多，请细化搜索条件"
   },
   "issueGroupEdit": {
     "titleEdit": "修改列表",
@@ -557,7 +558,8 @@
   },
   "issueList": {
     "header": {
-      "new": "新建任务",
+      "newIssue": "新建任务",
+      "newBug": "新建缺陷",
       "export": "导出",
       "expandFilter": "展开过滤",
       "collapseFilter": "收起过滤",
@@ -574,7 +576,11 @@
       "saveFilter": "保存"
     },
     "list": {
+      "code": "编号",
       "name": "名称",
+      "priority": "优先级",
+      "owner": "执行者",
+      "status": "状态",
       "assignee": "执行者",
       "assignToMe": "分配给我",
       "unassign": "移除执行者",
@@ -882,7 +888,9 @@
       },
       "details": {
         "title": "测试用例详情",
-        "tabRuns": "执行记录"
+        "tabRuns": "执行记录",
+        "tabBugs": "相关缺陷",
+        "noBugs": "暂无相关缺陷"
       },
       "list": {
         "filter": {
@@ -904,8 +912,7 @@
           "creatorTip": "{nickname} 创建于 {createdTime}",
           "latestRunTip": "{nickname} 于 {latestRunTime} 执行",
           "emptyMsg": "项目中还没有任何测试用例",
-          "run": "执行",
-          "records": "执行记录"
+          "run": "执行"
         },
         "msg": {
           "caseCopied": "测试用例复制成功"
@@ -937,11 +944,17 @@
       },
       "details": {
         "title": "测试计划详情",
-        "tabCases": "测试用例"
+        "caseCount": "用例总数",
+        "executedCount": "执行用例",
+        "progress": "测试进度",
+        "tabCases": "测试用例",
+        "tabBugs": "相关缺陷",
+        "tabReports": "测试报告",
+        "noBugs": "暂无相关缺陷"
       },
       "items": {
         "add": "关联用例",
-        "run": "执行",
+        "newRun": "新建执行",
         "startRun": "开始执行",
         "continueRun": "继续执行",
         "caseDetails": "用例详情",
@@ -963,33 +976,37 @@
         "header": {
           "name": "名称",
           "type": "类型",
-          "startDate": "开始日期",
-          "endDate": "结束日期",
           "owner": "负责人",
-          "creator": "创建者"
+          "progress": "测试进度"
         },
         "table": {
           "creatorTip": "{nickname} 创建于 {createdTime}",
+          "progressTip": "已执行 {executedCount} / {caseCount} 条用例",
           "emptyMsg": "项目中还没有任何测试计划"
         }
+      },
+      "selector": {
+        "placeholder": "选择测试计划"
       }
     },
     "run": {
       "titleNew": "创建测试执行记录",
       "titleEdit": "修改测试执行记录",
+      "newRun": "重新执行",
       "steps": {
-        "status": "状态",
-        "result": "步骤实际结果",
+        "status": "步骤状态",
+        "result": "实际结果",
         "resultPlaceholder": "请输入步骤实际结果"
       },
       "result": "执行结果备注",
       "resultPlaceholder": "请输入实际执行结果备注",
       "status": "用例执行结果",
       "files": "附件",
+      "raiseBug": "提Bug",
       "previous": "上一条",
       "next": "下一条",
-      "createdTime": "测试记录创建时间：{ timestamp }",
-      "updatedTime": "测试记录更新时间：{ timestamp }",
+      "createdTime": "创建时间：{ timestamp }",
+      "updatedTime": "更新时间：{ timestamp }",
       "msg": {
         "statusRequired": "请选择用例执行结果",
         "createdSuccess": "测试执行记录创建成功",
@@ -1011,11 +1028,87 @@
         "msg": {
           "empty": "暂无测试执行记录",
           "delConfirmTitle": "删除测试执行记录",
-          "delConfirmMsg": "您即将删除 <strong class=\"red\">\"{runTime}\"</strong> 的测试执行记录，删除后无法恢复，是否继续？",
+          "delConfirmMsg": "您即将删除创建于 {runTime} 的测试用例 <strong class=\"red\">\"{caseName}\"</strong> 的执行记录，删除后无法恢复，是否继续？",
           "delSuccess": "测试执行记录删除成功"
         }
       }
     },
-    "report": {}
+    "report": {
+      "list": {
+        "filter": {
+          "new": "新建报告",
+          "totalElements": "{count} 条测试报告",
+          "search": "查找报告"
+        },
+        "header": {
+          "name": "报告名称",
+          "createdTime": "创建时间",
+          "createdBy": "创建者",
+          "planName": "测试计划"
+        },
+        "msg": {
+          "empty": "暂无测试报告"
+        }
+      },
+      "details": {
+        "titleNew": "新建测试报告",
+        "titleEdit": "测试报告详情",
+        "planName": "测试计划",
+        "testPlanMissing": "测试计划不能为空",
+        "description": "报告总结",
+        "descriptionPlaceholder": "请输入报告总结",
+        "reportName": "报告名称",
+        "reportNameMissing": "报告名称不能为空",
+        "reportNameTemplate": "{planName}测试报告",
+        "startDate": "开始日期",
+        "endDate": "结束日期",
+        "owner": "负责人",
+        "ownerMissing": "请选择负责人",
+        "ownerPlaceholder": "选择负责人",
+        "summary": "报告摘要",
+        "caseCount": "用例总数",
+        "executedCaseCount": "执行用例数",
+        "executionRecordCount": "总执行次数",
+        "failedCaseCount": "失败用例数",
+        "testRate": "测试率",
+        "testRateTip": "测试率 = (执行用例数 / 用例总数) * 100%",
+        "passRate": "通过率",
+        "passRateTip": "通过率 = (通过的用例数 / 用例总数) * 100%",
+        "bugCount": "缺陷总数",
+        "caseList": "测试用例列表",
+        "bugList": "缺陷列表",
+        "noBugs": "暂无相关缺陷",
+        "caseStatisticsTitle": "用例统计",
+        "caseByStatusTitle": "用例按执行结果分布",
+        "executionResult": "执行结果",
+        "count": "数量",
+        "percentage": "占比",
+        "caseNotTested": "未执行",
+        "caseByTypeTitle": "用例按测试类型分布",
+        "testType": "测试类型",
+        "caseWithoutType": "未设置类型",
+        "caseByComponentTitle": "用例按功能模块分布",
+        "component": "功能模块",
+        "caseByExecutorTitle": "用例按执行者分布",
+        "executor": "执行者",
+        "bugStatisticsTitle": "缺陷统计",
+        "bugByPriorityTitle": "缺陷按优先级分布",
+        "priority": "优先级",
+        "bugByStatusTitle": "缺陷按状态分布",
+        "bugStatus": "缺陷状态",
+        "bugByComponentTitle": "缺陷按功能模块分布",
+        "componentNotSet": "未设置模块",
+        "bugByCreatorTitle": "缺陷按创建者分布",
+        "creator": "创建者",
+        "bugByAssigneeTitle": "缺陷按负责人分布",
+        "assignee": "负责人",
+        "assigneeNotSet": "未分配",
+        "createdSuccess": "测试报告创建成功",
+        "updatedSuccess": "测试报告更新成功",
+        "delSuccess": "测试报告删除成功",
+        "delConfirmMsg": "您即将删除测试报告 <strong class=\"red\">\"{reportName}\"</strong>，删除后无法恢复，是否继续？",
+        "delConfirmTitle": "删除测试报告"
+      }
+    }
   }
 }

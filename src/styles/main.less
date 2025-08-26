@@ -128,7 +128,7 @@ a {
   .el-select {
     --el-border-color: transparent;
     --el-border-color-hover: transparent;
-    --el-color-primary: transparent;
+    // --el-color-primary: transparent;
   }
 
   .el-input__wrapper,
@@ -262,16 +262,17 @@ a {
 
   .cell {
     word-break: break-word;
+  }
+}
 
-    .more-action-icon {
-      padding: 5px;
-      cursor: pointer;
-      border-radius: 5px;
+.more-action-icon {
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
 
-      &:hover {
-        background-color: var(--el-color-primary-light-9);
-      }
-    }
+  &:hover {
+    color: var(--el-color-primary);
+    background-color: var(--el-color-primary-light-9);
   }
 }
 
@@ -520,4 +521,12 @@ a {
 
 .el-message-box__status {
   font-size: 40px;
+}
+
+.too-many-match-warning {
+  display: flex;
+  align-items: center;
+  color: orange;
+  font-weight: 500;
+  font-size: 13px;
 }

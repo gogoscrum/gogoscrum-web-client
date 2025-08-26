@@ -69,6 +69,7 @@
         <el-table-column
           :label="$t('test.case.list.header.name')"
           prop="details.name"
+          show-overflow-tooltip
           sortable="custom"
           min-width="120">
           <template #default="scope">
@@ -120,19 +121,17 @@
           :filters="userFilters"
           :filter-multiple="true"
           min-width="35"
-          align="center"
           class-name="owner-column">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.owners?.length }"><Filter /></el-icon>
           </template>
           <template #default="scope">
-            <el-tooltip v-if="scope.row.details.owner" :content="scope.row.details.owner.nickname" placement="left">
-              <avatar
-                :name="scope.row.details.owner.nickname"
-                :size="22"
-                :src="scope.row.details.owner.avatarUrl"
-                inline></avatar>
-            </el-tooltip>
+            <avatar
+              v-if="scope.row.details.owner"
+              :name="scope.row.details.owner.nickname"
+              :size="22"
+              :src="scope.row.details.owner.avatarUrl"
+              showName></avatar>
           </template>
         </el-table-column>
         <el-table-column
@@ -206,7 +205,7 @@
           </el-empty>
         </template>
       </el-table>
-      <div v-if="!loading" class="table-footer">
+      <div class="table-footer">
         <el-pagination
           :current-page="filter.page"
           :page-count="totalPages"
@@ -237,7 +236,7 @@ import utils from '@/utils/util.js'
 import dict from '@/locales/zh-cn/dict.json'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
-import TestRunStatusIcon from '@/components/common/TestRunStatusIcon.vue'
+import TestRunStatusIcon from '@/components/testing/TestRunStatusIcon.vue'
 import TestRunEdit from './TestRunEdit.vue'
 
 export default {
@@ -343,6 +342,7 @@ export default {
       this.$emit('caseSelected', this.pickedCases)
     },
     sortChange(event) {
+      // Only support single column sorting
       this.filter.orders = []
       if (event.prop && event.order) {
         this.filter.orders.push({

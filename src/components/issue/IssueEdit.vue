@@ -4,7 +4,7 @@
       v-model="dialogVisible"
       :width="dialogWidth"
       :append-to-body="true"
-      :top="`${editIssueId ? '5vh' : '15vh'}`"
+      top="5vh"
       :fullscreen="isInMobile"
       :draggable="true"
       class="issue-edit-dialog"
@@ -33,7 +33,7 @@
           </el-button>
         </div>
         <span v-else class="el-dialog__title">{{
-          editIssueId ? $t('issueEdit.titleEdit') : $t('issueEdit.titleNew')
+          $t('issueEdit.titleNew', { typeName: $t(`issueTypes.${editIssue.type || 'TASK'}`) })
         }}</span>
       </template>
       <el-form
@@ -206,6 +206,25 @@
                 :default-time="defaultTime"
                 format="YYYY-MM-DD HH:mm">
               </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="$t('issueEdit.testCase')">
+              <TestCaseSelector
+                v-model="editIssue.testCase"
+                :projectId="projectId"
+                :placeholder="$t('issueEdit.testCasePlaceholder')"></TestCaseSelector>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="$t('issueEdit.testPlan')">
+              <TestPlanSelector
+                v-model="editIssue.testPlan"
+                :projectId="projectId"
+                :placeholder="$t('issueEdit.testPlanPlaceholder')"></TestPlanSelector>
             </el-form-item>
           </el-col>
         </el-row>
@@ -423,9 +442,11 @@
                   :timestamp="`${comment.createdTimeFormatted} ${comment.createdBy.nickname}`"
                   placement="top">
                   <template #dot>
-                    <el-tooltip :content="comment.createdBy.nickname" placement="left">
-                      <avatar :name="comment.createdBy.nickname" :size="22" :src="comment.createdBy.avatarUrl"></avatar>
-                    </el-tooltip>
+                    <avatar
+                      :name="comment.createdBy.nickname"
+                      :size="22"
+                      :src="comment.createdBy.avatarUrl"
+                      showTooltip></avatar>
                   </template>
                   <div>
                     <div>
@@ -491,9 +512,11 @@
                   :timestamp="`${history.createdTimeFormatted} ${history.createdBy.nickname}`"
                   placement="top">
                   <template #dot>
-                    <el-tooltip :content="history.createdBy.nickname" placement="left">
-                      <avatar :name="history.createdBy.nickname" :size="22" :src="history.createdBy.avatarUrl"></avatar>
-                    </el-tooltip>
+                    <avatar
+                      :name="history.createdBy.nickname"
+                      :size="20"
+                      :src="history.createdBy.avatarUrl"
+                      showTooltip></avatar>
                   </template>
                   <div>
                     <div>
@@ -585,6 +608,8 @@ import IssueTypeSelector from '@/components/common/IssueTypeSelector.vue'
 import PrioritySelector from '@/components/common/PrioritySelector.vue'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import MemberSelector from '@/components/common/MemberSelector.vue'
+import TestCaseSelector from '@/components/testing/TestCaseSelector.vue'
+import TestPlanSelector from '@/components/testing/TestPlanSelector.vue'
 import OfficeViewer from '@/components/common/OfficeViewer.vue'
 import PdfViewer from '@/components/common/PdfViewer.vue'
 import TagEdit from '@/components/tag/TagEdit.vue'
@@ -598,6 +623,8 @@ export default {
     IssueTypeSelector,
     PrioritySelector,
     MemberSelector,
+    TestCaseSelector,
+    TestPlanSelector,
     FileIcon,
     IssueTypeIcon,
     TagEdit,
@@ -612,6 +639,12 @@ export default {
       type: String,
       default: () => {
         return ''
+      }
+    },
+    issue: {
+      type: Object,
+      default: () => {
+        return null
       }
     },
     projectId: {
@@ -712,7 +745,7 @@ export default {
       if (window.innerWidth > 1440) {
         return '860px'
       } else {
-        return '720px'
+        return '760px'
       }
     }
   },
@@ -724,6 +757,14 @@ export default {
       this.currentUser = this.$store.get('user')
       if (this.editIssueId) {
         this.loadIssue()
+      } else if (this.issue) {
+        this.editIssue = Object.assign({}, this.issue)
+        this.editIssue.projectId = this.projectId
+
+        console.log('editIssue', this.editIssue)
+        setTimeout(() => {
+          this.$refs.issueNameInput.focus()
+        }, 100)
       } else {
         this.editIssue.type = 'TASK'
         setTimeout(() => {
@@ -818,9 +859,11 @@ export default {
       this.editIssue.tags.splice(index, 1)
     },
     isTagChecked(tag) {
-      let index = utils.indexInArray(this.editIssue.tags, tag.id)
-
-      return index >= 0
+      if (this.editIssue.tags) {
+        let index = utils.indexInArray(this.editIssue.tags, tag.id)
+        return index >= 0
+      }
+      return false
     },
     toggleTag(tag) {
       let index = utils.indexInArray(this.editIssue.tags, tag.id)

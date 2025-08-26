@@ -46,7 +46,12 @@
         @row-click="planClicked"
         @sort-change="sortChange"
         @filterChange="filterChange">
-        <el-table-column :label="$t('test.plan.list.header.name')" prop="name" sortable="custom" min-width="120">
+        <el-table-column
+          :label="$t('test.plan.list.header.name')"
+          prop="name"
+          show-overflow-tooltip
+          sortable="custom"
+          min-width="110">
           <template #default="scope">
             <span class="plan-name" v-html="scope.row.nameHighlightLabel || scope.row.name" />
           </template>
@@ -70,26 +75,6 @@
         </el-table-column>
         <el-table-column
           v-if="!isInMobile"
-          prop="startDate"
-          sortable="custom"
-          :label="$t('test.plan.list.header.startDate')"
-          min-width="40">
-          <template #default="scope">
-            <span>{{ scope.row.startDateFormatted }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          v-if="!isInMobile"
-          prop="endDate"
-          sortable="custom"
-          :label="$t('test.plan.list.header.endDate')"
-          min-width="40">
-          <template #default="scope">
-            <span>{{ scope.row.endDateFormatted }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          v-if="!isInMobile"
           :label="$t('test.plan.list.header.owner')"
           prop="owner.nickname"
           sortable="custom"
@@ -97,43 +82,37 @@
           :filters="userFilters"
           :filter-multiple="true"
           min-width="40"
-          class-name="owner-column"
-          align="center">
+          class-name="owner-column">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.owners?.length }"><Filter /></el-icon>
           </template>
           <template #default="scope">
-            <el-tooltip v-if="scope.row.owner" :content="scope.row.owner.nickname" placement="left">
-              <Avatar :name="scope.row.owner.nickname" :size="22" :src="scope.row.owner.avatarUrl" inline />
-            </el-tooltip>
+            <Avatar
+              v-if="scope.row.owner"
+              :name="scope.row.owner.nickname"
+              :size="22"
+              :src="scope.row.owner.avatarUrl"
+              showName />
           </template>
         </el-table-column>
-        <el-table-column
-          v-if="!isInMobile"
-          :label="$t('test.plan.list.header.creator')"
-          prop="createdBy.nickname"
-          sortable="custom"
-          column-key="creators"
-          :filters="userFilters"
-          :filter-multiple="true"
-          min-width="40"
-          class-name="creator-column"
-          align="center">
-          <template #filter-icon>
-            <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
-          </template>
+        <el-table-column :label="$t('test.plan.list.header.progress')" min-width="40">
           <template #default="scope">
-            <el-tooltip
-              v-if="scope.row.createdBy"
-              :content="
-                $t('test.plan.list.table.creatorTip', {
-                  nickname: scope.row.createdBy.nickname,
-                  createdTime: scope.row.createdTimeFormatted
-                })
-              "
-              placement="left">
-              <Avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl" inline />
-            </el-tooltip>
+            <el-popover class="box-item" content="Top Left prompts info" placement="left" effect="dark" width="180">
+              <template #reference>
+                <el-progress :percentage="scope.row.progress" class="max-w-110px" />
+              </template>
+              <template #default>
+                <div class="mb-8px">
+                  {{
+                    $t('test.plan.list.table.progressTip', {
+                      executedCount: scope.row.executedCount || 0,
+                      caseCount: scope.row.caseCount || 0
+                    })
+                  }}
+                </div>
+                <TestPlanStatistics :testPlan="scope.row" vertical showLabel />
+              </template>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
@@ -169,7 +148,7 @@
           </el-empty>
         </template>
       </el-table>
-      <div v-if="!loading" class="table-footer">
+      <div class="table-footer">
         <el-pagination
           :current-page="filter.page"
           :page-count="totalPages"
@@ -203,12 +182,14 @@ import dict from '@/locales/zh-cn/dict.json'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import TestPlanEdit from './TestPlanEdit.vue'
+import TestPlanStatistics from './TestPlanStatistics.vue'
 
 export default {
   name: 'TestPlanList',
   components: {
     Avatar,
-    TestPlanEdit
+    TestPlanEdit,
+    TestPlanStatistics
   },
   data() {
     return {
@@ -278,6 +259,7 @@ export default {
       return utils.formatCreateUpdateTime(testPlan)
     },
     sortChange(event) {
+      // Only support single column sorting
       this.filter.orders = []
       if (event.prop && event.order) {
         this.filter.orders.push({
@@ -338,7 +320,7 @@ export default {
         ElMessage.success({
           message: this.$t('test.plan.edit.msg.cloneSuccess')
         })
-        // insert the cloned plan right after the original plan
+        // insert the cloned plan right before the original plan
         const clonedPlan = res.data
         this.testPlans.splice(index, 0, this.formatPlan(clonedPlan))
         this.totalElements++
@@ -394,16 +376,5 @@ export default {
 
 <style lang="less" scoped>
 .test-plan-list-page {
-}
-</style>
-
-<style lang="less">
-.test-plan-list-page {
-  .owner-column,
-  .creator-column {
-    .cell {
-      line-height: 1;
-    }
-  }
 }
 </style>

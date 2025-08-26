@@ -3,7 +3,7 @@
     <div class="title">
       <div class="left-part flex items-center">
         <span>{{ $t('test.case.details.title') }}</span>
-        <el-tag type="info" class="ml-4">TC-{{ testCase.code }}</el-tag>
+        <el-tag v-if="testCase.code" type="info" class="ml-4">TC-{{ testCase.code }}</el-tag>
       </div>
       <div class="old-version-warning" v-if="isOldVersion">
         <el-icon class="text-lg mr-1"><WarnTriangleFilled /></el-icon>
@@ -44,7 +44,15 @@
     <TestCaseBasics :testCase="testCase" showDetails :showVersion="false" />
     <el-tabs v-model="activeTab" type="card" class="mt-10">
       <el-tab-pane :label="$t('test.case.details.tabRuns')" name="runs" class="tab-runs">
-        <TestRunList />
+        <TestRunList :show-empty-icon="false" />
+      </el-tab-pane>
+      <el-tab-pane lazy :label="$t('test.case.details.tabBugs')" name="bugs">
+        <IssueListNew
+          :project-id="projectId"
+          :test-case="testCase"
+          :issue-filter="issueFilter"
+          :show-export-btn="false"
+          :empty-text="$t('test.case.details.noBugs')" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -54,12 +62,14 @@
 import { testCaseApi } from '@/api/testing.js'
 import TestCaseBasics from './TestCaseBasics.vue'
 import TestRunList from './TestRunList.vue'
+import IssueListNew from '@/components/issue/IssueListNew.vue'
 
 export default {
   name: 'TestCaseDetails',
   components: {
     TestCaseBasics,
-    TestRunList
+    TestRunList,
+    IssueListNew
   },
   props: {},
   data() {
@@ -70,7 +80,11 @@ export default {
       testCase: {
         details: {}
       },
-      activeTab: 'runs'
+      activeTab: 'runs',
+      issueFilter: {
+        testCaseId: this.$route.params.testCaseId,
+        types: ['BUG']
+      }
     }
   },
   computed: {
@@ -153,12 +167,6 @@ export default {
     align-items: center;
     font-size: 13px;
     font-weight: 500;
-  }
-
-  .tab-runs {
-    .test-runs-list-page {
-      padding: unset;
-    }
   }
 }
 </style>

@@ -1,16 +1,16 @@
 <template>
-  <div class="test-runs-list-page page">
+  <div class="test-reports-list-page page">
     <div class="filter-row">
       <div class="left-part">
         <div class="left-part">
           <el-button
-            v-if="filter.caseId && project.isDeveloper"
+            v-if="filter.planId && project.isDeveloper"
             text
             type="primary"
-            @click="newRun"
+            @click="newReport"
             icon="CirclePlusFilled"
             class="text-icon-btn"
-            >{{ $t('test.run.list.filter.new') }}</el-button
+            >{{ $t('test.report.list.filter.new') }}</el-button
           >
         </div>
       </div>
@@ -19,69 +19,75 @@
           <el-icon v-if="loading" class="is-loading refresh-btn">
             <Loading />
           </el-icon>
-          <el-icon v-else @click="loadRuns" class="refresh-btn">
+          <el-icon v-else @click="loadReports" class="refresh-btn">
             <Refresh />
           </el-icon>
           <span class="item-count">{{
             filter.keyword
               ? $t('common.filter.matchedResults', { count: totalElements })
-              : $t('test.run.list.filter.totalElements', { count: totalElements })
+              : $t('test.report.list.filter.totalElements', { count: totalElements })
           }}</span>
         </div>
-        <el-form-item v-if="!filter.caseId" class="mb-0!">
+        <el-form-item class="mb-0!">
           <el-input
             class="search-input"
             v-model="filter.keyword"
             clearable
             prefix-icon="Search"
-            :placeholder="$t('test.case.list.filter.search')"
+            :placeholder="$t('test.report.list.filter.search')"
             @input="filterChanged"></el-input>
         </el-form-item>
       </div>
     </div>
 
     <el-table
-      :data="runs"
+      :data="reports"
       v-loading="loading"
-      :empty-text="$t('test.run.list.msg.empty')"
+      :empty-text="$t('test.report.list.msg.empty')"
       :border="false"
       :show-header="true"
-      class="test-runs-table"
+      class="test-reports-table"
       row-class-name="clickable"
       @filterChange="filterChange"
       @sort-change="sortChange"
-      @row-click="showRunEdit">
+      @row-click="showReport">
       <el-table-column
-        v-if="!filter.caseId"
-        :label="$t('test.case.list.header.code')"
-        prop="testCase.code"
-        sortable="custom"
-        width="85"
-        align="center">
-        <template #default="scope">
-          <el-tag type="info"
-            >TC-<span v-html="scope.row['testCase.codeHighlightLabel'] || scope.row.testCase.code"
-          /></el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        v-if="!filter.caseId"
-        :label="$t('test.run.list.caseName')"
-        prop="testCase.details.name"
+        :label="$t('test.report.list.header.name')"
+        prop="name"
         show-overflow-tooltip
         sortable="custom"
         min-width="100">
         <template #default="scope">
-          <span v-html="scope.row['testCase.details.nameHighlightLabel'] || scope.row.testCase.details.name" />
+          <span v-html="scope.row['nameHighlightLabel'] || scope.row.name" />
         </template>
       </el-table-column>
-      <el-table-column :label="$t('test.run.list.createdTime')" prop="createdTime" sortable="custom" min-width="60">
+      <el-table-column
+        :label="$t('test.report.list.header.planName')"
+        prop="testPlan.name"
+        show-overflow-tooltip
+        sortable="custom"
+        column-key="planIds"
+        :filters="!filter.planId ? planFilters : null"
+        :filter-multiple="true"
+        min-width="70">
+        <template #filter-icon>
+          <el-icon class="table-header-filter-icon" :class="{ active: filter.planIds?.length }"><Filter /></el-icon>
+        </template>
+        <template #default="scope">
+          {{ scope.row.testPlan?.name }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        :label="$t('test.report.list.header.createdTime')"
+        prop="createdTime"
+        sortable="custom"
+        min-width="60">
         <template #default="scope">
           {{ scope.row.createdTimeFormatted }}
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('test.run.list.createdBy')"
+        :label="$t('test.report.list.header.createdBy')"
         prop="createdBy.nickname"
         sortable="custom"
         column-key="creators"
@@ -99,38 +105,6 @@
             :src="scope.row.createdBy.avatarUrl"></Avatar>
         </template>
       </el-table-column>
-      <el-table-column
-        :label="$t('test.run.list.planName')"
-        prop="testPlan.name"
-        show-overflow-tooltip
-        sortable="custom"
-        column-key="planIds"
-        :filters="planFilters"
-        :filter-multiple="true"
-        min-width="70">
-        <template #filter-icon>
-          <el-icon class="table-header-filter-icon" :class="{ active: filter.planIds?.length }"><Filter /></el-icon>
-        </template>
-        <template #default="scope">
-          {{ scope.row.testPlan?.name }}
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        :label="$t('test.run.list.status')"
-        prop="status"
-        sortable="custom"
-        column-key="statuses"
-        :filters="runStatusFilters"
-        :filter-multiple="true"
-        min-width="40">
-        <template #filter-icon>
-          <el-icon class="table-header-filter-icon" :class="{ active: filter.statuses?.length }"><Filter /></el-icon>
-        </template>
-        <template #default="scope">
-          <TestRunStatusIcon :status="scope.row.status" />
-        </template>
-      </el-table-column>
       <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
         <template #default="scope">
           <el-dropdown trigger="click" placement="bottom">
@@ -139,10 +113,10 @@
             </div>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item icon="ZoomIn" @click.native="showRunEdit(scope.row)">{{
+                <el-dropdown-item icon="ZoomIn" @click.native="showReport(scope.row)">{{
                   $t('common.details')
                 }}</el-dropdown-item>
-                <el-dropdown-item icon="Delete" @click.native="deleteRun(scope.$index, scope.row)">{{
+                <el-dropdown-item icon="Delete" @click.native="deleteReport(scope.$index, scope.row)">{{
                   $t('common.delete')
                 }}</el-dropdown-item>
               </el-dropdown-menu>
@@ -151,7 +125,7 @@
         </template>
       </el-table-column>
       <template v-if="showEmptyIcon" v-slot:empty>
-        <el-empty :image-size="100" :description="$t('test.run.list.msg.empty')"> </el-empty>
+        <el-empty :image-size="100" :description="$t('test.report.list.msg.empty')"> </el-empty>
       </template>
     </el-table>
     <div class="table-footer">
@@ -169,31 +143,19 @@
       </el-pagination>
     </div>
   </div>
-  <TestRunEdit
-    v-if="editingRunId"
-    :test-case-id="editingRunCaseId"
-    :test-run-id="editingRunId"
-    @testRunSaved="testRunSaved"
-    @testRunDeleted="testRunDeleted"
-    @testRunClosed="hideRunEdit" />
 </template>
 
 <script>
-import { testPlanApi, testRunApi } from '@/api/testing.js'
+import { testPlanApi, testReportApi } from '@/api/testing.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import utils from '@/utils/util.js'
 import highlight from '@/utils/highlight.js'
-import dict from '@/locales/zh-cn/dict.json'
-import TestRunStatusIcon from '@/components/testing/TestRunStatusIcon.vue'
 import Avatar from '@/components/common/Avatar.vue'
-import TestRunEdit from './TestRunEdit.vue'
 
 export default {
-  name: 'TestRunList',
+  name: 'TestReportList',
   components: {
-    TestRunStatusIcon,
-    Avatar,
-    TestRunEdit
+    Avatar
   },
   props: {
     showEmptyIcon: {
@@ -205,28 +167,25 @@ export default {
     return {
       projectId: this.$route.params.projectId,
       project: {},
+      reports: [],
       filter: {
         projectId: this.$route.params.projectId,
-        caseId: this.$route.params.testCaseId,
+        planId: this.$route.params.testPlanId,
         orders: [],
         page: 1,
-        pageSize: this.$store.get('testRunListPageSize') || 10
+        pageSize: this.$store.get('testReportListPageSize') || 10
       },
       totalElements: 0,
       totalPages: 0,
       loading: false,
-      runs: [],
-      editingRunId: null,
-      editingRunCaseId: null,
       userFilters: [],
-      runStatusFilters: [],
       planFilters: []
     }
   },
   computed: {},
   created() {
     this.project = this.$store.get('project')
-    this.loadRuns()
+    this.loadReports()
     this.initColumnFilters()
   },
   mounted() {},
@@ -235,11 +194,6 @@ export default {
       this.userFilters = this.project.projectMembers.map((member) => ({
         text: member.user.nickname,
         value: member.user.id
-      }))
-
-      this.runStatusFilters = Object.keys(dict.testRunStatuses).map((key) => ({
-        text: this.$t(`testRunStatuses.${key}`),
-        value: key
       }))
 
       this.initPlanFilters()
@@ -252,22 +206,17 @@ export default {
         }))
       })
     },
-    loadRuns() {
+    loadReports() {
       this.loading = true
-      testRunApi
+      testReportApi
         .search(this.filter)
         .then((res) => {
-          this.runs = highlight.highlight(
-            res.data.results,
-            this.filter.keyword,
-            'testCase.code',
-            'testCase.details.name'
-          )
+          this.reports = highlight.highlight(res.data.results, this.filter.keyword, 'name')
           this.totalElements = res.data.totalElements
           this.totalPages = res.data.totalPages
 
-          this.runs.forEach((run) => {
-            this.formatTestRun(run)
+          this.reports.forEach((report) => {
+            this.formatTestReport(report)
           })
         })
         .finally(() => {
@@ -276,45 +225,27 @@ export default {
           }, 200)
         })
     },
-    formatTestRun(testRun) {
-      utils.formatCreateUpdateTime(testRun)
+    formatTestReport(testReport) {
+      utils.formatCreateUpdateTime(testReport)
     },
-    newRun() {
-      this.editingRunId = 'new'
-      this.editingRunCaseId = this.filter.caseId
+    newReport() {
+      this.$router.push({
+        name: 'TestReportPreview',
+        params: { projectId: this.projectId, planId: this.planId }
+      })
     },
-    showRunEdit(row) {
-      this.editingRunId = row.id
-      this.editingRunCaseId = row.testCaseId
+    showReport(row) {
+      this.$router.push({
+        name: 'TestReportDetails',
+        params: { projectId: this.projectId, reportId: row.id }
+      })
     },
-    hideRunEdit() {
-      this.editingRunId = null
-      this.editingRunCaseId = null
-    },
-    testRunSaved(testRun) {
-      this.formatTestRun(testRun)
-      console.log('testRunSaved', testRun)
-      let index = utils.indexInArray(this.runs, testRun.id)
-      if (index >= 0) {
-        this.runs.splice(index, 1, testRun)
-      } else {
-        this.runs.unshift(testRun)
-        this.totalElements++
-      }
-    },
-    deleteRunById(id) {
-      let index = utils.indexInArray(this.runs, id)
-      if (index >= 0) {
-        this.deleteRun(index, this.runs[index])
-      }
-    },
-    deleteRun(index, row) {
+    deleteReport(index, row) {
       ElMessageBox.confirm(
-        this.$t('test.run.list.msg.delConfirmMsg', {
-          runTime: row.createdTimeFormatted,
-          caseName: row.testCase.details.name
+        this.$t('test.report.details.delConfirmMsg', {
+          reportName: row.name
         }),
-        this.$t('test.run.list.msg.delConfirmTitle'),
+        this.$t('test.report.details.delConfirmTitle'),
         {
           type: 'warning',
           dangerouslyUseHTMLString: true,
@@ -322,20 +253,15 @@ export default {
         }
       )
         .then(() => {
-          testRunApi.delete(row.id).then(() => {
-            ElMessage.success(this.$t('test.run.list.msg.delSuccess'))
-            this.hideRunEdit()
-            this.runs.splice(index, 1)
+          testReportApi.delete(row.id).then(() => {
+            ElMessage.success(this.$t('test.report.details.delSuccess'))
+            this.reports.splice(index, 1)
             this.totalElements--
           })
         })
         .catch(() => {
           // Cancelled, do nothing
         })
-    },
-    testRunDeleted(testRun) {
-      this.runs = this.runs.filter((run) => run.id !== testRun.id)
-      this.totalElements--
     },
     sortChange(event) {
       // Only support single column sorting
@@ -357,14 +283,6 @@ export default {
         }
       }
 
-      if (filters.statuses) {
-        if (filters.statuses.length > 0) {
-          this.filter.statuses = filters.statuses
-        } else {
-          this.filter.statuses = null
-        }
-      }
-
       if (filters.planIds) {
         if (filters.planIds.length > 0) {
           this.filter.planIds = filters.planIds
@@ -377,15 +295,15 @@ export default {
     },
     filterChanged() {
       this.filter.page = 1
-      this.loadRuns()
+      this.loadReports()
     },
     pageChanged: function (page) {
       this.filter.page = page
-      this.loadRuns()
+      this.loadReports()
     },
     pageSizeChanged(size) {
       this.filter.pageSize = size
-      this.$store.set('testRunListPageSize', this.filter.pageSize)
+      this.$store.set('testReportListPageSize', this.filter.pageSize)
       this.filterChanged()
     }
   }
@@ -393,6 +311,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.test-runs-list-page {
+.test-reports-list-page {
 }
 </style>

@@ -12,12 +12,12 @@
       :default-first-option="true"
       :remote-method="searchIssue"
       :loading="searching"
-      :no-data-text="$t('issueFinder.noMatch')"
+      :no-data-text="$t('common.filter.noMatch')"
       @change="change"
       @blur="blur">
       <el-option v-if="totalElements > pageSize" value="0" class="too-many-match-warning">
-        <el-icon class="mr-2"><WarningFilled /></el-icon>
-        <span>{{ $t('issueFinder.tooManyMatches') }}</span>
+        <el-icon class="mr-3"><WarningFilled /></el-icon>
+        <span>{{ $t('common.filter.tooManyMatches') }}</span>
       </el-option>
       <el-option v-for="issue in issues" :key="issue.id" :value="issue">
         <div class="issue-row">
@@ -95,11 +95,6 @@ export default {
 
 <style lang="less" scoped>
 .issue-finder-container {
-  .too-many-match-warning {
-    display: flex;
-    align-items: center;
-    color: orange;
-  }
   .issue-row {
     display: flex;
     align-items: center;

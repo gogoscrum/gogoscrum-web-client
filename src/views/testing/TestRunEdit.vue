@@ -7,10 +7,37 @@
     size="960">
     <template #header>
       <div class="flex items-center">
-        <div class="header-content">
+        <span>
           {{ testRun.id ? $t('test.run.titleEdit') : $t('test.run.titleNew') }}
-        </div>
+        </span>
         <el-tag type="info" class="ml-2">TC-{{ testCase.code }}</el-tag>
+        <div v-if="testRun.updatedTimeFormatted" class="ml-30px desc">
+          {{
+            testRun.createdTime === testRun.updatedTime
+              ? $t('test.run.createdTime', { timestamp: testRun.createdTimeFormatted })
+              : $t('test.run.updatedTime', { timestamp: testRun.updatedTimeFormatted })
+          }}
+        </div>
+      </div>
+
+      <div class="flex items-center mr-32px">
+        <el-button
+          v-if="testRun.id"
+          text
+          type="primary"
+          icon="RefreshRight"
+          class="header-run-again-btn"
+          @click="newRun"
+          >{{ $t('test.run.newRun') }}</el-button
+        >
+        <el-dropdown v-if="testRun.id" trigger="click" placement="bottom">
+          <el-icon class="more-action-icon"><MoreFilled /></el-icon>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item icon="Delete" @click.native="deleteTestRun">{{ $t('common.delete') }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </template>
     <TestCaseBasics :testCase="testCase" />
@@ -19,6 +46,7 @@
       :model="testRun"
       :rules="rules"
       label-position="top"
+      require-asterisk-position="right"
       label-width="auto"
       class="test-run-form"
       :label-position="isInMobile ? 'top' : 'top'">
@@ -57,13 +85,6 @@
       </el-form-item>
       <el-form-item :label="$t('test.run.status')" prop="status" class="!mt-10">
         <TestRunStatusSelector v-model="testRun.status" class="!w-150px" />
-        <span v-if="testRun.updatedTimeFormatted" class="ml-30px desc"
-          >{{
-            testRun.createdTime === testRun.updatedTime
-              ? $t('test.run.createdTime', { timestamp: testRun.createdTimeFormatted })
-              : $t('test.run.updatedTime', { timestamp: testRun.updatedTimeFormatted })
-          }}
-        </span>
       </el-form-item>
       <el-form-item :label="$t('test.run.result')">
         <el-input
@@ -88,14 +109,12 @@
       <div class="footer">
         <div class="min-w-150px text-left">
           <el-button
-            v-if="testRun.id && project.isDeveloper"
+            v-if="testRun.id && testRun.status !== 'SUCCESS'"
             type="danger"
-            icon="Delete"
-            class="delete-case-button no-border"
+            class="raise-bug-button no-border"
             plain
-            size="default"
-            @click="deleteTestRun"
-            >{{ $t('common.delete') }}</el-button
+            @click="raiseBug"
+            ><span class="iconfont icon-bug mr-1"></span>{{ $t('test.run.raiseBug') }}</el-button
           >
         </div>
         <div v-if="testPlanId" class="flex items-center">
@@ -134,17 +153,23 @@
       </div>
     </template>
   </el-drawer>
+  <IssueEdit
+    v-if="editingIssue"
+    :issue="editingIssue"
+    :projectId="testCase.projectId"
+    @issueFormClosed="issueDialogClosed" />
 </template>
 <script>
 import { testCaseApi, testRunApi } from '@/api/testing.js'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
-import TestRunStatusSelector from '@/components/common/TestRunStatusSelector.vue'
+import TestRunStatusSelector from '@/components/testing/TestRunStatusSelector.vue'
 import Avatar from '@/components/common/Avatar.vue'
 import dict from '@/locales/zh-cn/dict.json'
 import utils from '@/utils/util.js'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import TestCaseBasics from './TestCaseBasics.vue'
 import FileUploader from '@/components/common/FileUploader.vue'
+import IssueEdit from '@/components/issue/IssueEdit.vue'
 
 export default {
   name: 'TestRunEdit',
@@ -153,9 +178,10 @@ export default {
     TestCaseBasics,
     Avatar,
     TestRunStatusSelector,
-    FileUploader
+    FileUploader,
+    IssueEdit
   },
-  emits: ['testRunSaved', 'deleteTestRun', 'testRunClosed', 'prevTestRun', 'nextTestRun'],
+  emits: ['testRunSaved', 'testRunDeleted', 'testRunClosed', 'prevTestRun', 'nextTestRun'],
   props: {
     testCaseId: {
       type: String,
@@ -195,7 +221,8 @@ export default {
       saving: false,
       rules: {
         status: [{ required: true, message: this.$t('test.run.msg.statusRequired'), trigger: 'blur' }]
-      }
+      },
+      editingIssue: null
     }
   },
   watch: {
@@ -322,11 +349,86 @@ export default {
 
       return true
     },
+    newRun() {
+      this.initTestRun()
+    },
     deleteTestRun() {
-      this.$emit('deleteTestRun', this.testRun.id)
+      ElMessageBox.confirm(
+        this.$t('test.run.list.msg.delConfirmMsg', {
+          runTime: this.testRun.createdTimeFormatted,
+          caseName: this.testCase.details.name
+        }),
+        this.$t('test.run.list.msg.delConfirmTitle'),
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true,
+          draggable: true
+        }
+      )
+        .then(() => {
+          testRunApi.delete(this.testRunId).then(() => {
+            ElMessage.success(this.$t('test.run.list.msg.delSuccess'))
+            this.toggleDrawer()
+            this.$emit('testRunDeleted', this.testRun)
+          })
+        })
+        .catch(() => {
+          // Cancelled, do nothing
+        })
     },
     toggleDrawer() {
       this.drawerVisible = !this.drawerVisible
+    },
+    raiseBug() {
+      this.editingIssue = {
+        projectId: this.project.id,
+        type: 'BUG',
+        name: this.testCase.details.name,
+        description: this.getBugDesc() || '',
+        testCase: this.testCase,
+        testPlan: this.testRun.testPlan
+      }
+    },
+    getBugDesc() {
+      const stepsDesc = this.testRun.stepResults.map((step, index) => {
+        return (
+          '**[' +
+          this.$t('test.case.edit.steps.label') +
+          ' ' +
+          (index + 1) +
+          ']**\n' +
+          this.$t('test.case.edit.steps.description') +
+          ': ' +
+          (step.description || '--') +
+          '\n' +
+          this.$t('test.case.edit.steps.expectation') +
+          ': ' +
+          (step.expectation || '--') +
+          '\n' +
+          this.$t('test.run.steps.status') +
+          ': ' +
+          (step.status ? this.$t(`testRunStatuses['${step.status}']`) : '--') +
+          '\n' +
+          this.$t('test.run.steps.result') +
+          ': ' +
+          (step.result || '--')
+        )
+      })
+
+      return (
+        stepsDesc.join('\n\n') +
+        '\n\n' +
+        this.$t('test.run.status') +
+        ': ' +
+        (this.testRun.status ? this.$t(`testRunStatuses['${this.testRun.status}']`) : '--') +
+        '\n' +
+        this.$t('test.run.result') +
+        ': ' +
+        (this.testRun.result || '--')
+      )
+    },
+    issueDialogClosed() {
+      this.editingIssue = null
     }
   }
 }
@@ -334,6 +436,11 @@ export default {
 
 <style lang="less" scoped>
 .test-run-drawer {
+  .header-run-again-btn {
+    margin-right: 8px;
+    font-size: 13px;
+    height: 24px;
+  }
   .footer {
     width: 100%;
     display: flex;

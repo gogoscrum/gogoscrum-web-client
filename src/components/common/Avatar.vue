@@ -66,9 +66,9 @@ const props = defineProps({
   customStyle: {
     type: Object
   },
-  inline: {
-    type: Boolean
-  },
+  // inline: {
+  //   type: Boolean
+  // },
   size: {
     type: Number,
     default: 50
@@ -137,7 +137,8 @@ const isImage = computed(() => {
 })
 const style = computed(() => {
   const style = {
-    display: props.inline ? 'inline-flex' : 'flex',
+    // display: props.inline ? 'inline-flex' : 'flex',
+    display: 'flex',
     width: `${props.size}px`,
     height: `${props.size}px`,
     minWidth: `${props.size}px`,
@@ -214,9 +215,10 @@ const lightenColor = (hex, amt) => {
 
 <style lang="less" scoped>
 .vue-avatar--wrapper {
-  display: inline-flex;
+  // display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
+  // justify-content: center;
 
   .avator-icon.colorBox {
     background-image: linear-gradient(180deg, #00000000 0%, #00000000 50%, #0000002f 100%) !important;

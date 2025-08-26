@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import TestRunStatusIcon from '@/components/common/TestRunStatusIcon.vue'
+import TestRunStatusIcon from '@/components/testing/TestRunStatusIcon.vue'
 import dict from '@/locales/zh-cn/dict.json'
 
 export default {

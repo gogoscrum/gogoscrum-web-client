@@ -50,7 +50,9 @@
     },
     "filter": {
       "totalElements": "Total {count} items",
-      "matchedResults": "{count} matched results"
+      "matchedResults": "{count} matched results",
+      "noMatch": "No matched results",
+      "tooManyMatches": "Too many matches, please refine the search"
     }
   },
   "uploader": {
@@ -208,7 +210,7 @@
       "testing": "Testing",
       "testCase": "Test case",
       "testPlan": "Test plan",
-      "testRun": "Records",
+      "testRun": "Executions",
       "testReport": "Test report",
       "charts": "Charts",
       "burndown": "Burndown",
@@ -284,8 +286,7 @@
     }
   },
   "issueEdit": {
-    "titleEdit": "Edit issue",
-    "titleNew": "New issue",
+    "titleNew": "New {typeName}",
     "copyCode": "Copy issue code",
     "name": "Name",
     "namePlaceholder": "Please input issue title",
@@ -309,6 +310,10 @@
     "estimatedHours": "Est. hours",
     "actualHours": "Actual hours",
     "hoursPlaceholder": "Please input hours",
+    "testCase": "Test case",
+    "testCasePlaceholder": "Link to a test case",
+    "testPlan": "Test plan",
+    "testPlanPlaceholder": "Link to a test plan",
     "tag": "Tags",
     "dueTime": "Due date",
     "dueTimePlaceholder": "Select date and time",
@@ -358,10 +363,6 @@
       "invalidHours": "Please input a number",
       "tooManyFilesPasted": "Please paste less than 5 files at a time"
     }
-  },
-  "issueFinder": {
-    "noMatch": "No matched issues",
-    "tooManyMatches": "Too many matches, please refine the search"
   },
   "issueGroupEdit": {
     "titleEdit": "Edit group",
@@ -557,12 +558,13 @@
   },
   "issueList": {
     "header": {
-      "new": "New issue",
+      "newIssue": "New issue",
+      "newBug": "New bug",
       "export": "Export",
       "expandFilter": "Show filter",
       "collapseFilter": "Hide filter",
       "count": "{count} issues",
-      "issueType": "Issu type",
+      "issueType": "Issue type",
       "priority": "Priority",
       "sprint": "Sprint",
       "status": "Status",
@@ -574,7 +576,11 @@
       "saveFilter": "Save"
     },
     "list": {
+      "code": "Code",
       "name": "Name",
+      "priority": "Priority",
+      "owner": "Owner",
+      "status": "Status",
       "assignee": "Assigned to",
       "assignToMe": "Assign to me",
       "unassign": "Unassign",
@@ -882,7 +888,9 @@
       },
       "details": {
         "title": "Test case details",
-        "tabRuns": "Execution records"
+        "tabRuns": "Execution records",
+        "tabBugs": "Related bugs",
+        "noBugs": "No related bugs"
       },
       "list": {
         "filter": {
@@ -904,8 +912,7 @@
           "creatorTip": "{nickname} created at {createdTime}",
           "latestRunTip": "{nickname} executed at {latestRunTime}",
           "emptyMsg": "No test cases in this project",
-          "run": "Execute",
-          "records": "Records"
+          "run": "Execute"
         },
         "msg": {
           "caseCopied": "Test case copied successfully"
@@ -937,11 +944,17 @@
       },
       "details": {
         "title": "Test plan details",
-        "tabCases": "Test cases"
+        "caseCount": "Total cases",
+        "executedCount": "Executed",
+        "progress": "Progress",
+        "tabCases": "Test cases",
+        "tabBugs": "Related bugs",
+        "tabReports": "Test reports",
+        "noBugs": "No related bugs"
       },
       "items": {
         "add": "Link cases",
-        "run": "Execute",
+        "newRun": "New execution",
         "startRun": "Start execute",
         "continueRun": "Continue execute",
         "caseDetails": "Case details",
@@ -963,20 +976,23 @@
         "header": {
           "name": "Name",
           "type": "Type",
-          "startDate": "Start date",
-          "endDate": "End date",
           "owner": "Owner",
-          "creator": "Creator"
+          "progress": "Progress"
         },
         "table": {
           "creatorTip": "{nickname} created at {createdTime}",
+          "progressTip": "Executed {executedCount} of {caseCount} cases",
           "emptyMsg": "No test plans in this project"
         }
+      },
+      "selector": {
+        "placeholder": "Select test plan"
       }
     },
     "run": {
       "titleNew": "Create test execution record",
       "titleEdit": "Edit test execution record",
+      "newRun": "Execute again",
       "steps": {
         "status": "Status",
         "result": "Step actual Result",
@@ -986,10 +1002,11 @@
       "resultPlaceholder": "Please input actual result remark",
       "status": "Test case execution result",
       "files": "Attachments",
+      "raiseBug": "Raise bug",
       "previous": "Previous",
       "next": "Next",
-      "createdTime": "Execution result created at {timestamp}",
-      "updatedTime": "Execution result updated at {timestamp}",
+      "createdTime": "Created at {timestamp}",
+      "updatedTime": "Updated at {timestamp}",
       "msg": {
         "statusRequired": "Please select test case execution result",
         "createdSuccess": "Test execution record created successfully",
@@ -1011,11 +1028,87 @@
         "msg": {
           "empty": "No test execution records",
           "delConfirmTitle": "Delete test execution record",
-          "delConfirmMsg": "You are about to delete test execution record created at <strong class=\"red\">\"{runTime}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+          "delConfirmMsg": "You are about to delete test execution created at {runTime} for test case <strong class=\"red\">\"{caseName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
           "delSuccess": "Test execution record deleted successfully"
         }
       }
     },
-    "report": {}
+    "report": {
+      "list": {
+        "filter": {
+          "new": "New report",
+          "totalElements": "{count} test reports",
+          "search": "Search report"
+        },
+        "header": {
+          "name": "Report name",
+          "createdTime": "Created time",
+          "createdBy": "Creator",
+          "planName": "Test plan"
+        },
+        "msg": {
+          "empty": "No test reports"
+        }
+      },
+      "details": {
+        "titleNew": "Create test report",
+        "titleEdit": "Test report details",
+        "planName": "Test plan",
+        "testPlanMissing": "Test plan is required",
+        "description": "Summary",
+        "descriptionPlaceholder": "Please enter report summary",
+        "reportName": "Report name",
+        "reportNameMissing": "Report name is required",
+        "reportNameTemplate": "{planName} Test Report",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "owner": "Owner",
+        "ownerMissing": "Owner is required",
+        "ownerPlaceholder": "Select owner",
+        "summary": "Summary",
+        "caseCount": "Total cases",
+        "executedCaseCount": "Executed cases",
+        "executionRecordCount": "Total executions",
+        "failedCaseCount": "Failed cases",
+        "testRate": "Test rate",
+        "testRateTip": "Test rate = (Executed cases / Total cases) * 100%",
+        "passRate": "Pass rate",
+        "passRateTip": "Pass rate = (Passed cases / Total cases) * 100%",
+        "bugCount": "Total bugs",
+        "caseList": "Test case list",
+        "bugList": "Bug list",
+        "noBugs": "No related bugs",
+        "caseStatisticsTitle": "Case statistics",
+        "caseByStatusTitle": "Case distribution by execution result",
+        "executionResult": "Execution result",
+        "count": "Count",
+        "percentage": "Percentage",
+        "caseNotTested": "Not tested",
+        "caseByTypeTitle": "Case distribution by test type",
+        "testType": "Test type",
+        "caseWithoutType": "Without type",
+        "caseByComponentTitle": "Case distribution by component",
+        "component": "Component",
+        "caseByExecutorTitle": "Case distribution by executor",
+        "executor": "Executor",
+        "bugStatisticsTitle": "Bug statistics",
+        "bugByPriorityTitle": "Bug distribution by priority",
+        "priority": "Priority",
+        "bugByStatusTitle": "Bug distribution by status",
+        "bugStatus": "Bug status",
+        "bugByComponentTitle": "Bug distribution by component",
+        "componentNotSet": "Component not set",
+        "bugByCreatorTitle": "Bug distribution by creator",
+        "creator": "Creator",
+        "bugByAssigneeTitle": "Bug distribution by assignee",
+        "assignee": "Assignee",
+        "assigneeNotSet": "Unassigned",
+        "createdSuccess": "Test report created successfully",
+        "updatedSuccess": "Test report updated successfully",
+        "delSuccess": "Test report deleted successfully",
+        "delConfirmMsg": "You are about to delete test report <strong class=\"red\">\"{reportName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
+        "delConfirmTitle": "Delete test report"
+      }
+    }
   }
 }

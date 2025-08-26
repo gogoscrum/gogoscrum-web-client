@@ -139,9 +139,24 @@ const routes = [
             component: () => import('@/views/testing/TestPlanDetails.vue')
           },
           {
+            path: 'test/plans/:testPlanId/reports/preview',
+            name: 'TestReportPreview',
+            component: () => import('@/views/testing/TestReportDetails.vue')
+          },
+          {
             path: 'test/runs',
             name: 'TestRunList',
             component: () => import('@/views/testing/TestRunList.vue')
+          },
+          {
+            path: 'test/reports',
+            name: 'TestReportList',
+            component: () => import('@/views/testing/TestReportList.vue')
+          },
+          {
+            path: 'test/reports/:reportId',
+            name: 'TestReportDetails',
+            component: () => import('@/views/testing/TestReportDetails.vue')
           }
         ]
       }

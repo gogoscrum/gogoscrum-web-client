@@ -4,6 +4,7 @@
       <span v-if="['CRITICAL', 'MAJOR', 'NORMAL'].includes(priority)" class="iconfont icon-arrow-up"></span>
       <span v-else class="iconfont iconfont-arrow-down"></span>
     </div>
+    <span v-if="showLabel" class="ml-2">{{ $t(`issuePriorities.${priority}`) }}</span>
   </div>
 </template>
 
@@ -13,6 +14,10 @@ export default {
     priority: {
       type: String,
       default: null
+    },
+    showLabel: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -39,7 +44,7 @@ export default {
 
 <style lang="less" scoped>
 .priority-icon-container {
-  display: flex;
+  display: inline-flex;
   .priority-icon {
     display: flex;
 

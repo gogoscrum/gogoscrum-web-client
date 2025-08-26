@@ -105,7 +105,7 @@
           </el-empty>
         </template>
       </el-table>
-      <div v-if="!loading" class="table-footer">
+      <div class="table-footer">
         <el-pagination
           class="flex justify-center my-2"
           :current-page="filter.page"
@@ -254,7 +254,7 @@ export default {
 
       if (index >= 0) {
         this.issues.splice(index, 1)
-        this.totalElements
+        this.totalElements--
       }
     },
     deleteIssue: function (index, row) {
@@ -269,8 +269,8 @@ export default {
       )
         .then(() => {
           issueApi.delete(row.id).then((response) => {
-            this.totalElements--
             this.issues.splice(index, 1)
+            this.totalElements--
             ElMessage.success({
               message: this.$t('backlog.msg.delSuccess')
             })

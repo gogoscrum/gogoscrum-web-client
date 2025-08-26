@@ -257,9 +257,9 @@
         <language-selector class="selector" @languageChanged="languageChanged" />
         <el-dropdown trigger="click" @command="userDropCommand">
           <div class="selector current-user-info">
-            <avatar :name="currentUser.nickname" :src="currentUser.avatar?.url" :size="20" inline />
-            <span class="user-name hidden-xs-only">{{ currentUser.nickname }}</span>
-            <el-icon><CaretBottom /></el-icon>
+            <avatar :name="currentUser.nickname" :src="currentUser.avatar?.url" :size="20" showName />
+            <!-- <span class="user-name hidden-xs-only">{{ currentUser.nickname }}</span> -->
+            <el-icon class="ml-1"><CaretBottom /></el-icon>
           </div>
           <template #dropdown>
             <el-dropdown-menu>
