@@ -41,19 +41,19 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" prop="startDate" :label="$t('sprintList.list.startDate')" width="120">
+        <el-table-column v-if="!isInMobile" prop="startDate" :label="$t('sprintList.list.startDate')" width="110">
         </el-table-column>
         <el-table-column v-if="!isInMobile" width="50" align="center">
           <template #default="scope">
             <span v-if="scope.row.startDate">{{ $t('common.to') }}</span>
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" prop="endDate" :label="$t('sprintList.list.endDate')" min-width="30">
+        <el-table-column v-if="!isInMobile" prop="endDate" :label="$t('sprintList.list.endDate')" min-width="40">
         </el-table-column>
         <el-table-column
           v-if="!isInMobile"
           :label="$t('sprintList.list.progress')"
-          min-width="30"
+          min-width="40"
           class-name="progress-column">
           <template #default="scope">
             <el-tooltip
@@ -64,19 +64,12 @@
                 })
               ">
               <div class="sprint-progress">
-                <el-progress
-                  type="circle"
-                  :percentage="Math.round(scope.row.progress * 100)"
-                  :show-text="false"
-                  :width="24"
-                  :stroke-width="4"
-                  color="#0d9c89"></el-progress>
-                <div class="progress-label">{{ Math.round(scope.row.progress * 100) }}%</div>
+                <el-progress :percentage="Math.round(scope.row.progress * 100)" class="w-110px" />
               </div>
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('sprintList.list.status')" :min-width="isInMobile ? 60 : 40" align="center">
+        <el-table-column :label="$t('sprintList.list.status')" :min-width="isInMobile ? 60 : 30" align="center">
           <template #default="scope">
             <status-tag
               v-if="scope.row.status"
@@ -274,24 +267,5 @@ export default {
 
 <style lang="less" scoped>
 .sprint-list-page {
-}
-</style>
-
-<style lang="less">
-.sprint-list-page {
-  .sprint-row {
-    .progress-column {
-      .sprint-progress {
-        display: flex;
-        align-items: center;
-
-        .progress-label {
-          font-size: 12px;
-          font-weight: 500;
-          margin-left: 8px;
-        }
-      }
-    }
-  }
 }
 </style>
