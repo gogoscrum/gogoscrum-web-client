@@ -28,7 +28,11 @@
       <el-row>
         <el-col :span="12">
           <el-form-item prop="testPlan" :label="$t('test.report.details.planName')">
-            <TestPlanSelector v-model="report.testPlan" :projectId="projectId" disabled></TestPlanSelector>
+            <TestPlanSelector
+              v-model="report.testPlan"
+              :projectId="projectId"
+              :disabled="report.id > 0"
+              @change="testPlanChanged"></TestPlanSelector>
           </el-form-item>
         </el-col>
         <el-col :span="8" :offset="4">
@@ -115,7 +119,7 @@
         </el-col>
         <el-col :span="8">
           <div class="label">{{ $t('test.report.details.failedCaseCount') }}</div>
-          <div class="value">{{ report.caseSummary?.caseByStatusSummary?.FAILED }}</div>
+          <div class="value">{{ report.caseSummary?.failedCaseCount }}</div>
         </el-col>
         <el-col :span="8">
           <div class="label flex items-center">
@@ -451,7 +455,7 @@ export default {
         testPlanId: null,
         types: ['BUG']
       },
-      components: [],
+      components: {},
       saving: false,
       rules: {
         testPlan: [
@@ -501,14 +505,6 @@ export default {
     this.project = this.$store.get('project')
     this.initProjectUsersMap()
     this.loadComponents()
-
-    if (this.reportId) {
-      this.loadReport()
-    } else if (this.testPlanId) {
-      this.previewReport()
-    } else {
-      console.error('Test report ID or test plan ID is required in route params.')
-    }
   },
   mounted() {},
   methods: {
@@ -519,21 +515,26 @@ export default {
         this.projectUsersMap.set(member.user.id, member.user)
       })
     },
-    loadComponents() {
-      componentApi.getTree(this.projectId).then((res) => {
-        this.components = res.data?.children || []
-        // put all the component into an array
-        this.components = this.components.flatMap((component) => this.flattenComponent(component))
-      })
+    testPlanChanged(plan) {
+      // if plan changed, then redirect to the report preview page for the new plan
+      this.$router.replace({ name: 'TestReportPreview', params: { projectId: this.projectId, testPlanId: plan.id } })
     },
-    flattenComponent(component) {
-      const flattened = [component]
-      if (component.children) {
-        component.children.forEach((child) => {
-          flattened.push(...this.flattenComponent(child))
+    loadComponents() {
+      componentApi.getAll(this.projectId).then((res) => {
+        const componentArray = res.data || []
+        componentArray.forEach((c) => {
+          this.components[c.id] = c
         })
-      }
-      return flattened
+
+        // init the report after all the components are loaded to avoid race conditions
+        if (this.reportId) {
+          this.loadReport()
+        } else if (this.testPlanId) {
+          this.previewReport()
+        } else {
+          console.error('Test report ID or test plan ID is required in route params.')
+        }
+      })
     },
     loadReport() {
       testReportApi.get(this.reportId).then((response) => {
@@ -575,17 +576,15 @@ export default {
     },
     initCaseByStatusSummaryTable(report) {
       if (report.caseSummary?.caseByStatusSummary) {
-        this.caseByStatusSummaryTable = Object.entries(report.caseSummary.caseByStatusSummary).map(
-          ([status, count]) => {
-            return {
-              status,
-              label: this.$t(`testRunStatuses.${status}`),
-              count,
-              percentage: ((count / report.caseSummary.caseCount) * 100).toFixed(1) + '%'
-            }
+        this.caseByStatusSummaryTable = report.caseSummary.caseByStatusSummary.map((entry) => {
+          return {
+            status: entry.key,
+            label: this.$t(`testRunStatuses.${entry.key}`),
+            count: entry.value,
+            percentage: ((entry.value / report.caseSummary.caseCount) * 100).toFixed(1) + '%'
           }
-        )
-        const notTestedCount = report.caseSummary.caseCount - report.caseSummary.executedCaseCount
+        })
+        const notTestedCount = Number(report.caseSummary.caseCount) - Number(report.caseSummary.executedCaseCount)
 
         if (notTestedCount > 0) {
           this.caseByStatusSummaryTable.push({
@@ -606,12 +605,15 @@ export default {
     },
     initCaseByTypeSummaryTable(report) {
       if (report.caseSummary?.caseByTypeSummary) {
-        this.caseByTypeSummaryTable = Object.entries(report.caseSummary.caseByTypeSummary).map(([type, count]) => {
+        this.caseByTypeSummaryTable = report.caseSummary.caseByTypeSummary.map((entry) => {
           return {
-            type,
-            label: type === 'NOT_SET' ? this.$t('test.report.details.caseWithoutType') : this.$t(`testTypes.${type}`),
-            count,
-            percentage: ((count / report.caseSummary.caseCount) * 100).toFixed(1) + '%'
+            type: entry.key,
+            label:
+              entry.key === 'NOT_SET'
+                ? this.$t('test.report.details.caseWithoutType')
+                : this.$t(`testTypes.${entry.key}`),
+            count: entry.value,
+            percentage: ((entry.value / report.caseSummary.caseCount) * 100).toFixed(1) + '%'
           }
         })
         this.caseByTypeChartOptions = this.initChartOptions(
@@ -623,17 +625,14 @@ export default {
     },
     initCaseByComponentSummaryTable(report) {
       if (report.caseSummary?.caseByComponentSummary) {
-        this.caseByComponentSummaryTable = Object.entries(report.caseSummary.caseByComponentSummary).map(
-          ([component, count]) => {
-            return {
-              componentId: component,
-              label:
-                this.components.find((c) => c.id === component)?.name || this.$t('test.report.details.componentNotSet'),
-              count,
-              percentage: ((count / report.caseSummary.caseCount) * 100).toFixed(1) + '%'
-            }
+        this.caseByComponentSummaryTable = report.caseSummary.caseByComponentSummary.map((entry) => {
+          return {
+            componentId: entry.key,
+            label: this.components[entry.key]?.name || this.$t('test.report.details.componentNotSet'),
+            count: entry.value,
+            percentage: ((entry.value / report.caseSummary.caseCount) * 100).toFixed(1) + '%'
           }
-        )
+        })
 
         this.caseByComponentChartOptions = this.initChartOptions(
           this.$t('test.report.details.caseByComponentTitle'),
@@ -644,18 +643,16 @@ export default {
     },
     initCaseByExecutorSummaryTable(report) {
       if (report.caseSummary?.caseByExecutorSummary) {
-        this.caseByExecutorSummaryTable = Object.entries(report.caseSummary.caseByExecutorSummary).map(
-          ([executor, count]) => {
-            return {
-              user: this.projectUsersMap.get(executor),
-              label: this.projectUsersMap.get(executor)?.nickname || executor,
-              count,
-              percentage: ((count / report.caseSummary.caseCount) * 100).toFixed(1) + '%'
-            }
+        this.caseByExecutorSummaryTable = report.caseSummary.caseByExecutorSummary.map((entry) => {
+          return {
+            user: this.projectUsersMap.get(entry.key),
+            label: this.projectUsersMap.get(entry.key)?.nickname || entry.key,
+            count: entry.value,
+            percentage: ((entry.value / report.caseSummary.caseCount) * 100).toFixed(1) + '%'
           }
-        )
+        })
 
-        const notTestedCount = report.caseSummary.caseCount - report.caseSummary.executedCaseCount
+        const notTestedCount = Number(report.caseSummary.caseCount) - Number(report.caseSummary.executedCaseCount)
 
         if (notTestedCount > 0) {
           this.caseByExecutorSummaryTable.push({
@@ -675,16 +672,14 @@ export default {
     },
     initBugByPrioritySummaryTable(report) {
       if (report.bugSummary?.bugByPrioritySummary) {
-        this.bugByPrioritySummaryTable = Object.entries(report.bugSummary.bugByPrioritySummary).map(
-          ([priority, count]) => {
-            return {
-              priority,
-              label: this.$t(`issuePriorities.${priority}`),
-              count,
-              percentage: ((count / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
-            }
+        this.bugByPrioritySummaryTable = report.bugSummary.bugByPrioritySummary.map((entry) => {
+          return {
+            priority: entry.key,
+            label: this.$t(`issuePriorities.${entry.key}`),
+            count: entry.value,
+            percentage: ((entry.value / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
           }
-        )
+        })
 
         this.bugByPriorityChartOptions = this.initChartOptions(
           this.$t('test.report.details.bugByPriorityTitle'),
@@ -695,11 +690,11 @@ export default {
     },
     initBugByStatusSummaryTable(report) {
       if (report.bugSummary?.bugByStatusSummary) {
-        this.bugByStatusSummaryTable = Object.entries(report.bugSummary.bugByStatusSummary).map(([status, count]) => {
+        this.bugByStatusSummaryTable = report.bugSummary.bugByStatusSummary.map((entry) => {
           return {
-            label: status,
-            count,
-            percentage: ((count / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
+            label: entry.key,
+            count: entry.value,
+            percentage: ((entry.value / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
           }
         })
 
@@ -714,19 +709,17 @@ export default {
       if (report.bugSummary?.bugByComponentSummary) {
         let bugWithComponentCount = 0
 
-        this.bugByComponentSummaryTable = Object.entries(report.bugSummary.bugByComponentSummary).map(
-          ([component, count]) => {
-            bugWithComponentCount += Number(count)
-            return {
-              componentId: component,
-              label: this.components.find((c) => c.id === component)?.name,
-              count,
-              percentage: ((count / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
-            }
+        this.bugByComponentSummaryTable = report.bugSummary.bugByComponentSummary.map((entry) => {
+          bugWithComponentCount += Number(entry.value)
+          return {
+            componentId: entry.key,
+            label: this.components[entry.key]?.name || this.$t('test.report.details.componentNotSet'),
+            count: entry.value,
+            percentage: ((entry.value / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
           }
-        )
+        })
 
-        const bugWithoutComponentCount = report.bugSummary.bugCount - bugWithComponentCount
+        const bugWithoutComponentCount = Number(report.bugSummary.bugCount) - bugWithComponentCount
 
         if (bugWithoutComponentCount > 0) {
           this.bugByComponentSummaryTable.push({
@@ -746,16 +739,14 @@ export default {
     },
     initBugByCreatorSummaryTable(report) {
       if (report.bugSummary?.bugByCreatorSummary) {
-        this.bugByCreatorSummaryTable = Object.entries(report.bugSummary.bugByCreatorSummary).map(
-          ([creator, count]) => {
-            return {
-              user: this.projectUsersMap.get(creator),
-              label: this.projectUsersMap.get(creator)?.nickname || creator,
-              count,
-              percentage: ((count / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
-            }
+        this.bugByCreatorSummaryTable = report.bugSummary.bugByCreatorSummary.map((entry) => {
+          return {
+            user: this.projectUsersMap.get(entry.key),
+            label: this.projectUsersMap.get(entry.key)?.nickname || entry.key,
+            count: entry.value,
+            percentage: ((entry.value / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
           }
-        )
+        })
 
         this.bugByCreatorChartOptions = this.initChartOptions(
           this.$t('test.report.details.bugByCreatorTitle'),
@@ -767,17 +758,15 @@ export default {
     initBugByAssigneeSummaryTable(report) {
       if (report.bugSummary?.bugByAssigneeSummary) {
         let bugWithAssigneeCount = 0
-        this.bugByAssigneeSummaryTable = Object.entries(report.bugSummary.bugByAssigneeSummary).map(
-          ([assignee, count]) => {
-            bugWithAssigneeCount += Number(count)
-            return {
-              user: this.projectUsersMap.get(assignee),
-              label: this.projectUsersMap.get(assignee)?.nickname || assignee,
-              count,
-              percentage: ((count / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
-            }
+        this.bugByAssigneeSummaryTable = report.bugSummary.bugByAssigneeSummary.map((entry) => {
+          bugWithAssigneeCount += Number(entry.value)
+          return {
+            user: this.projectUsersMap.get(entry.key),
+            label: this.projectUsersMap.get(entry.key)?.nickname || entry.key,
+            count: entry.value,
+            percentage: ((entry.value / report.bugSummary.bugCount) * 100).toFixed(1) + '%'
           }
-        )
+        })
 
         const bugWithoutAssigneeCount = report.bugSummary.bugCount - bugWithAssigneeCount
 

@@ -21,10 +21,7 @@
       <el-col :span="8">
         <div class="label">{{ $t('test.case.edit.priority') }}</div>
         <div class="value">
-          <PriorityIcon :priority="testCase.details.priority" />
-          <span class="ml-2">{{
-            testCase.details.priority ? $t(`issuePriorities.${testCase.details.priority}`) : '--'
-          }}</span>
+          <PriorityIcon :priority="testCase.details.priority" showLabel />
         </div>
       </el-col>
       <el-col :span="8">

@@ -352,8 +352,6 @@ import SprintEdit from '@/components/sprint/SprintEdit.vue'
 import ProjectMember from '@/components/user/ProjectMember.vue'
 import Avatar from '@/components/common/Avatar.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
-import IssueTypeIcon from '@/components/common/IssueTypeIcon.vue'
-import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import UserInfo from '@/components/user/UserInfo.vue'
 import LanguageSelector from '@/components/common/LanguageSelector.vue'
 import IssueFilter from '@/components/issue/IssueFilter.vue'
@@ -371,8 +369,6 @@ export default {
     UserInfo,
     StatusTag,
     LanguageSelector,
-    IssueTypeIcon,
-    PriorityIcon,
     IssueFilter,
     IssueFinder,
     IssueEdit

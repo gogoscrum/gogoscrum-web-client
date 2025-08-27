@@ -16,14 +16,12 @@
         :label="$t(`issuePriorities.${priority}`)"
         :value="priority">
         <div class="priority-select-option">
-          <priority-icon :priority="priority" />
-          <div>{{ $t(`issuePriorities.${priority}`) }}</div>
+          <priority-icon :priority="priority" showLabel />
         </div>
       </el-option>
       <template #label="{ label, value }">
         <div class="flex">
-          <priority-icon :priority="value" />
-          <span>{{ label }}</span>
+          <priority-icon :priority="value" showLabel />
         </div>
       </template>
     </el-select>
@@ -100,17 +98,11 @@ export default {
   .el-select {
     display: unset;
   }
-}
-</style>
 
-<style lang="less" scoped>
-.priority-selector {
-  .priority-select-option {
-    display: flex;
+  .priority-icon-container {
+    .priority-icon {
+      margin: 0 4px 0 6px;
+    }
   }
-}
-
-.priority-icon-container {
-  margin: 0 12px 0 6px;
 }
 </style>

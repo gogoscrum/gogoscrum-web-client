@@ -293,7 +293,6 @@ export default {
     },
     testRunSaved(testRun) {
       this.formatTestRun(testRun)
-      console.log('testRunSaved', testRun)
       let index = utils.indexInArray(this.runs, testRun.id)
       if (index >= 0) {
         this.runs.splice(index, 1, testRun)

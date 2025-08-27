@@ -105,8 +105,7 @@
           min-width="30">
           <template #default="scope">
             <div v-if="scope.row.testCase.details.priority" class="flex">
-              <PriorityIcon :priority="scope.row.testCase.details.priority" />
-              <span class="ml-2">{{ $t(`issuePriorities.${scope.row.testCase.details.priority}`) }}</span>
+              <PriorityIcon :priority="scope.row.testCase.details.priority" showLabel />
             </div>
           </template>
         </el-table-column>

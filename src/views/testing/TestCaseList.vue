@@ -108,8 +108,7 @@
           </template>
           <template #default="scope">
             <div v-if="scope.row.details.priority" class="flex">
-              <PriorityIcon :priority="scope.row.details.priority" />
-              <span class="ml-2">{{ $t(`issuePriorities.${scope.row.details.priority}`) }}</span>
+              <PriorityIcon :priority="scope.row.details.priority" showLabel />
             </div>
           </template>
         </el-table-column>

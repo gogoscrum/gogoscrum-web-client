@@ -161,9 +161,7 @@
 </template>
 <script>
 import { testCaseApi, testRunApi } from '@/api/testing.js'
-import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import TestRunStatusSelector from '@/components/testing/TestRunStatusSelector.vue'
-import Avatar from '@/components/common/Avatar.vue'
 import dict from '@/locales/zh-cn/dict.json'
 import utils from '@/utils/util.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -174,9 +172,7 @@ import IssueEdit from '@/components/issue/IssueEdit.vue'
 export default {
   name: 'TestRunEdit',
   components: {
-    PriorityIcon,
     TestCaseBasics,
-    Avatar,
     TestRunStatusSelector,
     FileUploader,
     IssueEdit
@@ -328,6 +324,7 @@ export default {
             this.testRun.id ? this.$t('test.run.msg.updatedSuccess') : this.$t('test.run.msg.createdSuccess')
           )
           this.testRun = res.data
+          this.testRun.testCase = this.testCase
           this.$emit('testRunSaved', res.data)
         })
         .finally(() => {

@@ -1,9 +1,11 @@
 <template>
-  <div class="priority-icon-container">
-    <div v-if="priority" :class="`priority-icon ${priority} `" :title="$t(`issuePriorities.${priority}`)">
-      <span v-if="['CRITICAL', 'MAJOR', 'NORMAL'].includes(priority)" class="iconfont icon-arrow-up"></span>
-      <span v-else class="iconfont iconfont-arrow-down"></span>
-    </div>
+  <div v-if="priority" class="priority-icon-container">
+    <el-tooltip :content="$t(`issuePriorities.${priority}`)" placement="left">
+      <div :class="`priority-icon ${priority} `">
+        <span v-if="['CRITICAL', 'MAJOR', 'NORMAL'].includes(priority)" class="iconfont icon-arrow-up"></span>
+        <span v-else class="iconfont iconfont-arrow-down"></span>
+      </div>
+    </el-tooltip>
     <span v-if="showLabel" class="ml-2">{{ $t(`issuePriorities.${priority}`) }}</span>
   </div>
 </template>

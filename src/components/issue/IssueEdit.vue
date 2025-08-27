@@ -365,7 +365,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column min-width="16px">
+          <el-table-column min-width="20px">
             <template #default="scope">
               <priority-icon :priority="scope.row.priority" />
             </template>
