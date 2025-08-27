@@ -447,7 +447,7 @@ export default {
     return {
       projectId: this.$route.params.projectId,
       project: {},
-      testPlanId: this.$route.params.testPlanId,
+      testPlanId: this.$route.query.testPlanId,
       reportId: this.$route.params.reportId,
       report: {},
       activeTab: 'cases',
@@ -516,8 +516,17 @@ export default {
       })
     },
     testPlanChanged(plan) {
+      console.log('plan changed', plan, this.testPlanId)
       // if plan changed, then redirect to the report preview page for the new plan
-      this.$router.replace({ name: 'TestReportPreview', params: { projectId: this.projectId, testPlanId: plan.id } })
+      if (plan && plan.id !== this.testPlanId) {
+        this.$router.replace({
+          name: 'TestReportDetails',
+          params: { projectId: this.projectId, reportId: 'new' },
+          query: { testPlanId: plan.id }
+        })
+        this.testPlanId = plan.id
+        this.initReport()
+      }
     },
     loadComponents() {
       componentApi.getAll(this.projectId).then((res) => {
@@ -527,14 +536,19 @@ export default {
         })
 
         // init the report after all the components are loaded to avoid race conditions
-        if (this.reportId) {
-          this.loadReport()
-        } else if (this.testPlanId) {
-          this.previewReport()
-        } else {
-          console.error('Test report ID or test plan ID is required in route params.')
-        }
+        this.initReport()
       })
+    },
+    initReport() {
+      if (this.reportId && this.reportId !== 'new') {
+        this.loadReport()
+      } else if (this.reportId === 'new' && this.testPlanId) {
+        this.previewReport()
+      } else if (this.reportId === 'new') {
+        console.info('Please select a test plan.')
+      } else {
+        console.error('Test report ID or test plan ID is required in route params.')
+      }
     },
     loadReport() {
       testReportApi.get(this.reportId).then((response) => {
@@ -855,7 +869,7 @@ export default {
                   : this.$t('test.report.details.createdSuccess')
               )
 
-              if (!this.reportId) {
+              if (this.reportId === 'new') {
                 this.$router.replace({
                   name: 'TestReportDetails',
                   params: { projectId: this.projectId, reportId: res.data.id }

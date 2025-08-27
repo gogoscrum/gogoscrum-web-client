@@ -4,7 +4,7 @@
       <div class="left-part">
         <div class="left-part">
           <el-button
-            v-if="filter.planId && project.isDeveloper"
+            v-if="project.isDeveloper"
             text
             type="primary"
             @click="newReport"
@@ -230,8 +230,9 @@ export default {
     },
     newReport() {
       this.$router.push({
-        name: 'TestReportPreview',
-        params: { projectId: this.projectId, planId: this.planId }
+        name: 'TestReportDetails',
+        params: { projectId: this.projectId, reportId: 'new' },
+        query: { testPlanId: this.filter.planId }
       })
     },
     showReport(row) {

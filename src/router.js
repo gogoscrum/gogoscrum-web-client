@@ -139,11 +139,6 @@ const routes = [
             component: () => import('@/views/testing/TestPlanDetails.vue')
           },
           {
-            path: 'test/plans/:testPlanId/reports/preview',
-            name: 'TestReportPreview',
-            component: () => import('@/views/testing/TestReportDetails.vue')
-          },
-          {
             path: 'test/runs',
             name: 'TestRunList',
             component: () => import('@/views/testing/TestRunList.vue')
