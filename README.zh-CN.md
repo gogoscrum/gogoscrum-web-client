@@ -30,6 +30,7 @@ gogoscrum是轻量级敏捷项目管理工具，遵循Scrum敏捷实践，为敏
 
 ## 页面截图
 
+
 彩色贴纸风格看板
 
 <img src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/white-board-sticky-notes.png" width="680">
@@ -57,6 +58,14 @@ gogoscrum是轻量级敏捷项目管理工具，遵循Scrum敏捷实践，为敏
 燃尽图
 
 <img src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/burn-down-chart.png" width="680">
+
+团队速率图
+
+<img src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/team-velocity-chart.png" width="680">
+
+迭代累积流图
+
+<img src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/cumulative-flow-chart.png" width="680">
 
 任务详情
 
