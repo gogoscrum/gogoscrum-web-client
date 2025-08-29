@@ -537,6 +537,7 @@ export default {
       this.sprintId = sprintId
       this.currentSprint = this.currentProject.sprints.find((sprint) => sprint.id === this.sprintId)
       this.miniMode = false
+      this.saveCurrentBoard()
     },
     projectChanged(selectedProjectId) {
       if (selectedProjectId === 'newProject') {
