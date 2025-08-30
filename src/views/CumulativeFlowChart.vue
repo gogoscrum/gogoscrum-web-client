@@ -114,7 +114,12 @@ export default {
           this.sprintId = firstSprint.id
           this.sprint = firstSprint
         }
-        this.loadSprintById()
+
+        if (this.sprintId != 'default' && this.sprintId) {
+          this.loadSprintById()
+        } else {
+          this.sprintId = null
+        }
       })
     },
     loadSprintById() {
