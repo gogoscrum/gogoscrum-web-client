@@ -90,8 +90,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.tag-selector-wrapper {
-  width: 100%;
+.issue-type-select-option {
+  display: flex;
+  margin-right: 12px;
   .el-select {
     display: unset;
   }
@@ -101,5 +102,11 @@ export default {
   .tag-option {
     margin-right: 12px;
   }
+}
+</style>
+
+<style lang="less">
+.tag-selector-wrapper {
+  width: 100%;
 }
 </style>

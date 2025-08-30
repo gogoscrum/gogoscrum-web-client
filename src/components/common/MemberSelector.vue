@@ -125,8 +125,12 @@ export default {
 </style>
 <style lang="less">
 .member-selector-wrapper {
+  width: 100%;
   .el-select__wrapper.is-disabled {
     background-color: unset;
+  }
+  .member-selector {
+    width: 100%;
   }
 }
 </style>
