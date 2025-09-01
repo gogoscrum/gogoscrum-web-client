@@ -1,12 +1,6 @@
 <template>
   <div class="register-form-container">
-    <el-form
-      :model="registerForm"
-      :rules="rules"
-      size="large"
-      ref="registerForm"
-      class="register-form"
-      @keyup.enter.native="register()">
+    <el-form :model="registerForm" :rules="rules" size="large" ref="registerForm" class="register-form">
       <div class="title">
         <router-link :to="{ name: 'Homepage' }">
           <div class="logo-container">
@@ -33,9 +27,14 @@
           clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="register-button" type="primary" size="large" :loading="submitting" @click="register()">{{
-          $t('signup.btn')
-        }}</el-button>
+        <el-button
+          class="register-button"
+          type="primary"
+          size="large"
+          :loading="submitting"
+          @click="register('registerForm')"
+          >{{ $t('signup.btn') }}</el-button
+        >
       </el-form-item>
       <el-form-item class="higher-row">
         <div class="terms-and-login small-text w-full">
@@ -134,8 +133,8 @@ export default {
     goLogin() {
       this.$router.push({ name: 'Login' })
     },
-    register() {
-      this.$refs['registerForm'].validate((valid) => {
+    register(registerForm) {
+      this.$refs[registerForm].validate((valid) => {
         if (valid) {
           this.submitting = true
           userApi

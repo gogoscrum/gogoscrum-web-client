@@ -31,7 +31,7 @@
             clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="btn-login" :loading="submitting" @click="submitForm()">{{
+          <el-button type="primary" class="btn-login" :loading="submitting" @click="submitForm('form')">{{
             $t('signin.btn')
           }}</el-button>
         </el-form-item>
