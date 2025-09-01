@@ -42,7 +42,7 @@
         :data="docs"
         v-loading="loading"
         row-class-name="doc-row clickable"
-        :show-header="false"
+        :show-header="true"
         @row-click="docClicked">
         <el-table-column
           :label="$t('docList.list.name')"
@@ -57,6 +57,16 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column v-if="!isInMobile" prop="publicAccess" :label="$t('docList.list.publicAccess')" min-width="45">
+          <template #default="scope">
+            <DocPublicAccessPop v-if="scope.row.publicAccess" :doc="scope.row">
+              <template #reference>
+                <el-tag type="success" effect="dark" size="small">{{ $t('docList.list.public') }}</el-tag>
+              </template>
+            </DocPublicAccessPop>
+            <span v-else></span>
+          </template>
+        </el-table-column>
         <el-table-column v-if="!isInMobile" :label="$t('docList.list.creator')" min-width="40">
           <template #default="scope">
             <el-tooltip
@@ -67,7 +77,11 @@
                 })
               "
               placement="left">
-              <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
+              <avatar
+                :name="scope.row.createdBy.nickname"
+                :size="22"
+                :src="scope.row.createdBy.avatarUrl"
+                showName></avatar>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -77,7 +91,7 @@
           :label="$t('docList.list.createdTime')"
           min-width="80">
         </el-table-column>
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="50">
+        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -124,6 +138,7 @@
 
 <script>
 import Avatar from '@/components/common/Avatar.vue'
+import DocPublicAccessPop from '@/components/doc/DocPublicAccessPop.vue'
 import { docApi } from '@/api/doc.js'
 import highlight from '@/utils/highlight.js'
 import utils from '@/utils/util.js'
@@ -132,7 +147,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 export default {
   name: 'DocList',
   components: {
-    Avatar
+    Avatar,
+    DocPublicAccessPop
   },
   data() {
     return {

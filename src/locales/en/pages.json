@@ -13,7 +13,8 @@
     "update": "Update",
     "edit": "Edit",
     "details": "Details",
-    "copy": "Duplicate",
+    "copy": "Copy",
+    "preview": "Preview",
     "refresh": "Refresh",
     "delete": "Delete",
     "cancel": "Cancel",
@@ -46,7 +47,10 @@
       "tooManyFiles": "Cannot upload more than {maxCount} files at a time",
       "delFileConfirmTitle": "Delete file",
       "delFileConfirmMsg": "You are about to delete file <strong class=\"red\">\"{name}\"</strong>, which cannot be recovered. Are you sure to proceed?",
-      "delFileSuccess": "File deleted successfully."
+      "delFileSuccess": "File deleted successfully.",
+      "createdTip": "Created by {nickname} at {time}",
+      "updatedTip": "Updated by {nickname} at {time}",
+      "copiedSuccess": "Copied successfully"
     },
     "filter": {
       "totalElements": "Total {count} items",
@@ -660,6 +664,8 @@
     },
     "list": {
       "name": "Name",
+      "publicAccess": "Public access",
+      "public": "Public",
       "creator": "Created by",
       "creatorTip": "Created by {nickname}",
       "createdTime": "Created time",
@@ -683,7 +689,13 @@
     "docSaved": "Document saved",
     "lastSavedTip": "Last saved at {updatedTime}",
     "intoFullScreen": "Edit in full screen",
-    "exitFullScreen": "Exit full screen"
+    "exitFullScreen": "Exit full screen",
+    "msg": {
+      "allowPublicAccess": "Allow public access",
+      "publicAccessTip": "When public access is enabled, anyone (including non-project members) can view this document",
+      "publicAccessEnabled": "Document set to public",
+      "publicAccessDisabled": "Document set to private"
+    }
   },
   "tagList": {
     "header": {

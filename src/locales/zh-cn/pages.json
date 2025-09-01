@@ -14,6 +14,7 @@
     "edit": "修改",
     "details": "详情",
     "copy": "复制",
+    "preview": "预览",
     "refresh": "刷新",
     "delete": "删除",
     "cancel": "取消",
@@ -46,7 +47,10 @@
       "tooManyFiles": "一次上传文件不能超过 {maxCount} 个",
       "delFileConfirmTitle": "删除文件",
       "delFileConfirmMsg": "您即将删除文件 <strong class=\"red\">\"{name}\"</strong>，文件删除后无法恢复，是否继续？",
-      "delFileSuccess": "文件已删除"
+      "delFileSuccess": "文件已删除",
+      "createdTip": "{nickname} 创建于 {time}",
+      "updatedTip": "{nickname} 更新于 {time}",
+      "copiedSuccess": "复制成功"
     },
     "filter": {
       "totalElements": "共 {count} 条",
@@ -660,6 +664,8 @@
     },
     "list": {
       "name": "名称",
+      "publicAccess": "公开访问",
+      "public": "公开",
       "creator": "创建者",
       "creatorTip": "创建者: {nickname}",
       "createdTime": "创建时间",
@@ -683,7 +689,13 @@
     "docSaved": "文档保存成功",
     "lastSavedTip": "最后保存于 {updatedTime}",
     "intoFullScreen": "全屏编辑",
-    "exitFullScreen": "退出全屏"
+    "exitFullScreen": "退出全屏",
+    "msg": {
+      "allowPublicAccess": "允许公开访问",
+      "publicAccessTip": "开启公开访问后，任何人（包括非项目成员）都可以查看此文档",
+      "publicAccessEnabled": "文档已设置为公开",
+      "publicAccessDisabled": "文档已设置为私密"
+    }
   },
   "tagList": {
     "header": {

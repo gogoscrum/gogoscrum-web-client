@@ -176,6 +176,11 @@ const routes = [
     path: '/invitations/:invitationCode',
     name: 'InvitationRedirect',
     component: () => import('@/views/InvitationRedirect.vue')
+  },
+  {
+    path: '/docs/view/:docId',
+    name: 'DocView',
+    component: () => import('@/views/DocView.vue')
   }
 ]
 const router = createRouter({
@@ -185,7 +190,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   let user = store.get('user')
-  const publicRoutes = ['Homepage', 'OpenSource', 'Login', 'Register']
+  const publicRoutes = ['Homepage', 'OpenSource', 'Login', 'Register', 'DocView']
   if (!publicRoutes.includes(to.name) && !user) {
     localStorage.setItem('lastUrl', to.fullPath)
     console.warn('Requested url rejected: ' + to.fullPath)

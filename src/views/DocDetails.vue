@@ -15,7 +15,7 @@
           {{ $t('docView.header.edit') }}
         </el-button>
       </div>
-      <span v-if="doc.updatedBy" class="right-part desc">
+      <span v-if="doc.updatedBy" class="desc ml-32px">
         {{
           $t('docView.header.lastEdit', {
             updatedBy: doc.updatedBy.nickname,
@@ -23,6 +23,28 @@
           })
         }}
       </span>
+      <div class="flex items-center right-part">
+        <DocPublicAccessPop :doc="doc">
+          <template #reference>
+            <el-switch
+              v-model="doc.publicAccess"
+              size="small"
+              :active-text="$t('docView.msg.allowPublicAccess')"
+              @change="updatePublicAccess" />
+          </template>
+        </DocPublicAccessPop>
+
+        <!-- <el-popover :content="$t('docView.msg.publicAccessTip')" placement="top">
+          <template #reference>
+            <el-switch
+              v-model="doc.publicAccess"
+              size="small"
+              :active-text="$t('docView.msg.allowPublicAccess')"
+              @change="updatePublicAccess" />
+          </template>
+          
+        </el-popover> -->
+      </div>
     </div>
     <div class="main">
       <div v-if="editing">
@@ -64,11 +86,13 @@ import { docApi } from '@/api/doc.js'
 import Tinymce from '@/components/common/Tinymce.vue'
 import { ElNotification } from 'element-plus'
 import utils from '@/utils/util'
+import DocPublicAccessPop from '@/components/doc/DocPublicAccessPop.vue'
 
 export default {
   name: 'DocDetails',
   components: {
-    Tinymce
+    Tinymce,
+    DocPublicAccessPop
   },
   data() {
     return {
@@ -165,6 +189,17 @@ export default {
       if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
         this.inFullscreen = false
       }
+    },
+    updatePublicAccess() {
+      const apiCall = this.doc.publicAccess ? docApi.setPublicAccess : docApi.deletePublicAccess
+      apiCall(this.doc.id).then((res) => {
+        this.doc = this.formatDoc(res.data)
+        this.$message.success(
+          this.doc.publicAccess
+            ? this.$t('docView.msg.publicAccessEnabled')
+            : this.$t('docView.msg.publicAccessDisabled')
+        )
+      })
     },
     saveDoc() {
       if (!this.doc.name) {
