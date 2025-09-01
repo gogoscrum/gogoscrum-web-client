@@ -125,7 +125,11 @@
         </template>
       </el-table-column>
       <template v-if="showEmptyIcon" v-slot:empty>
-        <el-empty :image-size="100" :description="$t('test.report.list.msg.empty')"> </el-empty>
+        <el-empty :image-size="100" :description="$t('test.report.list.msg.empty')">
+          <el-button type="primary" icon="Plus" size="default" @click="newReport">{{
+            $t('test.report.list.filter.new')
+          }}</el-button>
+        </el-empty>
       </template>
     </el-table>
     <div class="table-footer">
