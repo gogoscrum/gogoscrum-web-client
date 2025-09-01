@@ -119,14 +119,20 @@ export default {
     loadProject() {
       projectApi.getById(this.projectId).then((res) => {
         this.sprints = res.data.sprints.filter((sprint) => !sprint.backlog)
-        let backlog = res.data.sprints.find((sprint) => sprint.backlog)
-        let firstSprint = this.sprints[0]
+        const sprint = this.sprints.find((sprint) => sprint.id == this.sprintId)
 
-        if ((this.sprintId == 'default' || backlog.id == this.sprintId) && firstSprint) {
-          this.sprintId = firstSprint.id
-          this.sprint = firstSprint
+        if (sprint?.id) {
+          this.sprintId = sprint.id
+        } else if (this.sprints.length > 0) {
+          this.sprintId = this.sprints[0]?.id
+        } else {
+          this.sprintId = null
+          console.warn('The project has no sprint')
         }
-        this.loadSprintById()
+
+        if (this.sprintId) {
+          this.loadSprintById()
+        }
       })
     },
     loadSprintById() {
