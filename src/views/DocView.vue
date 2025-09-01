@@ -2,9 +2,9 @@
   <div class="doc-view-page">
     <div class="header">
       <div class="title">{{ doc.name }}</div>
-      <div class="desc">{{ lastSavedTip }}</div>
     </div>
     <div class="body" v-html="doc.content"></div>
+    <div class="desc">{{ lastSavedTip }}</div>
   </div>
 </template>
 
@@ -57,14 +57,15 @@ export default {
 
 <style lang="less" scoped>
 .doc-view-page {
-  max-width: 1024px;
-  margin: 0 auto;
+  width: 90%;
+  max-width: 960px;
+  margin: 0 auto 50px auto;
 
   .header {
     margin: 50px 0;
 
     .title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
       margin: 10px 0;
       text-align: center;
@@ -72,7 +73,18 @@ export default {
   }
 
   .body {
-    margin-bottom: 80px;
+    margin-bottom: 30px;
+  }
+}
+</style>
+
+<style lang="less">
+.doc-view-page {
+  .body {
+    img {
+      max-width: 100%;
+      height: auto;
+    }
   }
 }
 </style>
