@@ -59,11 +59,9 @@ export default {
 .doc-view-page {
   width: 90%;
   max-width: 960px;
-  margin: 0 auto 50px auto;
+  margin: 0 auto;
 
   .header {
-    margin: 50px 0;
-
     .title {
       font-size: 22px;
       font-weight: bold;
@@ -73,7 +71,7 @@ export default {
   }
 
   .body {
-    margin-bottom: 30px;
+    margin: 30px 0;
   }
 }
 </style>

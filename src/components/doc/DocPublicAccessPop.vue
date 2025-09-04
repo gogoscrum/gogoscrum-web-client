@@ -32,7 +32,7 @@ export default {
   computed: {
     publicAccessUrl() {
       if (this.doc.publicAccess) {
-        return `${location.origin}/docs/view/${this.doc.id}`
+        return `${location.origin}/public/docs/${this.doc.id}`
       } else {
         return ''
       }

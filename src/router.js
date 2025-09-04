@@ -3,16 +3,6 @@ import store from '@/modules/store'
 
 const routes = [
   {
-    path: '/',
-    name: 'Homepage',
-    component: () => import('@/views/Index.vue')
-  },
-  {
-    path: '/opensource',
-    name: 'OpenSource',
-    component: () => import('@/views/OpenSource.vue')
-  },
-  {
     path: '/layout',
     name: 'Layout',
     component: () => import('@/components/layout/BaseLayout.vue'),
@@ -158,29 +148,46 @@ const routes = [
     ]
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: () => import('@/views/Login.vue')
-  },
-  {
-    path: '/logout',
-    name: 'Logout',
-    component: () => import('@/views/Logout.vue')
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () => import('@/views/Register.vue')
-  },
-  {
-    path: '/invitations/:invitationCode',
-    name: 'InvitationRedirect',
-    component: () => import('@/views/InvitationRedirect.vue')
-  },
-  {
-    path: '/docs/view/:docId',
-    name: 'DocView',
-    component: () => import('@/views/DocView.vue')
+    path: '/public',
+    name: 'PublicLayout',
+    component: () => import('@/components/layout/PublicLayout.vue'),
+    children: [
+      {
+        path: '/',
+        name: 'Homepage',
+        component: () => import('@/views/Index.vue')
+      },
+      {
+        path: '/opensource',
+        name: 'OpenSource',
+        component: () => import('@/views/OpenSource.vue')
+      },
+      {
+        path: '/login',
+        name: 'Login',
+        component: () => import('@/views/Login.vue')
+      },
+      {
+        path: '/logout',
+        name: 'Logout',
+        component: () => import('@/views/Logout.vue')
+      },
+      {
+        path: '/register',
+        name: 'Register',
+        component: () => import('@/views/Register.vue')
+      },
+      {
+        path: 'docs/:docId',
+        name: 'DocView',
+        component: () => import('@/views/DocView.vue')
+      },
+      {
+        path: '/invitations/:invitationCode',
+        name: 'InvitationRedirect',
+        component: () => import('@/views/InvitationRedirect.vue')
+      }
+    ]
   }
 ]
 const router = createRouter({

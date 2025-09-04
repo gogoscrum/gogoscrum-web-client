@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-login">
+  <div class="page login-page">
     <div class="login-panel">
       <div class="title">
         <router-link :to="{ name: 'Homepage' }">
@@ -153,7 +153,7 @@ export default {
 </script>
 
 <style lang="less">
-.page-login {
+.login-page {
   .remember-me {
     .el-checkbox__label {
       font-size: 13px;
@@ -164,9 +164,8 @@ export default {
 </style>
 
 <style lang="less" scoped>
-.page-login {
+.login-page {
   min-height: 600px;
-  height: 100vh;
   display: flex;
 
   .login-panel {

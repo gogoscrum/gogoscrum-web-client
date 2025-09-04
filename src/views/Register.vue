@@ -166,7 +166,6 @@ export default {
   background-size: cover;
   padding: 1px 0;
   margin: 0;
-  height: 100vh;
   min-height: 600px;
   display: flex;
 
