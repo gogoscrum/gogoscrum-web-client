@@ -36,22 +36,13 @@
     <el-footer class="footer">
       <div class="copy-right-row">
         <span>{{ $t('homepage.footer.company') }}</span>
-        <el-popover
-          v-if="lang === 'cn'"
-          placement="right-end"
-          width="220"
-          trigger="hover"
-          popper-class="qr-popover-container">
+
+        <el-popover v-if="lang === 'cn'" placement="top" width="480">
           <template #reference>
             <img src="@/assets/images/qr-icon.png" class="qr-code-icon" />
           </template>
           <template #default>
-            <div>
-              <img
-                src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/wechat-qr-user-group.png"
-                class="wechat-qr-img" />
-            </div>
-            <span>微信扫描二维码，<br />加入gogoscrum用户交流群</span>
+            <ContactPop />
           </template>
         </el-popover>
       </div>
@@ -62,21 +53,22 @@
 <script>
 import utils from '@/utils/util'
 import LanguageSelector from '@/components/common/LanguageSelector.vue'
+import ContactPop from '@/components/common/ContactPop.vue'
 
 export default {
   name: 'PublicLayout',
   components: {
-    LanguageSelector
+    LanguageSelector,
+    ContactPop
   },
   data() {
-    return {}
+    return {
+      lang: localStorage['locale'] || utils.getLang()
+    }
   },
   computed: {
     isInMobile() {
       return utils.isInMobile()
-    },
-    lang() {
-      return localStorage['locale'] || utils.getLang()
     }
   },
   watch: {},
@@ -85,7 +77,6 @@ export default {
   methods: {
     languageChanged(lang) {
       this.lang = lang
-      utils.changeMetaForI18n()
     }
   }
 }
@@ -173,19 +164,6 @@ export default {
       cursor: pointer;
       opacity: 60%;
     }
-  }
-}
-</style>
-
-<style lang="less">
-.qr-popover-container.el-popover {
-  text-align: center;
-  font-size: 12px;
-  color: #999999;
-
-  .wechat-qr-img {
-    width: 180px;
-    height: 180px;
   }
 }
 </style>

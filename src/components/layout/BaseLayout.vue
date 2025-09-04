@@ -258,7 +258,6 @@
         <el-dropdown trigger="click" @command="userDropCommand">
           <div class="selector current-user-info">
             <avatar :name="currentUser.nickname" :src="currentUser.avatar?.url" :size="20" showName />
-            <!-- <span class="user-name hidden-xs-only">{{ currentUser.nickname }}</span> -->
             <el-icon class="ml-1"><CaretBottom /></el-icon>
           </div>
           <template #dropdown>
@@ -275,18 +274,10 @@
                     <el-icon><ChatLineRound /></el-icon> 社区交流
                   </div>
                   <template #dropdown>
-                    <div class="community-popover-container wechat">
-                      <div>
-                        <img
-                          src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/wechat-qr-user-group.png"
-                          class="wechat-qr-img" />
-                      </div>
-                      <div>微信扫描二维码，<br />加入gogoscrum用户交流群</div>
-                    </div>
+                    <ContactPop />
                   </template>
                 </el-dropdown>
               </el-dropdown-item>
-
               <el-dropdown-item v-else divided @click.prevent>
                 <el-dropdown placement="left">
                   <div class="flex items-center">
@@ -357,6 +348,7 @@ import LanguageSelector from '@/components/common/LanguageSelector.vue'
 import IssueFilter from '@/components/issue/IssueFilter.vue'
 import IssueFinder from '@/components/issue/IssueFinder.vue'
 import IssueEdit from '@/components/issue/IssueEdit.vue'
+import ContactPop from '@/components/common/ContactPop.vue'
 import 'element-plus/theme-chalk/display.css'
 
 export default {
@@ -371,7 +363,8 @@ export default {
     LanguageSelector,
     IssueFilter,
     IssueFinder,
-    IssueEdit
+    IssueEdit,
+    ContactPop
   },
   data() {
     return {
@@ -483,7 +476,6 @@ export default {
   methods: {
     languageChanged(lang) {
       this.lang = lang
-      utils.changeMetaForI18n()
     },
     loadProjects() {
       this.loading = true

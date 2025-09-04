@@ -40,6 +40,7 @@ export default {
         this.$i18n.locale = langSelected
         localStorage['locale'] = langSelected
         document.body.className = langSelected
+        utils.changeMetaForI18n()
         this.$emit('languageChanged', langSelected)
         this.$bus.$emit('languageChanged', langSelected)
       }
