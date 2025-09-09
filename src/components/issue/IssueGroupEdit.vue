@@ -18,12 +18,15 @@
           class="delete-group-button"
           plain
           size="default"
+          :loading="deleting"
           @click="deleteIssueGroup"
           v-if="issueGroup.id && !issueGroup.builtIn"
           >{{ $t('common.delete') }}</el-button
         >
         <el-button size="default" @click="issueGroupDialogVisible = false">{{ $t('common.cancel') }}</el-button>
-        <el-button size="default" type="primary" @click="saveIssueGroup">{{ $t('common.create') }}</el-button>
+        <el-button size="default" type="primary" :loading="submitting" @click="saveIssueGroup">{{
+          $t('common.create')
+        }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -60,7 +63,8 @@ export default {
       isInMobile: utils.isInMobile(),
       issueGroup: JSON.parse(JSON.stringify(this.originalIssueGroup)),
       issueGroupDialogVisible: true,
-      // issues: [],
+      submitting: false,
+      deleting: false,
       rules: {
         label: [
           {
@@ -90,10 +94,16 @@ export default {
           draggable: true
         }
       ).then(() => {
-        issueGroupApi.delete(this.issueGroup.id).then(() => {
-          this.$emit('issueGroupDeleted', this.issueGroup)
-          this.issueGroupDialogVisible = false
-        })
+        this.deleting = true
+        issueGroupApi
+          .delete(this.issueGroup.id)
+          .then(() => {
+            this.$emit('issueGroupDeleted', this.issueGroup)
+            this.issueGroupDialogVisible = false
+          })
+          .finally(() => {
+            this.deleting = false
+          })
       })
     },
     saveIssueGroup() {
@@ -104,24 +114,36 @@ export default {
           })
           return false
         } else {
+          this.submitting = true
+
           if (this.issueGroup.id) {
-            issueGroupApi.update(this.issueGroup.id, this.issueGroup).then((res) => {
-              ElMessage.success({
-                message: this.$t('issueGroupEdit.msg.editSuccess')
+            issueGroupApi
+              .update(this.issueGroup.id, this.issueGroup)
+              .then((res) => {
+                ElMessage.success({
+                  message: this.$t('issueGroupEdit.msg.editSuccess')
+                })
+                this.$emit('issueGroupSaved', res.data)
+                this.issueGroupDialogVisible = false
               })
-              this.$emit('issueGroupSaved', res.data)
-              this.issueGroupDialogVisible = false
-            })
+              .finally(() => {
+                this.submitting = false
+              })
           } else {
             this.issueGroup.project = this.originalProject
             this.issueGroup.seq = this.originalProject.issueGroups.length
-            issueGroupApi.create(this.issueGroup).then((res) => {
-              ElMessage.success({
-                message: this.$t('issueGroupEdit.msg.createSuccess')
+            issueGroupApi
+              .create(this.issueGroup)
+              .then((res) => {
+                ElMessage.success({
+                  message: this.$t('issueGroupEdit.msg.createSuccess')
+                })
+                this.$emit('issueGroupSaved', res.data)
+                this.issueGroupDialogVisible = false
               })
-              this.$emit('issueGroupSaved', res.data)
-              this.issueGroupDialogVisible = false
-            })
+              .finally(() => {
+                this.submitting = false
+              })
           }
         }
       })
