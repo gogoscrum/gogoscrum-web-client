@@ -153,7 +153,7 @@
                   :issue="issue"
                   :projectId="projectId"
                   id="issue-fast-edit-form"
-                  @confirm="issueSaved"
+                  @confirm="newIssueCreated"
                   @close="closeAllFastIssueEditor"></issue-fast-edit>
               </template>
             </draggable>
@@ -638,11 +638,12 @@ export default {
     scrollToFastIssueForm: function () {
       document.querySelector('#issue-fast-edit-form .create-issue-btn').scrollIntoView()
     },
-    issueSaved(issue) {
+    newIssueCreated(issue) {
       if (this.sprint.issues == null) {
         this.sprint.issues = []
       }
       this.appendIssueIntoColumn(issue)
+      this.allIssues.push(issue)
       this.issue = {}
       this.closeAllFastIssueEditor()
     },
@@ -737,14 +738,30 @@ export default {
         // If the issue is moved to another sprint, remove it from the current board
         this.deleteIssueFromColumn(updatedIssue)
       } else {
-        this.replaceIssueInColumn(updatedIssue)
+        const oldIssue = this.allIssues.find((issue) => issue.id === updatedIssue.id)
+        if (oldIssue && oldIssue.issueGroup.id !== updatedIssue.issueGroup.id) {
+          // If the issue is moved to another group, remove it from the old group and add to the new group
+          this.deleteIssueFromColumn(oldIssue)
+          this.appendIssueIntoColumn(updatedIssue)
+        } else {
+          // Otherwise just refresh the issue in place
+          this.replaceIssueInColumn(updatedIssue)
+        }
+
+        // replace the old issue in allIssues as well
+        let index = utils.indexInArray(this.allIssues, updatedIssue.id)
+        if (index >= 0) {
+          this.allIssues.splice(index, 1, updatedIssue)
+        }
       }
     },
     issueDeleted(issue) {
+      this.allIssues = this.allIssues.filter((i) => i.id !== issue.id)
       this.deleteIssueFromColumn(issue)
       ElMessage.success({ message: this.$t('board.msg.issueDeleted') })
     },
     issueCloned(sourceIssue, clonedIssue) {
+      this.allIssues.push(clonedIssue)
       this.insertIssueIntoColumn(sourceIssue, clonedIssue)
       ElMessage.success({ message: this.$t('board.msg.issueCopied') })
     },

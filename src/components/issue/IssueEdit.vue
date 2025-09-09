@@ -1088,7 +1088,7 @@ export default {
         this.editIssue.files.push(res.data)
         this.initImgPreviewSrcList()
         this.uploading = false
-        this.$refs.fileUploaderRef.clearFiles()
+        this.$refs.fileUploaderRef?.clearFiles()
       })
     },
     deleteFile(index, file) {
