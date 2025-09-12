@@ -6,21 +6,28 @@
         <img
           src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/wechat-qr-user-group.png"
           class="wechat-qr-img user-group" />
-        <span class="desc">扫码加入<br />gogoscrum用户交流群</span>
+        <span class="desc">扫码加入<br />gogoscrum用户群</span>
       </div>
       <div class="column">
         <div class="title">官方公众号</div>
         <img
           src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/wechat-qr-official-account.jpg"
           class="wechat-qr-img" />
-        <span class="desc">扫码关注<br />gogoscrum官方公众号</span>
+        <span class="desc">扫码关注<br />gogoscrum公众号</span>
+      </div>
+      <div class="column">
+        <div class="title">抖音号</div>
+        <img
+          src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/douyin-qr-gogoscrum.jpg"
+          class="wechat-qr-img user-group" />
+        <span class="desc">抖音扫码<br />关注gogoscrum账号</span>
       </div>
       <div class="column">
         <div class="title">商业授权</div>
         <img
           src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/wechat-qr-contact-us.png"
           class="wechat-qr-img user-group" />
-        <span class="desc">添加客服<br />了解获取商业授权</span>
+        <span class="desc">添加客服<br />了解商业授权</span>
       </div>
     </div>
   </div>

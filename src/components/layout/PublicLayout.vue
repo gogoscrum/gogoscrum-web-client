@@ -37,7 +37,7 @@
       <div class="copy-right-row">
         <span>{{ $t('homepage.footer.company') }}</span>
 
-        <el-popover v-if="lang === 'cn'" placement="top" width="480">
+        <el-popover v-if="lang === 'cn'" placement="top" width="600">
           <template #reference>
             <img src="@/assets/images/qr-icon.png" class="qr-code-icon" />
           </template>
