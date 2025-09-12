@@ -20,7 +20,7 @@
         <img
           src="https://gogoscrum.oss-cn-hangzhou.aliyuncs.com/materials/douyin-qr-gogoscrum.jpg"
           class="wechat-qr-img user-group" />
-        <span class="desc">抖音扫码<br />关注gogoscrum账号</span>
+        <span class="desc">抖音扫码<br />关注gogoscrum抖音号</span>
       </div>
       <div class="column">
         <div class="title">商业授权</div>
