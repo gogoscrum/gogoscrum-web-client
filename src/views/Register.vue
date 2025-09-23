@@ -49,6 +49,7 @@
           </div>
         </div>
       </el-form-item>
+      <OauthLogins />
     </el-form>
     <el-dialog v-model="termsOfServiceDialogVisible" width="860px" top="3vh">
       <div class="terms-of-service-popup">
@@ -66,10 +67,11 @@ import { ElMessage } from 'element-plus'
 import VueMarkdown from 'vue-markdown-render'
 import cnTermsOfServiceDoc from '@/locales/zh-cn/terms-of-service.md?raw'
 import enTermsOfServiceDoc from '@/locales/en/terms-of-service.md?raw'
+import OauthLogins from '@/components/user/OauthLogins.vue'
 
 export default {
   name: 'Register',
-  components: { VueMarkdown },
+  components: { VueMarkdown, OauthLogins },
   data() {
     let validaterepeatPassword = (rule, value, callback) => {
       if (value === '') {
@@ -167,7 +169,6 @@ export default {
   padding: 1px 0;
   margin: 0;
   min-height: 600px;
-  display: flex;
 
   .logo-container {
     margin-bottom: 10px;
@@ -186,7 +187,7 @@ export default {
   }
 
   .register-form {
-    width: 304px;
+    width: 360px;
     margin: auto;
     padding: 20px 48px 10px 48px;
     background-color: #ffffff;
@@ -199,6 +200,7 @@ export default {
     }
 
     .register-button {
+      margin-top: 10px;
       width: 100%;
     }
 

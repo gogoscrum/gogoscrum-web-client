@@ -37,13 +37,16 @@
         </el-form-item>
         <el-form-item>
           <div class="flex justify-between w-full small-text">
-            <el-checkbox v-model="loginForm.rememberMe" class="remember-me">{{ $t('signin.rememberme') }}</el-checkbox>
+            <el-checkbox v-model="loginForm.rememberMe" class="remember-me" @change="handleRememberMeChange">{{
+              $t('signin.rememberme')
+            }}</el-checkbox>
             <div class="register">
               <router-link :to="{ name: 'Register' }">{{ $t('signin.signup') }}</router-link>
             </div>
           </div>
         </el-form-item>
       </el-form>
+      <OauthLogins />
     </div>
   </div>
 </template>
@@ -53,17 +56,20 @@ import qs from 'qs'
 import utils from '@/utils/util.js'
 import { userApi } from '@/api/user'
 import store from '@/modules/store.js'
+import OauthLogins from '@/components/user/OauthLogins.vue'
 
 export default {
   name: 'Login',
+  components: {
+    OauthLogins
+  },
   data() {
     return {
-      lang: localStorage['locale'] || utils.getLang(),
       msg: '',
       loginForm: {
         username: '',
         password: '',
-        rememberMe: true
+        rememberMe: this.$store.get('loginPageRememberMeFlag') || false
       },
       rules: {
         username: [
@@ -87,6 +93,10 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    handleRememberMeChange() {
+      console.log('Remember me flag changed: ', this.loginForm.rememberMe)
+      this.$store.set('loginPageRememberMeFlag', this.loginForm.rememberMe)
+    },
     submitForm() {
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
@@ -109,44 +119,19 @@ export default {
                 this.msg = this.$t('signin.msg.badCrendential')
                 this.submitting = false
               } else {
-                console.log('login success', res)
-
-                this.cacheCurrentUser(res.data.user)
+                utils.afterLogin(res.data.user)
               }
             })
-            .catch((error) => {
+            .catch((err) => {
+              console.error('login error', err)
+            })
+            .finally(() => {
               this.submitting = false
             })
         } else {
           return false
         }
       })
-    },
-    cacheCurrentUser(user) {
-      store.set('user', user)
-      this.$bus.$emit('login')
-      let lastUrl = localStorage.getItem('lastUrl')
-      if (lastUrl && lastUrl.indexOf('login') === -1 && lastUrl.indexOf('register') === -1) {
-        console.log('redirecting to lastUrl', lastUrl)
-        localStorage.removeItem('lastUrl')
-        window.location.href = lastUrl
-      } else {
-        let lastBoard = this.$store.get('lastBoard-' + user.id)
-
-        if (lastBoard) {
-          console.log('redirecting to previous board', lastBoard)
-
-          const { projectId, sprintId } = lastBoard
-          this.$router.push({
-            name: 'Board',
-            params: { projectId, sprintId }
-          })
-        } else {
-          console.log('redirecting to project list')
-
-          this.$router.push({ name: 'MyProjects' })
-        }
-      }
     }
   }
 }
@@ -169,7 +154,7 @@ export default {
   display: flex;
 
   .login-panel {
-    width: 400px;
+    width: 360px;
     border-radius: 4px;
     margin: auto;
 
@@ -200,9 +185,10 @@ export default {
     }
 
     .login-form {
-      margin: 0 48px;
+      // margin: 0 48px;
       padding-bottom: 10px;
       .btn-login {
+        margin-top: 10px;
         width: 100%;
       }
 

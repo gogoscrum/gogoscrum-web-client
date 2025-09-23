@@ -1,6 +1,7 @@
 import store from '@/modules/store'
 import { i18n } from '@/modules/i18n.js'
 import dayjs from 'dayjs'
+import router from '@/router'
 
 const indexInArray = function (objects, objectId) {
   return objects.findIndex((object) => object.id === objectId)
@@ -167,6 +168,29 @@ const toFullUrl = (path) => {
   return `${window.location.origin}${path}`
 }
 
+const afterLogin = (user) => {
+  store.set('user', user)
+  // store.setx('remember_me', true, 60 * 60 * 24 * 10)
+
+  const lastUrl = localStorage.getItem('lastUrl')
+
+  if (lastUrl && lastUrl.indexOf('login') === -1) {
+    localStorage.removeItem('lastUrl')
+    router.push({ path: lastUrl })
+  } else {
+    const lastBoard = store.get('lastBoard-' + user.id)
+    if (lastBoard) {
+      const { projectId, sprintId } = lastBoard
+      router.push({
+        name: 'Board',
+        params: { projectId, sprintId }
+      })
+    } else {
+      router.push({ name: 'MyProjects' })
+    }
+  }
+}
+
 /**
  * Get the number of lines in a textarea
  * @param {*} textarea The textarea element to measure
@@ -222,5 +246,6 @@ export default {
   formatAndCaclSprintStatus,
   isLocalhost,
   toFullUrl,
-  getTextareaLineCount
+  getTextareaLineCount,
+  afterLogin
 }

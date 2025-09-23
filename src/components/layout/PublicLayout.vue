@@ -21,11 +21,14 @@
         <div class="link-item">
           <router-link :to="{ name: 'Login' }">{{ $t('homepage.header.signin') }}</router-link>
         </div>
-        <div class="link-item">
+        <!-- <div class="link-item">
           <router-link :to="{ name: 'Register' }">{{ $t('homepage.header.signup') }}</router-link>
-        </div>
+        </div> -->
         <div class="link-item">
           <router-link :to="{ name: 'OpenSource' }">{{ $t('homepage.header.opensource') }}</router-link>
+        </div>
+        <div class="link-item">
+          <a href="https://college.gogoscrum.com" target="_blank" rel="noopener">{{ $t('homepage.header.academy') }}</a>
         </div>
         <LanguageSelector class="link-item" @languageChanged="languageChanged" />
       </div>

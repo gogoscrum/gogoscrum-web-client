@@ -69,7 +69,8 @@
     "header": {
       "signin": "登录",
       "signup": "注册",
-      "opensource": "开源"
+      "opensource": "开源",
+      "academy": "学习"
     },
     "start": "开始使用",
     "intro": "从待办事项列表到迭代任务看板、故事点估算、Bug跟踪、项目文件管理和燃尽图报表，轻松管理Scrum敏捷软件开发流程的所有环节，个人和企业均可免费使用，项目数量和成员数量无限制。",
@@ -819,6 +820,21 @@
   "invitationRedirect": {
     "joining": "正在加入项目",
     "joinSucess": "成功加入 \"{projectName}\" 项目"
+  },
+  "loginRedirect": {
+    "title": "账号已有绑定",
+    "username": "用户名",
+    "password": "密码",
+    "missingUsername": "请输入用户名",
+    "missingPassword": "请输入密码",
+    "signingIn": "正在登录，请稍后...",
+    "signinFailed": "登录失败，请重试",
+    "bindConfirmTitle": "是否绑定已有账号？",
+    "bindConfirmCancle": "新建账号",
+    "bindConfirmMsg": "是否需要和已有账号绑定？绑定后可通过已有账号进行登录",
+    "goToBind": "去绑定",
+    "bind": "绑定",
+    "bindSuccess": "账号绑定成功"
   },
   "userInfo": {
     "title": "个人设置",

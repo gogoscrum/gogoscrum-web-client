@@ -16,5 +16,11 @@ export const userApi = {
   updatePassword: (form) => put('/api/users/my/pwd', form),
   login: (form, params) => post('/api/login', form, params),
   logout: () => post('/api/logout'),
-  csrf: () => get('/api/csrf')
+  csrf: () => get('/api/csrf'),
+
+  // OAuth APIs
+  getOauthProviders: () => get('/api/users/oauth/providers'),
+  getOauthLoginUrl: (provider) => get(`/api/users/oauth/${provider}/login/url`),
+  oauthLogin: (oauth, rememberMe) => post('/api/users/oauth/login', oauth, { params: { rememberMe } }),
+  oauthRegister: (user, rememberMe) => post('/api/users/oauth/register', user, { params: { rememberMe } })
 }

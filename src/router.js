@@ -168,6 +168,11 @@ const routes = [
         component: () => import('@/views/Login.vue')
       },
       {
+        path: '/login/callback/:provider',
+        name: 'OauthLoginCallback',
+        component: () => import('@/views/OauthLoginCallback.vue')
+      },
+      {
         path: '/logout',
         name: 'Logout',
         component: () => import('@/views/Logout.vue')
@@ -197,7 +202,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   let user = store.get('user')
-  const publicRoutes = ['Homepage', 'OpenSource', 'Login', 'Register', 'DocView']
+  const publicRoutes = ['Homepage', 'OpenSource', 'Login', 'OauthLoginCallback', 'Register', 'DocView']
   if (!publicRoutes.includes(to.name) && !user) {
     localStorage.setItem('lastUrl', to.fullPath)
     console.warn('Requested url rejected: ' + to.fullPath)
