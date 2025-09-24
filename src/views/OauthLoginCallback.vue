@@ -134,6 +134,7 @@ export default {
     },
     cancelBinding() {
       this.bindingDialogVisible = false
+      this.user.bindToExistingUser = false
       this.createOrBind()
     },
     submitBinding() {

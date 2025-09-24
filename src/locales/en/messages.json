@@ -12,12 +12,13 @@
     "502": "Cannot connect to server, please try again later or contact the admin",
     "invalidRequestData": "Invalid request data",
     "wrongPassword": "Password validation failed",
+    "userNotFound": "User not found",
     "duplicatedUsername": "Username already exists",
-    "duplicatedGroup": "Isse group name already exists",
+    "duplicatedGroup": "Issue group name already exists",
     "duplicatedTag": "Tag name already exists",
     "noPermissionToOperate": "No permission to operate",
     "backlogCannotBeDeleted": "Backlog cannot be deleted",
     "invalidInvitation": "Invalid or expired invitation",
-    "alreadyInProject": "You are alreay in the project"
+    "alreadyInProject": "You are already in the project"
   }
 }
