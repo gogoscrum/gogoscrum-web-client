@@ -1,5 +1,5 @@
 <template>
-  <div class="login-callback-landing-page" v-loading="loading" :element-loading-text="$t('loginRedirect.signingIn')">
+  <div class="login-callback-landing-page" v-loading="loading" :element-loading-text="loadingText">
     <el-dialog
       :title="$t('loginRedirect.title')"
       :close-on-click-modal="false"
@@ -24,7 +24,7 @@
       </el-form>
       <template #footer>
         <el-button size="default" class="no-border" @click="cancelBinding">{{ $t('common.cancel') }}</el-button>
-        <el-button size="default" type="primary" class="no-border" @click="submitBinding">{{
+        <el-button size="default" type="primary" class="no-border" :loading="submitting" @click="submitBinding">{{
           $t('loginRedirect.bind')
         }}</el-button>
       </template>
@@ -70,7 +70,9 @@ export default {
         ]
       },
       user: null,
-      loading: false
+      loading: false,
+      loadingText: this.$t('loginRedirect.signingIn'),
+      submitting: false
     }
   },
   created() {
@@ -149,15 +151,30 @@ export default {
       })
     },
     createOrBind() {
+      if (this.bindingDialogVisible) {
+        this.submitting = true
+      } else {
+        this.loading = true
+        this.loadingText = this.$t('loginRedirect.creatingAccount')
+      }
+
       const rememberMe = this.$store.get('loginPageRememberMeFlag') || false
-      userApi.oauthRegister(this.user, rememberMe).then((res) => {
-        this.user = res.data
-        ElMessage.success({
-          message: this.$t('loginRedirect.bindSuccess'),
-          center: true
+      userApi
+        .oauthRegister(this.user, rememberMe)
+        .then((res) => {
+          this.user = res.data
+          ElMessage.success({
+            message: this.user.bindToExistingUser
+              ? this.$t('loginRedirect.bindSuccess')
+              : this.$t('loginRedirect.createSuccess'),
+            center: true
+          })
+          utils.afterLogin(this.user)
         })
-        utils.afterLogin(this.user)
-      })
+        .finally(() => {
+          this.loading = false
+          this.submitting = false
+        })
     }
   }
 }

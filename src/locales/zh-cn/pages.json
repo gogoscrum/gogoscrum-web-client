@@ -828,13 +828,15 @@
     "missingUsername": "请输入用户名",
     "missingPassword": "请输入密码",
     "signingIn": "正在登录，请稍后...",
+    "creatingAccount": "正在创建账号，请稍后...",
     "signinFailed": "登录失败，请重试",
     "bindConfirmTitle": "是否绑定已有账号？",
     "bindConfirmCancle": "新建账号",
     "bindConfirmMsg": "是否需要和已有账号绑定？绑定后可通过已有账号进行登录",
     "goToBind": "去绑定",
     "bind": "绑定",
-    "bindSuccess": "账号绑定成功"
+    "bindSuccess": "账号绑定成功",
+    "createSuccess": "账号创建并登录成功"
   },
   "userInfo": {
     "title": "个人设置",

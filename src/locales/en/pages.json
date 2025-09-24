@@ -828,13 +828,15 @@
     "missingUsername": "Please input username",
     "missingPassword": "Please input password",
     "signingIn": "Signing in, please wait...",
+    "creatingAccount": "Creating account, please wait...",
     "signinFailed": "Sign in failed, please re-try",
     "bindConfirmTitle": "Bind existing account?",
     "bindConfirmCancle": "Cancle",
     "bindConfirmMsg": "If you alreay have an existing account, you can bind to it now.",
     "goToBind": "Go to bind",
     "bind": "Bind",
-    "bindSuccess": "Account binded"
+    "bindSuccess": "Account binded successfully",
+    "createSuccess": "Account created and signed in successfully"
   },
   "userInfo": {
     "title": "My account",
