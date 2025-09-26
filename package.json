@@ -9,8 +9,9 @@
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "docker": "vite build --mode docker && rm -r ../gogoscrum-docker/gogoscrum-web-client/dist && cp -r dist/ ../gogoscrum-docker/gogoscrum-web-client/dist",
-    "demo": "vite build --mode docker && ssh root@47.99.45.135 'rm -Rf /root/gogoscrum-docker/gogoscrum-web-client/dist/*' && rsync -rvhe ssh dist root@47.99.45.135:/root/gogoscrum-docker/gogoscrum-web-client",
-    "stage": "vite build --mode docker && ssh root@47.99.45.135 'rm -Rf /root/gogoscrum-stage-docker/gogoscrum-docker/gogoscrum-web-client/dist/*' && rsync -rvhe ssh dist root@47.99.45.135:/root/gogoscrum-stage-docker/gogoscrum-docker/gogoscrum-web-client"
+    "test": "vite build --mode docker && ssh root@47.99.45.135 'rm -Rf /root/gogoscrum-test-docker/gogoscrum-web-client/dist/*' && rsync -rvhe ssh dist root@47.99.45.135:/root/gogoscrum-test-docker/gogoscrum-web-client",
+    "demo": "vite build --mode docker && ssh root@47.99.45.135 'rm -Rf /root/gogoscrum-demo-docker/gogoscrum-web-client/dist/*' && rsync -rvhe ssh dist root@47.99.45.135:/root/gogoscrum-demo-docker/gogoscrum-web-client",
+    "stage": "vite build --mode docker && ssh root@47.96.191.34 'rm -Rf /root/gogoscrum-stage-docker/gogoscrum-web-client/dist/*' && rsync -rvhe ssh dist root@47.96.191.34:/root/gogoscrum-stage-docker/gogoscrum-web-client"
   },
   "dependencies": {
     "@element-plus/icons-vue": "2.3.1",
