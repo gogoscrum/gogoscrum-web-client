@@ -160,14 +160,13 @@ export default {
       }
 
       const rememberMe = this.$store.get('loginPageRememberMeFlag') || false
+      const isBinding = this.user.bindToExistingUser === true
       userApi
         .oauthRegister(this.user, rememberMe)
         .then((res) => {
           this.user = res.data
           ElMessage.success({
-            message: this.user.bindToExistingUser
-              ? this.$t('loginRedirect.bindSuccess')
-              : this.$t('loginRedirect.createSuccess'),
+            message: isBinding ? this.$t('loginRedirect.bindSuccess') : this.$t('loginRedirect.createSuccess'),
             center: true
           })
           utils.afterLogin(this.user)

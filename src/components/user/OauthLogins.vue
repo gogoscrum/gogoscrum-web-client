@@ -70,8 +70,8 @@ export default {
       cursor: pointer;
       margin: 0 16px;
       .provider-icon {
-        width: 28px;
         height: 28px;
+        object-fit: contain;
       }
     }
   }

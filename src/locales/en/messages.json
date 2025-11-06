@@ -13,6 +13,7 @@
     "invalidRequestData": "Invalid request data",
     "wrongPassword": "Password validation failed",
     "userNotFound": "User not found",
+    "userDisabled": "User has been disabled",
     "duplicatedUsername": "Username already exists",
     "duplicatedGroup": "Issue group name already exists",
     "duplicatedTag": "Tag name already exists",

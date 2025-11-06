@@ -13,6 +13,7 @@
     "invalidRequestData": "请求参数无效",
     "wrongPassword": "密码验证失败",
     "userNotFound": "用户不存在",
+    "userDisabled": "用户已被禁用",
     "duplicatedUsername": "用户名已存在",
     "duplicatedGroup": "项目中已存在相同名称的任务列表",
     "duplicatedTag": "标签名称已存在",

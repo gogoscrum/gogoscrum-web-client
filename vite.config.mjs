@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => {
     server: {
       https: false,
       port: 8081,
+      allowedHosts: ['3l24029h12.zicp.fun'],
       proxy: {
         '/api': {
           target: 'http://localhost:8080',
