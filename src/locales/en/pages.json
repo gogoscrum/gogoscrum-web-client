@@ -780,7 +780,7 @@
       "archive": "Archive",
       "archived": "Archived",
       "unarchive": "Unarchive",
-      "noProject": "You havn't created or joined any project"
+      "noProject": "You haven't joined any project"
     },
     "msg": {
       "archiveSuccess": "Project \"{projectName}\" archived",

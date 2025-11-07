@@ -780,7 +780,7 @@
       "archive": "归档",
       "archived": "已归档",
       "unarchive": "取消归档",
-      "noProject": "你还没有创建或加入任何项目"
+      "noProject": "你还没有加入任何项目"
     },
     "msg": {
       "archiveSuccess": "项目 \"{projectName}\" 归档成功",
@@ -822,16 +822,16 @@
     "joinSucess": "成功加入 \"{projectName}\" 项目"
   },
   "loginRedirect": {
-    "title": "账号已有绑定",
+    "title": "绑定已有账号",
     "username": "用户名",
     "password": "密码",
     "missingUsername": "请输入用户名",
     "missingPassword": "请输入密码",
-    "signingIn": "正在登录，请稍后...",
-    "creatingAccount": "正在创建账号，请稍后...",
+    "signingIn": "正在登录，请稍等...",
+    "creatingAccount": "正在创建账号，请稍等...",
     "signinFailed": "登录失败，请重试",
     "bindConfirmTitle": "是否绑定已有账号？",
-    "bindConfirmCancle": "新建账号",
+    "bindConfirmCancle": "不绑定，创建新账号",
     "bindConfirmMsg": "是否需要和已有账号绑定？绑定后可通过已有账号进行登录",
     "goToBind": "去绑定",
     "bind": "绑定",
