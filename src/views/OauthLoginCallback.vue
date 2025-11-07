@@ -8,7 +8,7 @@
       :draggable="true"
       v-model="bindingDialogVisible"
       width="440px"
-      top="15vh">
+      align-center>
       <el-form :model="userForm" ref="userForm" :rules="rules">
         <el-form-item prop="username">
           <el-input v-model="userForm.username" :placeholder="$t('loginRedirect.username')" clearable></el-input>
@@ -134,8 +134,7 @@ export default {
     },
     cancelBinding() {
       this.bindingDialogVisible = false
-      this.user.bindToExistingUser = false
-      this.createOrBind()
+      this.askToBind()
     },
     submitBinding() {
       this.$refs['userForm'].validate((valid) => {
