@@ -1,9 +1,5 @@
 <template>
-  <div
-    ref="fileListPage"
-    class="project-files-page page"
-    v-infinite-scroll="loadMore"
-    :infinite-scroll-immediate="false">
+  <div class="project-files-page page">
     <div class="filter-row">
       <div class="left-part">
         <el-button
@@ -62,130 +58,135 @@
     </div>
     <breadcrumb v-if="breadcrumb && breadcrumb.length" :breadcrumb="breadcrumb" class="pl-18px" />
     <div class="main">
-      <el-table
-        :data="files"
-        v-loading="loading"
-        row-class-name="file-row clickable"
-        :show-header="false"
-        @row-click="fileClicked">
-        <el-table-column
-          :label="$t('fileList.list.name')"
-          :min-width="isInMobile ? 150 : 250"
-          class-name="icon-name-column">
-          <template #default="scope">
-            <div
-              :class="`icon-name-container clickable ${draggedFileIndex == scope.$index ? 'dragged' : ''} 
+      <el-scrollbar ref="fileListContainer" height="600px" @end-reached="loadMore">
+        <el-table
+          :data="files"
+          v-loading="loading"
+          row-class-name="file-row clickable"
+          :show-header="false"
+          @row-click="fileClicked">
+          <el-table-column
+            :label="$t('fileList.list.name')"
+            :min-width="isInMobile ? 150 : 250"
+            class-name="icon-name-column">
+            <template #default="scope">
+              <div
+                :class="`icon-name-container clickable ${draggedFileIndex == scope.$index ? 'dragged' : ''} 
                   ${dragoverFileIndex == scope.$index ? 'dragover' : ''}`"
-              draggable="true"
-              @dragstart="dragstart"
-              @dragend="dragend"
-              @dragover="dragover"
-              @dragenter="dragenter"
-              @dragleave="dragleave"
-              @drop="fileDropped"
-              :data-index="scope.$index">
-              <div class="file-icon-container">
-                <img
-                  v-if="scope.row.folder"
-                  draggable="false"
-                  class="folder-icon-img"
-                  src="/src/assets/images/folder.png" />
-                <el-image
-                  v-else-if="scope.row.type === 'IMAGE'"
-                  fit="contain"
-                  :src="scope.row.url"
-                  class="file-thumbnail" />
-                <file-icon v-else :type="scope.row.type" size="small" />
+                draggable="true"
+                @dragstart="dragstart"
+                @dragend="dragend"
+                @dragover="dragover"
+                @dragenter="dragenter"
+                @dragleave="dragleave"
+                @drop="fileDropped"
+                :data-index="scope.$index">
+                <div class="file-icon-container">
+                  <img
+                    v-if="scope.row.folder"
+                    draggable="false"
+                    class="folder-icon-img"
+                    src="/src/assets/images/folder.png" />
+                  <el-image
+                    v-else-if="scope.row.type === 'IMAGE'"
+                    fit="contain"
+                    :src="scope.row.url"
+                    class="file-thumbnail" />
+                  <file-icon v-else :type="scope.row.type" size="small" />
+                </div>
+                <div class="file-name-container">
+                  <el-input
+                    v-if="editingFile?.id === scope.row.id"
+                    v-model="scope.row.name"
+                    :ref="`fileNameInput-${editingFile.id}`"
+                    size="default"
+                    class="file-name-input"
+                    @keyup.enter="finishEditingFile"
+                    @keyup.esc="discardEditingFile"
+                    @blur="finishEditingFile"
+                    @click.native.stop />
+                  <span
+                    v-else
+                    class="file-name"
+                    v-html="scope.row.nameHighlightLabel || scope.row.name"
+                    :data-index="scope.$index"></span>
+                </div>
               </div>
-              <div class="file-name-container">
-                <el-input
-                  v-if="editingFile?.id === scope.row.id"
-                  v-model="scope.row.name"
-                  :ref="`fileNameInput-${editingFile.id}`"
-                  size="default"
-                  class="file-name-input"
-                  @keyup.enter="finishEditingFile"
-                  @keyup.esc="discardEditingFile"
-                  @blur="finishEditingFile"
-                  @click.native.stop />
-                <span
-                  v-else
-                  class="file-name"
-                  v-html="scope.row.nameHighlightLabel || scope.row.name"
-                  :data-index="scope.$index"></span>
-              </div>
-            </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="sizeFormatted" :label="$t('fileList.list.size')" min-width="50" align="right">
+          </el-table-column>
+          <el-table-column
+            v-if="!isInMobile"
+            :label="$t('fileList.list.creator')"
+            min-width="40"
+            class-name="owner-column">
+            <template #default="scope">
+              <el-tooltip
+                v-if="scope.row.createdBy"
+                :content="$t('fileList.list.creatorTip', { nickname: scope.row.createdBy.nickname })"
+                placement="left">
+                <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column
+            v-if="!isInMobile"
+            prop="createdTimeFormatted"
+            :label="$t('fileList.list.createdTime')"
+            min-width="80">
+          </el-table-column>
+          <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="50">
+            <template #default="scope">
+              <el-dropdown trigger="click" placement="bottom">
+                <div class="more-action-icon" @click.stop>
+                  <el-icon><MoreFilled /></el-icon>
+                </div>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item icon="Edit" @click.native="editFile(scope.$index, scope.row, false)">{{
+                      $t('common.rename')
+                    }}</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="!scope.row.folder"
+                      icon="Download"
+                      @click.native="downloadFile(scope.row)"
+                      >{{ $t('common.download') }}</el-dropdown-item
+                    >
+                    <el-dropdown-item icon="Delete" @click.native="deleteFile(scope.$index, scope.row)">{{
+                      $t('common.delete')
+                    }}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </el-table-column>
+          <template v-slot:empty>
+            <el-empty
+              :image-size="100"
+              :description="folderId ? $t('fileList.list.noFileInFolder') : $t('fileList.list.noFileInProject')">
+              <el-upload
+                :action="uploadParams.uploadActionUrl"
+                :before-upload="initUploadParams"
+                :data="uploadParams"
+                multiple
+                :limit="5"
+                :on-exceed="onExceed"
+                :on-success="fileUploadSuccess"
+                :show-file-list="false">
+                <el-button
+                  :disabled="!project.isDeveloper"
+                  :loading="uploading"
+                  type="primary"
+                  icon="UploadFilled"
+                  class="text-icon-btn"
+                  >{{ $t('fileList.header.uploadFile') }}</el-button
+                >
+              </el-upload>
+            </el-empty>
           </template>
-        </el-table-column>
-        <el-table-column prop="sizeFormatted" :label="$t('fileList.list.size')" min-width="50" align="right">
-        </el-table-column>
-        <el-table-column
-          v-if="!isInMobile"
-          :label="$t('fileList.list.creator')"
-          min-width="40"
-          class-name="owner-column">
-          <template #default="scope">
-            <el-tooltip
-              v-if="scope.row.createdBy"
-              :content="$t('fileList.list.creatorTip', { nickname: scope.row.createdBy.nickname })"
-              placement="left">
-              <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-        <el-table-column
-          v-if="!isInMobile"
-          prop="createdTimeFormatted"
-          :label="$t('fileList.list.createdTime')"
-          min-width="80">
-        </el-table-column>
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="50">
-          <template #default="scope">
-            <el-dropdown trigger="click" placement="bottom">
-              <div class="more-action-icon" @click.stop>
-                <el-icon><MoreFilled /></el-icon>
-              </div>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item icon="Edit" @click.native="editFile(scope.$index, scope.row, false)">{{
-                    $t('common.rename')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item v-if="!scope.row.folder" icon="Download" @click.native="downloadFile(scope.row)">{{
-                    $t('common.download')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item icon="Delete" @click.native="deleteFile(scope.$index, scope.row)">{{
-                    $t('common.delete')
-                  }}</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </el-table-column>
-        <template v-slot:empty>
-          <el-empty
-            :image-size="100"
-            :description="folderId ? $t('fileList.list.noFileInFolder') : $t('fileList.list.noFileInProject')">
-            <el-upload
-              :action="uploadParams.uploadActionUrl"
-              :before-upload="initUploadParams"
-              :data="uploadParams"
-              multiple
-              :limit="5"
-              :on-exceed="onExceed"
-              :on-success="fileUploadSuccess"
-              :show-file-list="false">
-              <el-button
-                :disabled="!project.isDeveloper"
-                :loading="uploading"
-                type="primary"
-                icon="UploadFilled"
-                class="text-icon-btn"
-                >{{ $t('fileList.header.uploadFile') }}</el-button
-              >
-            </el-upload>
-          </el-empty>
-        </template>
-      </el-table>
+        </el-table>
+      </el-scrollbar>
       <el-image-viewer
         v-if="previewingImg"
         :url-list="imgPreviewSrcList"
@@ -324,11 +325,14 @@ export default {
         this.totalElements = res.data.totalElements
         this.totalPages = res.data.totalPages
 
-        // Since the DOM of the file list is in the middle of the page container (this.$refs.fileListPage), so we need to
-        // manually scroll the page up a little bit to avoid the loadMore event being always triggered
-        this.$nextTick(() => {
-          this.$refs.fileListPage.parentElement.scrollBy(0, results.length * -57)
-        })
+        // keep the scroll position after loading more files
+        if (append) {
+          const wrap = this.$refs.fileListContainer.wrapRef
+          const oldScrollTop = wrap.scrollTop
+          this.$nextTick(() => {
+            wrap.scrollTop = oldScrollTop
+          })
+        }
 
         // Delay a little bit to improve user experience
         setTimeout(() => {
@@ -336,8 +340,8 @@ export default {
         }, 200)
       })
     },
-    loadMore() {
-      if (!this.loading && this.totalPages > this.filter.page) {
+    loadMore(direction) {
+      if (direction === 'bottom' && !this.loading && this.totalPages > this.filter.page) {
         this.filter.page++
         this.loadFiles(true)
       }
