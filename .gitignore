@@ -27,3 +27,4 @@ coverage
 # pnpm version file
 pnpm-lock.yaml
 package-lock.json
+publish.sh
