@@ -14,7 +14,7 @@
           }}</el-button>
         </el-col>
         <el-col :xs="0" :sm="11" class="flex-container">
-          <img src="/power-of-teamwork.png" class="main-img" />
+          <img src="/teamwork.svg" class="main-img !w-70% mb-40px ml-30px" />
         </el-col>
       </el-row>
     </div>
