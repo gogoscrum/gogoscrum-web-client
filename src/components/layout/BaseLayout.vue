@@ -111,15 +111,14 @@
         </el-dropdown>
       </div>
       <div class="right-links">
-        <a href="https://github.com/gogoscrum/gogoscrum-rest-service" target="_blank" class="github-badge">
+        <!-- <a href="https://github.com/gogoscrum/gogoscrum-rest-service" target="_blank" class="github-badge">
           <el-image
             src="https://img.shields.io/github/stars/gogoscrum/gogoscrum-rest-service?style=flat&logo=github&color=0d9c89">
             <template #error>
-              <!-- Cannot access Github, just don't show the badge. -->
-              <span></span>
+              <span style="visibility: hidden">If cannot access Github, just don't show the badge.</span>
             </template>
           </el-image>
-        </a>
+        </a> -->
         <el-dropdown trigger="click" @command="operatingCommand" placement="bottom">
           <span class="create-new-icon selector">
             <el-icon><CirclePlus /></el-icon>

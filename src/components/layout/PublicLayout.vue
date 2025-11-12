@@ -5,7 +5,7 @@
         <img src="/src/assets/images/logo-black.png" class="logo" />
       </router-link>
       <div class="links-container">
-        <a
+        <!-- <a
           v-if="!isInMobile"
           href="https://github.com/gogoscrum/gogoscrum-rest-service"
           target="_blank"
@@ -13,11 +13,10 @@
           <el-image
             src="https://img.shields.io/github/stars/gogoscrum/gogoscrum-rest-service?style=flat&logo=github&color=0d9c89">
             <template #error>
-              <!-- If cannot access Github, just don't show the badge. -->
-              <span></span>
+              <span style="visibility: hidden">If cannot access Github, just don't show the badge.</span>
             </template>
           </el-image>
-        </a>
+        </a> -->
         <div class="link-item">
           <router-link :to="{ name: 'Login' }">{{ $t('homepage.header.signin') }}</router-link>
         </div>
