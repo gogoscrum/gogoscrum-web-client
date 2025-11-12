@@ -19,7 +19,7 @@
                 :placeholder="$t('userPicker.searchPlaceholder')"
                 clearable
                 @input="searchUser" />
-              <div class="user-list" v-infinite-scroll="loadMoreUser" infinite-scroll-immediate="false">
+              <el-scrollbar class="user-list" height="400px" @end-reached="loadMoreUser">
                 <div
                   v-for="user in allUserList"
                   :key="user.id"
@@ -47,7 +47,7 @@
                     </el-icon>
                   </div>
                 </div>
-              </div>
+              </el-scrollbar>
             </div>
           </el-tab-pane>
           <el-tab-pane name="shareInvitationTab" class="invitation-tab" :label="$t('userPicker.tabShare')">
@@ -182,12 +182,16 @@ export default {
       })
     },
     searchUser() {
-      this.searchFilter.page = 1
-      this.allUserList = []
-      this.loadUsers()
+      // throttle searching by 500ms
+      clearTimeout(this.searchingTimeout)
+      this.searchingTimeout = setTimeout(() => {
+        this.searchFilter.page = 1
+        this.allUserList = []
+        this.loadUsers()
+      }, 500)
     },
-    loadMoreUser() {
-      if (this.totalPages === null || this.totalPages > this.searchFilter.page) {
+    loadMoreUser(direction) {
+      if (direction === 'bottom' && (this.totalPages === null || this.totalPages > this.searchFilter.page)) {
         this.searchFilter.page = this.searchFilter.page + 1
         this.loadUsers()
       }
@@ -263,7 +267,6 @@ export default {
 
 <style lang="less">
 .add-project-member-dialog {
-  height: 70vh;
   min-height: 300px;
 
   .el-tabs__header {
@@ -313,7 +316,6 @@ export default {
 
   .user-list {
     margin-top: 20px;
-    height: calc(70vh - 200px);
     overflow: scroll;
 
     .user-row {
