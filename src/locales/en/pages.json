@@ -24,7 +24,6 @@
     "save": "Save",
     "ok": "OK",
     "done": "Done",
-    "to": "to",
     "actions": "Actions",
     "move": "Move to",
     "expand": "Expand",
@@ -508,7 +507,8 @@
       "count": "{count} sprints"
     },
     "list": {
-      "name": "Name",
+      "name": "Sprint name",
+      "goal": "Sprint goal",
       "startDate": "Start date",
       "endDate": "End date",
       "progress": "Progress",

@@ -30,23 +30,26 @@
         v-loading="loading"
         class="sprint-list-table"
         row-class-name="sprint-row clickable"
-        :show-header="false"
-        @row-click="goBoard"
+        :show-header="true"
+        @row-click="editSprint"
+        @sort-change="sortChange"
         empty-text="No data">
-        <el-table-column prop="name" :label="$t('sprintList.list.name')" min-width="100">
+        <el-table-column prop="name" :label="$t('sprintList.list.name')" show-overflow-tooltip min-width="60">
           <template #default="scope">
-            <div>{{ scope.row.name }}</div>
-            <div v-if="scope.row.goal" class="desc hidden-xs-only">
-              {{ scope.row.goal }}
-            </div>
+            <span v-html="scope.row.nameHighlightLabel || scope.row.name" class="sprint-name"></span>
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" prop="startDate" :label="$t('sprintList.list.startDate')" width="110">
-        </el-table-column>
-        <el-table-column v-if="!isInMobile" width="50" align="center">
+        <el-table-column
+          v-if="!isInMobile"
+          prop="goal"
+          :label="$t('sprintList.list.goal')"
+          show-overflow-tooltip
+          min-width="100">
           <template #default="scope">
-            <span v-if="scope.row.startDate">{{ $t('common.to') }}</span>
+            <span v-if="scope.row.goal" v-html="scope.row.goalHighlightLabel || scope.row.goal"></span>
           </template>
+        </el-table-column>
+        <el-table-column v-if="!isInMobile" prop="startDate" :label="$t('sprintList.list.startDate')" min-width="40">
         </el-table-column>
         <el-table-column v-if="!isInMobile" prop="endDate" :label="$t('sprintList.list.endDate')" min-width="40">
         </el-table-column>
@@ -63,13 +66,11 @@
                   totalIssueCount: scope.row.totalIssueCount
                 })
               ">
-              <div class="sprint-progress">
-                <el-progress :percentage="Math.round(scope.row.progress * 100)" class="w-110px" />
-              </div>
+              <el-progress :percentage="Math.round(scope.row.progress * 100)" />
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('sprintList.list.status')" :min-width="isInMobile ? 60 : 30" align="center">
+        <el-table-column :label="$t('sprintList.list.status')" :min-width="isInMobile ? 60 : 30">
           <template #default="scope">
             <status-tag
               v-if="scope.row.status"
@@ -78,7 +79,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="50" align="center">
+        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -267,5 +268,10 @@ export default {
 
 <style lang="less" scoped>
 .sprint-list-page {
+  .sprint-row {
+    .sprint-name {
+      font-weight: 500;
+    }
+  }
 }
 </style>

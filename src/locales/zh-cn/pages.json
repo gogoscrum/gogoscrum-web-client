@@ -24,7 +24,6 @@
     "save": "保存",
     "ok": "确定",
     "done": "完成",
-    "to": "至",
     "actions": "操作",
     "move": "移至",
     "expand": "展开",
@@ -509,6 +508,7 @@
     },
     "list": {
       "name": "迭代名称",
+      "goal": "迭代目标",
       "startDate": "开始日期",
       "endDate": "结束日期",
       "progress": "进度",
