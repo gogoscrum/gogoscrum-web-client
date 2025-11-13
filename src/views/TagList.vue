@@ -20,7 +20,11 @@
           <el-icon v-else @click="loadTags" class="refresh-btn">
             <Refresh />
           </el-icon>
-          <span class="item-count">{{ $t('tagList.header.tagCount', { count: totalElements }) }}</span>
+          <span class="item-count">{{
+            filter.keyword
+              ? $t('common.filter.matchedResults', { count: totalElements })
+              : $t('tagList.header.tagCount', { count: totalElements })
+          }}</span>
         </div>
         <el-form-item class="mb-0!">
           <el-input
@@ -29,7 +33,7 @@
             clearable
             prefix-icon="Search"
             :placeholder="$t('tagList.header.search')"
-            @input="keywordChanged"></el-input>
+            @input="inputChanged"></el-input>
         </el-form-item>
       </div>
     </div>
@@ -39,30 +43,16 @@
         v-loading="loading"
         class="tag-list"
         row-class-name="tag-row"
-        :show-header="false"
+        :show-header="true"
         @row-click="editTag"
         empty-text="No data">
         <el-table-column
           prop="name"
           :label="$t('tagList.list.name')"
-          :min-width="isInMobile ? 120 : 250"
+          :min-width="isInMobile ? 120 : 150"
           class-name="clickable">
           <template #default="scope">
             <el-tag :color="scope.row.color || '#999999'" effect="dark" class="no-border">{{ scope.row.name }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column v-if="!isInMobile" :label="$t('tagList.list.creator')" min-width="50">
-          <template #default="scope">
-            <el-tooltip
-              v-if="scope.row.createdBy"
-              :content="
-                $t('tagList.list.creatorTip', {
-                  nickname: scope.row.createdBy.nickname
-                })
-              "
-              placement="left">
-              <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
-            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column
@@ -71,11 +61,16 @@
           :label="$t('tagList.list.updatedTime')"
           min-width="80">
         </el-table-column>
-        <el-table-column
-          v-if="project.isDeveloper"
-          :label="$t('common.actions')"
-          width="50"
-          class-name="actions-column">
+        <el-table-column v-if="!isInMobile" :label="$t('tagList.list.creator')" min-width="50">
+          <template #default="scope">
+            <avatar
+              :name="scope.row.createdBy.nickname"
+              :size="22"
+              :src="scope.row.createdBy.avatarUrl"
+              showName></avatar>
+          </template>
+        </el-table-column>
+        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -182,6 +177,15 @@ export default {
     },
     formatTag(tag) {
       return utils.formatCreateUpdateTime(tag)
+    },
+    inputChanged() {
+      // throttle keyword input changes
+      if (this.inputTimeout) {
+        clearTimeout(this.inputTimeout)
+      }
+      this.inputTimeout = setTimeout(() => {
+        this.keywordChanged()
+      }, 500)
     },
     keywordChanged() {
       this.filter.page = 1

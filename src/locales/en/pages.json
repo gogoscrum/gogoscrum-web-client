@@ -630,7 +630,6 @@
     "header": {
       "newFolder": "New folder",
       "uploadFile": "Upload file",
-      "matchedResults": "{count} matched results",
       "folderOrFiles": "{count} folders or files",
       "search": "Search"
     },
@@ -659,7 +658,6 @@
   "docList": {
     "header": {
       "new": "New Document",
-      "matchedResults": "{count} matched results",
       "docCount": "{count} documents",
       "search": "Search"
     },
@@ -926,7 +924,6 @@
         "filter": {
           "new": "New test case",
           "totalElements": "{count} test cases",
-          "matchedResults": "{count} matched results",
           "search": "Search"
         },
         "header": {
@@ -1000,7 +997,6 @@
         "filter": {
           "new": "New test plan",
           "totalElements": "{count} test plans",
-          "matchedResults": "{count} matched results",
           "search": "Search plan"
         },
         "header": {

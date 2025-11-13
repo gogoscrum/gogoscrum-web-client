@@ -20,17 +20,20 @@
           <el-icon v-else @click="loadInvitations" class="refresh-btn">
             <Refresh />
           </el-icon>
-          <span class="item-count">{{ $t('invitationList.header.invitationCount', { count: totalElements }) }}</span>
+          <span class="item-count">{{
+            filter.code
+              ? $t('common.filter.matchedResults', { count: totalElements })
+              : $t('invitationList.header.invitationCount', { count: totalElements })
+          }}</span>
         </div>
-
         <el-form-item class="mb-0!">
           <el-input
             class="search-input"
-            v-model="filter.keyword"
+            v-model="filter.code"
             clearable
             prefix-icon="Search"
             :placeholder="$t('invitationList.header.search')"
-            @input="keywordChanged"></el-input>
+            @input="inputChanged"></el-input>
         </el-form-item>
         <el-form-item class="ml-5px mb-0!">
           <el-select
@@ -61,7 +64,7 @@
           v-if="!isInMobile"
           prop="invitationType"
           :label="$t('invitationList.list.invitationType')"
-          min-width="40">
+          min-width="30">
           <template #default="scope">
             <span v-if="scope.row.invitationType">{{ $t(`invitationTypes.${scope.row.invitationType}`) }}</span>
           </template>
@@ -93,26 +96,31 @@
             >
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" :label="$t('invitationList.list.creator')" min-width="30">
-          <template #default="scope">
-            <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
-          </template>
-        </el-table-column>
         <el-table-column
           v-if="!isInMobile"
           prop="createdTimeFormatted"
           :label="$t('invitationList.list.createdTime')"
-          min-width="60">
+          min-width="50">
         </el-table-column>
         <el-table-column
           v-if="!isInMobile"
           prop="expireTime"
           :label="$t('invitationList.list.expireTime')"
-          min-width="60">
+          min-width="50">
           <template #default="scope">
             <span>{{ scope.row.expireTime || $t('invitationList.list.neverExpire') }}</span>
           </template>
         </el-table-column>
+        <el-table-column v-if="!isInMobile" :label="$t('invitationList.list.creator')" min-width="30">
+          <template #default="scope">
+            <avatar
+              :name="scope.row.createdBy.nickname"
+              :size="22"
+              :src="scope.row.createdBy.avatarUrl"
+              showName></avatar>
+          </template>
+        </el-table-column>
+
         <el-table-column
           v-if="project.isDeveloper"
           :label="$t('common.actions')"
@@ -259,6 +267,15 @@ export default {
     },
     inviteMember() {
       this.$bus.$emit('openInvitationDialog')
+    },
+    inputChanged() {
+      // throttle keyword input changes
+      if (this.inputTimeout) {
+        clearTimeout(this.inputTimeout)
+      }
+      this.inputTimeout = setTimeout(() => {
+        this.keywordChanged()
+      }, 500)
     },
     keywordChanged() {
       this.filter.page = 1

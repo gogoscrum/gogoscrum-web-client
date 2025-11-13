@@ -22,7 +22,7 @@
           </el-icon>
           <span class="item-count">{{
             filter.keyword
-              ? $t('docList.header.matchedResults', { count: totalElements })
+              ? $t('common.filter.matchedResults', { count: totalElements })
               : $t('docList.header.docCount', { count: totalElements })
           }}</span>
         </div>
@@ -33,7 +33,7 @@
             clearable
             prefix-icon="Search"
             :placeholder="$t('docList.header.search')"
-            @input="keywordChanged"></el-input>
+            @input="inputChanged"></el-input>
         </el-form-item>
       </div>
     </div>
@@ -57,7 +57,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" prop="publicAccess" :label="$t('docList.list.publicAccess')" min-width="45">
+        <el-table-column v-if="!isInMobile" prop="publicAccess" :label="$t('docList.list.publicAccess')" min-width="50">
           <template #default="scope">
             <DocPublicAccessPop v-if="scope.row.publicAccess" :doc="scope.row">
               <template #reference>
@@ -67,30 +67,22 @@
             <span v-else></span>
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" :label="$t('docList.list.creator')" min-width="40">
-          <template #default="scope">
-            <el-tooltip
-              v-if="scope.row.createdBy"
-              :content="
-                $t('docList.list.creatorTip', {
-                  nickname: scope.row.createdBy.nickname
-                })
-              "
-              placement="left">
-              <avatar
-                :name="scope.row.createdBy.nickname"
-                :size="22"
-                :src="scope.row.createdBy.avatarUrl"
-                showName></avatar>
-            </el-tooltip>
-          </template>
-        </el-table-column>
         <el-table-column
           v-if="!isInMobile"
           prop="createdTimeFormatted"
           :label="$t('docList.list.createdTime')"
           min-width="80">
         </el-table-column>
+        <el-table-column v-if="!isInMobile" :label="$t('docList.list.creator')" min-width="50">
+          <template #default="scope">
+            <avatar
+              :name="scope.row.createdBy.nickname"
+              :size="22"
+              :src="scope.row.createdBy.avatarUrl"
+              showName></avatar>
+          </template>
+        </el-table-column>
+
         <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
@@ -195,6 +187,15 @@ export default {
     },
     formatDoc(doc) {
       return utils.formatCreateUpdateTime(doc)
+    },
+    inputChanged() {
+      // throttle keyword input changes
+      if (this.inputTimeout) {
+        clearTimeout(this.inputTimeout)
+      }
+      this.inputTimeout = setTimeout(() => {
+        this.keywordChanged()
+      }, 500)
     },
     keywordChanged() {
       this.filter.page = 1

@@ -32,7 +32,7 @@
           </el-icon>
           <span class="item-count">{{
             filter.keyword
-              ? $t('test.case.list.filter.matchedResults', { count: totalElements })
+              ? $t('common.filter.matchedResults', { count: totalElements })
               : $t('test.case.list.filter.totalElements', { count: totalElements })
           }}</span>
         </div>

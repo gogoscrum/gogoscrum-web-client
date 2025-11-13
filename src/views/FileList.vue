@@ -41,7 +41,7 @@
           </el-icon>
           <span class="item-count">{{
             filter.keyword
-              ? $t('fileList.header.matchedResults', { count: totalElements })
+              ? $t('common.filter.matchedResults', { count: totalElements })
               : $t('fileList.header.folderOrFiles', { count: totalElements })
           }}</span>
         </div>
@@ -52,7 +52,7 @@
             clearable
             prefix-icon="Search"
             :placeholder="$t('fileList.header.search')"
-            @input="keywordChanged"></el-input>
+            @input="inputChanged"></el-input>
         </el-form-item>
       </div>
     </div>
@@ -63,11 +63,12 @@
           :data="files"
           v-loading="loading"
           row-class-name="file-row clickable"
-          :show-header="false"
+          :show-header="true"
           @row-click="fileClicked">
           <el-table-column
             :label="$t('fileList.list.name')"
-            :min-width="isInMobile ? 150 : 250"
+            show-overflow-tooltip
+            :min-width="isInMobile ? 150 : 220"
             class-name="icon-name-column">
             <template #default="scope">
               <div
@@ -114,29 +115,28 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="sizeFormatted" :label="$t('fileList.list.size')" min-width="50" align="right">
-          </el-table-column>
-          <el-table-column
-            v-if="!isInMobile"
-            :label="$t('fileList.list.creator')"
-            min-width="40"
-            class-name="owner-column">
-            <template #default="scope">
-              <el-tooltip
-                v-if="scope.row.createdBy"
-                :content="$t('fileList.list.creatorTip', { nickname: scope.row.createdBy.nickname })"
-                placement="left">
-                <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
-              </el-tooltip>
-            </template>
-          </el-table-column>
           <el-table-column
             v-if="!isInMobile"
             prop="createdTimeFormatted"
             :label="$t('fileList.list.createdTime')"
             min-width="80">
           </el-table-column>
-          <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="50">
+          <el-table-column
+            v-if="!isInMobile"
+            :label="$t('fileList.list.creator')"
+            min-width="50"
+            class-name="owner-column">
+            <template #default="scope">
+              <avatar
+                :name="scope.row.createdBy.nickname"
+                :size="22"
+                :src="scope.row.createdBy.avatarUrl"
+                showName></avatar>
+            </template>
+          </el-table-column>
+          <el-table-column prop="sizeFormatted" :label="$t('fileList.list.size')" min-width="40" align="right">
+          </el-table-column>
+          <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
             <template #default="scope">
               <el-dropdown trigger="click" placement="bottom">
                 <div class="more-action-icon" @click.stop>
@@ -358,6 +358,15 @@ export default {
       }
 
       return util.formatCreateUpdateTime(file)
+    },
+    inputChanged() {
+      // throttle keyword input changes
+      if (this.inputTimeout) {
+        clearTimeout(this.inputTimeout)
+      }
+      this.inputTimeout = setTimeout(() => {
+        this.keywordChanged()
+      }, 500)
     },
     keywordChanged() {
       this.filter.page = 1
@@ -656,7 +665,7 @@ export default {
     }
 
     .file-name {
-      margin-left: 16px;
+      margin-left: 12px;
       line-height: 32px;
     }
   }
@@ -666,13 +675,6 @@ export default {
 <style lang="less">
 .project-files-page {
   .file-row {
-    .owner-column {
-      .cell {
-        display: flex;
-        margin-left: 20px;
-      }
-    }
-
     .icon-name-container {
       display: flex;
       padding: 0 5px;

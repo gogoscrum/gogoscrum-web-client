@@ -630,7 +630,6 @@
     "header": {
       "newFolder": "新建文件夹",
       "uploadFile": "上传文件",
-      "matchedResults": "{count} 个符合条件的结果",
       "folderOrFiles": "{count} 个文件和文件夹",
       "search": "查找文件"
     },
@@ -659,7 +658,6 @@
   "docList": {
     "header": {
       "new": "新建文档",
-      "matchedResults": "{count} 个符合条件的结果",
       "docCount": "{count} 个文档",
       "search": "查找文档"
     },
@@ -926,7 +924,6 @@
         "filter": {
           "new": "新建用例",
           "totalElements": "{count} 个测试用例",
-          "matchedResults": "{count} 个符合条件的结果",
           "search": "查找用例"
         },
         "header": {
@@ -1000,7 +997,6 @@
         "filter": {
           "new": "新建计划",
           "totalElements": "{count} 个测试计划",
-          "matchedResults": "{count} 个符合条件的结果",
           "search": "查找计划"
         },
         "header": {

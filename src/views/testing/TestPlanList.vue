@@ -22,7 +22,7 @@
           </el-icon>
           <span class="item-count">{{
             filter.keyword
-              ? $t('test.plan.list.filter.matchedResults', { count: totalElements })
+              ? $t('common.filter.matchedResults', { count: totalElements })
               : $t('test.plan.list.filter.totalElements', { count: totalElements })
           }}</span>
         </div>
