@@ -611,8 +611,9 @@ export default {
       return sum
     },
     closeSocket() {
-      if (this.rsocket && this.rsocket.readyState === 1) {
+      if (this.rsocket && this.rsocket.readyState === WebSocket.OPEN) {
         this.rsocket.close()
+        console.log('Closing WebSocket connection...')
       }
     },
     newFastIssue(groupIndex, issueGroup) {
@@ -787,7 +788,7 @@ export default {
     },
     initWebSocket() {
       this.rsocket = new ReconnectingWebSocket(`${this.webSocketUrl}/${this.projectId}/${this.sprintId}`)
-      console.log(`Connected WebSocket to ${this.rsocket.url}`)
+      console.log('Connecting to WebSocket...')
 
       this.rsocket.addEventListener('open', () => {
         console.log(`WebSocket connected to ${this.rsocket.url}`)
@@ -802,6 +803,12 @@ export default {
 
         this.processSocketMsg(e)
       })
+
+      setInterval(() => {
+        if (this.rsocket && this.rsocket.readyState === WebSocket.OPEN) {
+          this.rsocket.send(JSON.stringify({ type: 'PING' }))
+        }
+      }, 30000)
     },
     blinkIssue(issueId) {
       let index = utils.indexInArray(this.sprint.issues, issueId)
