@@ -302,8 +302,8 @@ export default {
 
     if (this.issueFilter) {
       this.filter = JSON.parse(JSON.stringify(this.issueFilter))
+      this.filter.projectId = this.projectId
       this.filter.pageSize = this.$store.get('issueListPageSize') || 10
-      // console.log('IssueListNew issueFilter', this.filter)
     } else {
       this.filter = this.newFilter()
     }
