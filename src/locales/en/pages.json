@@ -185,6 +185,7 @@
       "editSprint": "Edit sprint",
       "backlog": "Backlog",
       "issues": "Issues",
+      "testCases": "Test cases",
       "files": "Files",
       "docs": "Documents",
       "burndown": "Burndown chart",
@@ -923,6 +924,7 @@
       "list": {
         "filter": {
           "new": "New test case",
+          "export": "Export",
           "totalElements": "{count} test cases",
           "search": "Search"
         },

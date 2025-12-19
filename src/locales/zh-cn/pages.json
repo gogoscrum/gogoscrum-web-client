@@ -185,6 +185,7 @@
       "editSprint": "修改迭代",
       "backlog": "待办列表",
       "issues": "全部任务",
+      "testCases": "测试用例",
       "files": "文件",
       "docs": "文档",
       "burndown": "燃尽图",
@@ -923,6 +924,7 @@
       "list": {
         "filter": {
           "new": "新建用例",
+          "export": "导出",
           "totalElements": "{count} 个测试用例",
           "search": "查找用例"
         },

@@ -6,7 +6,8 @@ export const testCaseApi = {
   update: (id, testCase) => put(`/api/testing/cases/${id}`, testCase),
   delete: (id) => del(`/api/testing/cases/${id}`),
   search: (filter) => post('/api/testing/cases/search', filter),
-  clone: (id) => post(`/api/testing/cases/${id}/clone`)
+  clone: (id) => post(`/api/testing/cases/${id}/clone`),
+  export: (filter) => post('/api/testing/cases/export', filter, { responseType: 'blob' })
 }
 
 export const testPlanApi = {

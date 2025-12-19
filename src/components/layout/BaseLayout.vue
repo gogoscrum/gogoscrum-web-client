@@ -225,6 +225,9 @@
                 <el-dropdown-item icon="Files" command="IssueList">{{
                   $t('baseLayout.header.issues')
                 }}</el-dropdown-item>
+                <el-dropdown-item icon="Odometer" command="TestCaseList">{{
+                  $t('baseLayout.header.testCases')
+                }}</el-dropdown-item>
                 <el-dropdown-item icon="FolderOpened" command="FileList">{{
                   $t('baseLayout.header.files')
                 }}</el-dropdown-item>

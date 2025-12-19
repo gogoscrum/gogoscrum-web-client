@@ -2,16 +2,27 @@
   <div class="test-case-list-page page">
     <div class="filter-row">
       <div class="left-part">
-        <el-button
-          v-if="!pickerMode"
-          :disabled="!project.isDeveloper"
-          text
-          type="primary"
-          @click="newCase"
-          icon="CirclePlusFilled"
-          class="text-icon-btn"
-          >{{ $t('test.case.list.filter.new') }}</el-button
-        >
+        <template v-if="!pickerMode">
+          <el-button
+            :disabled="!project.isDeveloper"
+            text
+            type="primary"
+            @click="newCase"
+            icon="CirclePlusFilled"
+            class="text-icon-btn"
+            >{{ $t('test.case.list.filter.new') }}</el-button
+          >
+          <el-button
+            :disabled="!project.isDeveloper || loading || !testCases?.length"
+            :loading="exporting"
+            text
+            type="primary"
+            @click="exportCases"
+            icon="Download"
+            class="text-icon-btn"
+            >{{ $t('test.case.list.filter.export') }}</el-button
+          >
+        </template>
         <template v-else>
           <el-button type="primary" :disabled="loading" @click="finishPicking">{{ $t('common.done') }}</el-button>
           <span v-if="pickedCases?.length" class="desc font-bold ml-4">{{
@@ -237,6 +248,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import TestRunStatusIcon from '@/components/testing/TestRunStatusIcon.vue'
 import TestRunEdit from './TestRunEdit.vue'
+import { saveAs } from 'file-saver'
 
 export default {
   name: 'TestCaseList',
@@ -273,6 +285,7 @@ export default {
       totalElements: 0,
       totalPages: 0,
       loading: false,
+      exporting: false,
       pickedCases: [],
       testTypeFilters: [],
       priorityFilters: [],
@@ -325,6 +338,20 @@ export default {
           setTimeout(() => {
             this.loading = false
           }, 200)
+        })
+    },
+    exportCases() {
+      this.filter.language = this.$store.get('locale') || utils.getLang()
+      this.exporting = true
+      testCaseApi
+        .export(this.filter)
+        .then((res) => {
+          const blobDate = new Blob([res.data])
+          const fileName = res.headers['content-disposition'].split('filename=')[1]
+          saveAs(blobDate, `${this.project.code}-${fileName}`)
+        })
+        .finally(() => {
+          this.exporting = false
         })
     },
     formatCase(testCase) {
