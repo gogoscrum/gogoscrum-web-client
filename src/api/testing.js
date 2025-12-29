@@ -3,6 +3,7 @@ export const testCaseApi = {
   get: (id) => get(`/api/testing/cases/${id}`),
   getDetails: (testCaseId, version) => get(`/api/testing/cases/${testCaseId}/details/${version}`),
   create: (testCase) => post('/api/testing/cases', testCase),
+  createAll: (testCases) => post('/api/testing/cases/batch', testCases),
   update: (id, testCase) => put(`/api/testing/cases/${id}`, testCase),
   delete: (id) => del(`/api/testing/cases/${id}`),
   search: (filter) => post('/api/testing/cases/search', filter),

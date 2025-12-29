@@ -924,6 +924,7 @@
       "list": {
         "filter": {
           "new": "新建用例",
+          "import": "导入",
           "export": "导出",
           "totalElements": "{count} 个测试用例",
           "search": "查找用例"
@@ -946,6 +947,31 @@
         "msg": {
           "caseCopied": "测试用例复制成功"
         }
+      },
+      "importDialog": {
+        "title": "导入测试用例",
+        "downloadTemplate": "下载Excel模版",
+        "fileLabel": "选择文件",
+        "chooseFile": "选择Excel文件",
+        "tip": "支持 .xls/.xlsx 文件，不超过1000行",
+        "progress": "进度",
+        "validationErrors": "校验结果",
+        "validationErrorsTitle": "校验错误（{count}条）",
+        "row": "行号",
+        "tooManyFiles": "一次只能选择 1 个文件",
+        "titleRequired": "标题为必填项",
+        "invalidType": "类型不合法：{value}",
+        "invalidPriority": "优先级不合法：{value}",
+        "componentNotFound": "功能模块不存在：{value}",
+        "ownerNotFound": "负责人不存在：{value}",
+        "missingProject": "缺少项目参数，请刷新后重试",
+        "parsing": "正在解析Excel...",
+        "noData": "未找到可导入的数据",
+        "importing": "正在导入...",
+        "done": "导入完成",
+        "success": "导入成功",
+        "failed": "导入失败",
+        "import": "开始导入"
       }
     },
     "plan": {

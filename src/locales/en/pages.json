@@ -924,6 +924,7 @@
       "list": {
         "filter": {
           "new": "New test case",
+          "import": "Import",
           "export": "Export",
           "totalElements": "{count} test cases",
           "search": "Search"
@@ -946,6 +947,31 @@
         "msg": {
           "caseCopied": "Test case copied successfully"
         }
+      },
+      "importDialog": {
+        "title": "Import test cases",
+        "downloadTemplate": "Download template",
+        "fileLabel": "File",
+        "chooseFile": "Choose file",
+        "tip": "Supports .xls/.xlsx, less than 1000 rows",
+        "progress": "Progress",
+        "validationErrors": "Validation",
+        "validationErrorsTitle": "Validation errors ({count})",
+        "row": "Row",
+        "tooManyFiles": "Only 1 file can be selected",
+        "titleRequired": "Title is required",
+        "invalidType": "Invalid Type: {value}",
+        "invalidPriority": "Invalid Priority: {value}",
+        "componentNotFound": "Component not found: {value}",
+        "ownerNotFound": "Owner not found: {value}",
+        "missingProject": "Missing project, please refresh and try again",
+        "parsing": "Parsing Excel...",
+        "noData": "No valid data found",
+        "importing": "Importing...",
+        "done": "Import completed",
+        "success": "Imported successfully",
+        "failed": "Import failed",
+        "import": "Import"
       }
     },
     "plan": {

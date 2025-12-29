@@ -22,6 +22,15 @@
             class="text-icon-btn"
             >{{ $t('test.case.list.filter.export') }}</el-button
           >
+          <el-button
+            :disabled="!project.isDeveloper || loading"
+            text
+            type="primary"
+            @click="showImportDialog"
+            icon="Upload"
+            class="text-icon-btn"
+            >{{ $t('test.case.list.filter.import') }}</el-button
+          >
         </template>
         <template v-else>
           <el-button type="primary" :disabled="loading" @click="finishPicking">{{ $t('common.done') }}</el-button>
@@ -71,7 +80,7 @@
           :label="$t('test.case.list.header.code')"
           prop="code"
           sortable="custom"
-          width="85"
+          width="90"
           align="center">
           <template #default="scope">
             <el-tag type="info">TC-{{ scope.row.code }}</el-tag>
@@ -236,6 +245,8 @@
     :test-case-id="editingCaseId"
     @testRunSaved="handleTestRunSaved"
     @testRunClosed="hideTestRun" />
+
+  <TestCaseImporter v-model="importDialogVisible" :project-id="projectId" @imported="loadCases" />
 </template>
 
 <script>
@@ -247,6 +258,7 @@ import dict from '@/locales/zh-cn/dict.json'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import TestRunStatusIcon from '@/components/testing/TestRunStatusIcon.vue'
+import TestCaseImporter from '@/components/testing/TestCaseImporter.vue'
 import TestRunEdit from './TestRunEdit.vue'
 import { saveAs } from 'file-saver'
 
@@ -256,6 +268,7 @@ export default {
     Avatar,
     PriorityIcon,
     TestRunStatusIcon,
+    TestCaseImporter,
     TestRunEdit
   },
   emits: ['caseSelected'],
@@ -291,7 +304,8 @@ export default {
       priorityFilters: [],
       userFilters: [],
       runStatusFilters: [],
-      editingCaseId: null
+      editingCaseId: null,
+      importDialogVisible: false
     }
   },
   created() {
@@ -436,6 +450,9 @@ export default {
     },
     newCase() {
       this.$router.push({ name: 'TestCaseEdit', params: { testCaseId: 'new' } })
+    },
+    showImportDialog() {
+      this.importDialogVisible = true
     },
     showCaseDetails(row) {
       this.$router.push({ name: 'TestCaseDetails', params: { testCaseId: row.id } })
