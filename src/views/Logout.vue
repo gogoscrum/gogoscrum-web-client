@@ -12,7 +12,7 @@ const router = useRouter()
 onMounted(() => {
   userApi.logout().then(() => {
     store.remove('user')
-    store.remove('remember_me')
+    store.remove('loginPageRememberMeFlag')
     router.push({ name: 'Homepage' })
     document.querySelector('html').classList.remove('dark')
 

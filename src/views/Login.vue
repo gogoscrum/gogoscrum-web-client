@@ -101,11 +101,6 @@ export default {
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
           this.submitting = true
-          if (this.loginForm.rememberMe == true) {
-            store.setx('remember_me', true, 60 * 60 * 24 * 10)
-          } else {
-            store.remove('remember_me')
-          }
           userApi
             .login(qs.stringify({ ...this.loginForm }), {
               headers: {

@@ -8,7 +8,8 @@ import { ElMessage } from 'element-plus'
 axios.interceptors.request.use(
   (config) => {
     const user = store.get('user') || {}
-    const rememberMe = store.get('remember_me') || false
+    const rememberMe = store.get('loginPageRememberMeFlag') || false
+    // if rememberMe is false, refresh the user session time on each request
     if (user.id && !rememberMe) {
       store.setx('user', store.get('user'), 60 * 30) // Session valid for 30 minutes, same as the backend
     }
