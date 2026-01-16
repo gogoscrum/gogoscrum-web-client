@@ -20,7 +20,7 @@
               <el-form-item :label="$t('userInfo.profile.avatar')">
                 <div class="avatar-row">
                   <div class="avatar-wrapper">
-                    <avatar v-if="oldNickname" :name="oldNickname" :src="userInfo.avatar?.url" :size="36"></avatar>
+                    <avatar v-if="oldNickname" :name="oldNickname" :src="userInfo.avatar?.url" :size="30"></avatar>
                     <el-icon
                       v-if="userInfo.avatar"
                       class="img-action-icon delete-img-icon"
@@ -79,6 +79,9 @@
               }}</el-button>
             </div>
           </el-tab-pane>
+          <el-tab-pane v-if="oauthProviders.length" :label="$t('userInfo.oauth.title')">
+            <OauthBindings v-if="userInfo.id" :user="userInfo" :providers="oauthProviders" />
+          </el-tab-pane>
         </el-tabs>
       </div>
     </el-dialog>
@@ -90,27 +93,17 @@ import { userApi } from '@/api/user.js'
 import uploader from '@/utils/uploader.js'
 import utils from '@/utils/util.js'
 import Avatar from '@/components/common/Avatar.vue'
+import OauthBindings from '@/components/user/OauthBindings.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
   components: {
-    Avatar
+    Avatar,
+    OauthBindings
   },
   name: 'UserEdit',
   emits: ['userInfoUpdated', 'userInfoClosed'],
   data() {
-    const checkOldPassword = (rule, value, callback) => {
-      userApi.checkPassword(value).then((res) => {
-        if (res.data) {
-          this.oldPwdVerified = true
-          callback()
-        } else {
-          this.oldPwdVerified = false
-          callback(new Error(this.$t('userInfo.msg.wrongOldPwd')))
-        }
-      })
-    }
-
     const checkRepeatNewPassword = (rule, value, callback) => {
       if (value === this.formData.newPassword) {
         callback()
@@ -121,8 +114,10 @@ export default {
 
     return {
       isInMobile: utils.isInMobile(),
+      lang: localStorage['locale'] || utils.getLang(),
       userId: null,
       userInfo: {},
+      oauthProviders: [],
       oldNickname: '',
       uploadParams: {},
       avatarUploading: false,
@@ -145,8 +140,7 @@ export default {
             required: true,
             message: this.$t('userInfo.msg.missingOldPwd'),
             trigger: 'blur'
-          },
-          { validator: checkOldPassword, trigger: 'blur' }
+          }
         ],
         newPassword: [
           {
@@ -185,8 +179,22 @@ export default {
       this.userInfo = res.data
       this.oldNickname = this.userInfo.nickname
     })
+
+    this.loadOauthProviders()
   },
   methods: {
+    loadOauthProviders() {
+      userApi.getOauthProviders().then((res) => {
+        const allProviders = res.data
+
+        // filter out providers which do not support current language
+        if (allProviders?.length) {
+          this.oauthProviders = allProviders.filter(
+            (provider) => !provider.languages?.length || provider.languages.includes(this.lang)
+          )
+        }
+      })
+    },
     initUploadParams(file) {
       const tooLarge = file.size / 1024 / 1024 > 1
       if (tooLarge) {
@@ -312,7 +320,7 @@ export default {
   .button-row {
     display: flex;
     justify-content: flex-end;
-    margin: 10px 0;
+    margin-top: 32px;
   }
 
   .avatar-row {
@@ -320,5 +328,9 @@ export default {
     display: flex;
     justify-content: space-between;
   }
+}
+
+.user-info-container {
+  min-height: 220px;
 }
 </style>

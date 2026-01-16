@@ -834,7 +834,7 @@
     "bindConfirmMsg": "If you alreay have an existing account, you can bind to it now.",
     "goToBind": "Go to bind",
     "bind": "Bind",
-    "bindSuccess": "Account binded successfully",
+    "bindSuccess": "Account bound successfully",
     "createSuccess": "Account created and signed in successfully"
   },
   "userInfo": {
@@ -853,8 +853,15 @@
       "newPwd": "New password",
       "repeat": "Repeat"
     },
+    "oauth": {
+      "title": "Third-party login",
+      "notBound": "Not bound",
+      "unbind": "Unbind",
+      "unbindConfirmTitle": "Unbind third-party login",
+      "unbindConfirmMsg": "You are about to unbind the third-party login <strong class=\"red\">{provider}</strong>. After unbinding, you will not be able to log in through this third-party account. Do you want to continue?",
+      "unbindSuccess": "Third-party login unbound successfully"
+    },
     "msg": {
-      "wrongOldPwd": "Old password is wrong",
       "pwdNotSame": "The repeated password is not the same",
       "missingUsername": "Please input username",
       "invalidUsername": "4-16 letters or numbers",

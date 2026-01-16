@@ -20,6 +20,7 @@
     "noPermissionToOperate": "No permission to operate",
     "backlogCannotBeDeleted": "Backlog cannot be deleted",
     "invalidInvitation": "Invalid or expired invitation",
-    "alreadyInProject": "You are already in the project"
+    "alreadyInProject": "You are already in the project",
+    "cannotUnbindLastBinding": "Please set a login password before unbinding the last third-party login"
   }
 }

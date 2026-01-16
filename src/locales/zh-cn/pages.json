@@ -853,8 +853,15 @@
       "newPwd": "新密码",
       "repeat": "确认密码"
     },
+    "oauth": {
+      "title": "第三方登录",
+      "notBound": "未绑定",
+      "unbind": "解绑",
+      "unbindConfirmTitle": "解绑第三方登录",
+      "unbindConfirmMsg": "您即将解绑 <strong class=\"red\">{provider}</strong> 第三方登录，解绑后将无法通过该第三方账号进行登录，是否继续？",
+      "unbindSuccess": "第三方登录解绑成功"
+    },
     "msg": {
-      "wrongOldPwd": "旧密码错误",
       "pwdNotSame": "两次输入的新密码不一致",
       "missingUsername": "请输入用户名",
       "invalidUsername": "用户名长度4-16个字符，大小写字母或下划线",

@@ -20,6 +20,7 @@
     "noPermissionToOperate": "无操作权限",
     "backlogCannotBeDeleted": "Backlog不可以删除",
     "invalidInvitation": "无效的邀请，或邀请已过期",
-    "alreadyInProject": "您已经是项目成员了，无需重复加入"
+    "alreadyInProject": "您已经是项目成员了，无需重复加入",
+    "cannotUnbindLastBinding": "请先设置登录密码，才能解绑最后一个第三方登录"
   }
 }
