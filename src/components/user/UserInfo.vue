@@ -54,13 +54,9 @@
           </el-tab-pane>
           <el-tab-pane :label="$t('userInfo.password.title')">
             <el-form ref="passwordForm" :model="formData" label-width="120px" :rules="rules">
-              <el-form-item :label="$t('userInfo.password.oldPwd')" prop="oldPassword">
+              <el-form-item v-if="userInfo.hasPassword" :label="$t('userInfo.password.oldPwd')" prop="oldPassword">
                 <div class="flex items-center w-full">
-                  <el-input v-model="formData.oldPassword" type="password" size="default">
-                    <template v-if="oldPwdVerified" #suffix>
-                      <el-icon class="ml-2 text-xl text-green-600"><SuccessFilled /></el-icon>
-                    </template>
-                  </el-input>
+                  <el-input v-model="formData.oldPassword" type="password" size="default"> </el-input>
                 </div>
               </el-form-item>
               <el-form-item :label="$t('userInfo.password.newPwd')" prop="newPassword">
@@ -168,7 +164,6 @@ export default {
         newPassword: '',
         repeatNewPassword: ''
       },
-      oldPwdVerified: false,
       dialogVisible: true
     }
   },
