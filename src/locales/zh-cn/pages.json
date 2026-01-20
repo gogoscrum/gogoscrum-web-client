@@ -524,23 +524,8 @@
     }
   },
   "backlog": {
-    "header": {
-      "new": "新建任务",
-      "count": "{count} 个任务",
-      "search": "查找任务"
-    },
-    "list": {
-      "name": "名称",
-      "noSprint": "项目中无迭代",
-      "emptyMsg": "待办列表中还没有任何任务"
-    },
-    "msg": {
-      "issueCopied": "任务 \"{issueName}\" 复制成功",
-      "issueMoved": "任务已移入 \"{sprintName}\"",
-      "delConfirmTitle": "删除任务",
-      "delConfirmMsg": "您即将删除任务 <strong class=\"red\">\"{issueName}\"</strong>，任务删除后无法恢复，是否继续？",
-      "delSuccess": "任务删除成功"
-    }
+    "noSprint": "项目中无迭代",
+    "issueMoved": "任务已移入 \"{sprintName}\""
   },
   "burndown": {
     "title": "迭代燃尽图",
@@ -584,6 +569,7 @@
     "list": {
       "code": "编号",
       "name": "名称",
+      "storyPoints": "故事点",
       "priority": "优先级",
       "owner": "执行者",
       "status": "状态",

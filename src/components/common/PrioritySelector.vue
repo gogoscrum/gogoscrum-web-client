@@ -88,7 +88,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .priority-selector-wrapper {
   width: 100%;
   .el-select__prefix {

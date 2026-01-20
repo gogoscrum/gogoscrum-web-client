@@ -52,7 +52,8 @@
           :test-case="testCase"
           :issue-filter="issueFilter"
           :show-export-btn="false"
-          :empty-text="$t('test.case.details.noBugs')" />
+          :empty-text="$t('test.case.details.noBugs')"
+          @page-size-changed="issueListPageSizeChanged" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -83,7 +84,8 @@ export default {
       activeTab: 'runs',
       issueFilter: {
         testCaseId: this.$route.params.testCaseId,
-        types: ['BUG']
+        types: ['BUG'],
+        pageSize: this.$store.get('testCaseDetailsPageIssueListSize') || 10
       }
     }
   },
@@ -147,6 +149,10 @@ export default {
         .catch(() => {
           // Cancelled, do nothing
         })
+    },
+    issueListPageSizeChanged(size) {
+      // Update the local store for issue list size. Don't need to handle the pagination as the IssueList component will handle it.
+      this.$store.set('testCaseDetailsPageIssueListSize', size)
     }
   }
 }

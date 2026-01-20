@@ -46,11 +46,10 @@
             clearable
             prefix-icon="Search"
             :placeholder="$t('issueList.header.search')"
-            @input="filterChanged"></el-input>
+            @input="keywordChanged"></el-input>
         </el-form-item>
       </div>
     </div>
-    <!-- </div> -->
     <div class="main">
       <el-table
         :data="issues"
@@ -60,8 +59,20 @@
         :show-header="true"
         :empty-text="emptyText || $t('issueList.list.emptyMsg')"
         @sort-change="sortChange"
+        @filter-change="filterChange"
         @row-click="editIssue">
-        <el-table-column :label="$t('issueList.list.code')" prop="code" sortable="custom" width="130">
+        <el-table-column
+          v-if="columns.includes('code')"
+          :label="$t('issueList.list.code')"
+          prop="code"
+          sortable="custom"
+          column-key="types"
+          :filters="filterColumns.includes('type') ? issueTypeFilters : null"
+          :filter-multiple="true"
+          width="130">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.types?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <div class="flex">
               <issue-type-icon :type="scope.row.type" />
@@ -72,6 +83,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-if="columns.includes('name')"
           :label="$t('issueList.list.name')"
           prop="name"
           show-overflow-tooltip
@@ -81,12 +93,46 @@
             <span v-html="scope.row.nameHighlightLabel || scope.row.name"></span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('issueList.list.priority')" prop="priority" sortable="custom" min-width="30">
+        <el-table-column
+          v-if="columns.includes('storyPoints')"
+          :label="$t('issueList.list.storyPoints')"
+          prop="storyPoints"
+          sortable="custom"
+          min-width="30">
+          <template #default="scope">
+            <story-point v-if="scope.row.storyPoints != null" :value="scope.row.storyPoints" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('priority')"
+          :label="$t('issueList.list.priority')"
+          prop="priority"
+          sortable="custom"
+          column-key="priorities"
+          :filters="filterColumns.includes('priority') ? priorityFilters : null"
+          :filter-multiple="true"
+          min-width="35">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.priorities?.length }"
+              ><Filter
+            /></el-icon>
+          </template>
           <template #default="scope">
             <priority-icon :priority="scope.row.priority" showLabel />
           </template>
         </el-table-column>
-        <el-table-column :label="$t('issueList.list.owner')" prop="owner.nickname" sortable="custom" min-width="30">
+        <el-table-column
+          v-if="columns.includes('owner')"
+          :label="$t('issueList.list.owner')"
+          prop="owner.nickname"
+          sortable="custom"
+          column-key="ownerIds"
+          :filters="filterColumns.includes('owner') ? ownerFilters : null"
+          :filter-multiple="true"
+          min-width="30">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.ownerIds?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <avatar
               v-if="scope.row.owner"
@@ -96,7 +142,18 @@
               showName></avatar>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('issueList.list.status')" prop="issueGroup.seq" sortable="custom" min-width="30">
+        <el-table-column
+          v-if="columns.includes('status')"
+          :label="$t('issueList.list.status')"
+          prop="issueGroup.seq"
+          sortable="custom"
+          column-key="groupIds"
+          :filters="filterColumns.includes('status') ? groupFilters : null"
+          :filter-multiple="true"
+          min-width="30">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.groupIds?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <status-tag
               v-if="scope.row.issueGroup"
@@ -105,7 +162,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="project.isDeveloper && !readonly"
+          v-if="columns.includes('actions') && project.isDeveloper && !readonly"
           :label="$t('common.actions')"
           :width="80"
           class-name="actions-column">
@@ -163,6 +220,31 @@
                       </template>
                     </el-dropdown>
                   </el-dropdown-item>
+                  <el-dropdown-item>
+                    <el-dropdown placement="bottom">
+                      <div class="submenu-row">
+                        <div class="flex">
+                          <el-icon><Right /></el-icon>
+                          {{ $t('common.move') }}
+                        </div>
+                        <el-icon class="suffix-icon"><CaretRight /></el-icon>
+                      </div>
+                      <template #dropdown>
+                        <el-dropdown-menu class="move-to-sprint-list">
+                          <template v-if="project.sprints?.length">
+                            <el-dropdown-item
+                              v-for="sprint in project.sprints"
+                              :key="sprint.id"
+                              :disabled="scope.row.sprint && scope.row.sprint.id === sprint.id"
+                              @click.native="moveIssueIntoSprint(scope.row, sprint)"
+                              >{{ sprint.name }}</el-dropdown-item
+                            >
+                          </template>
+                          <el-dropdown-item v-else disabled>{{ $t('backlog.noSprint') }}</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </template>
+                    </el-dropdown>
+                  </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -197,7 +279,7 @@
         :projectId="projectId"
         @issueFormClosed="issueDialogClosed"
         @onIssueUpdated="issueSaved"
-        @onIssueDeleted="issueDeleted" />
+        @onIssueDeleted="removeIssueFromList" />
     </div>
   </div>
 </template>
@@ -205,6 +287,7 @@
 <script>
 import { issueApi } from '@/api/issue.js'
 import utils from '@/utils/util.js'
+import dict from '@/locales/zh-cn/dict.json'
 import highlight from '@/utils/highlight.js'
 import IssueEdit from '@/components/issue/IssueEdit.vue'
 import Avatar from '@/components/common/Avatar.vue'
@@ -213,6 +296,7 @@ import { saveAs } from 'file-saver'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import IssueTypeIcon from '@/components/common/IssueTypeIcon.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
+import StoryPoint from '@/components/common/StoryPoint.vue'
 
 export default {
   name: 'IssueList',
@@ -221,7 +305,8 @@ export default {
     IssueEdit,
     IssueTypeIcon,
     PriorityIcon,
-    StatusTag
+    StatusTag,
+    StoryPoint
   },
   props: {
     projectId: {
@@ -261,6 +346,14 @@ export default {
       type: Boolean,
       default: false
     },
+    columns: {
+      type: Array,
+      default: () => ['code', 'name', 'priority', 'owner', 'status', 'actions']
+    },
+    filterColumns: {
+      type: Array,
+      default: () => ['priority', 'owner', 'status']
+    },
     issueFilter: {
       type: Object,
       default: () => ({})
@@ -274,6 +367,7 @@ export default {
       default: false
     }
   },
+  emits: ['pageSizeChanged'],
   data() {
     return {
       isInMobile: utils.isInMobile(),
@@ -287,7 +381,11 @@ export default {
       totalPages: 0,
       loading: true,
       exporting: false,
-      editingIssue: null
+      editingIssue: null,
+      issueTypeFilters: [],
+      priorityFilters: [],
+      ownerFilters: [],
+      groupFilters: []
     }
   },
   computed: {
@@ -303,28 +401,52 @@ export default {
     if (this.issueFilter) {
       this.filter = JSON.parse(JSON.stringify(this.issueFilter))
       this.filter.projectId = this.projectId
-      this.filter.pageSize = this.$store.get('issueListPageSize') || 10
+      if (!this.filter.pageSize) {
+        this.filter.pageSize = 10
+      }
     } else {
       this.filter = this.newFilter()
     }
 
     this.loadIssues()
+    this.initColumnFilters()
   },
   mounted() {},
   methods: {
+    initColumnFilters() {
+      this.priorityFilters = Object.keys(dict.issuePriorities).map((key) => ({
+        text: this.$t(`issuePriorities.${key}`),
+        value: key
+      }))
+
+      this.issueTypeFilters = Object.keys(dict.issueTypes).map((key) => ({
+        text: this.$t(`issueTypes.${key}`),
+        value: key
+      }))
+
+      this.ownerFilters = this.project.projectMembers.map((member) => ({
+        text: member.user.nickname,
+        value: member.user.id
+      }))
+
+      this.groupFilters = this.project.issueGroups.map((group) => ({
+        text: group.label,
+        value: group.id
+      }))
+    },
     newFilter() {
       return {
         projectId: this.projectId,
         sprintIds: [],
-        groupIds: [],
         keyword: null,
         types: [],
         priorities: [],
         componentIds: [],
         ownerIds: [],
+        groupIds: [],
         tagIds: [],
         page: 1,
-        pageSize: this.$store.get('issueListPageSize') || 10
+        pageSize: 10
       }
     },
     loadIssues() {
@@ -358,6 +480,50 @@ export default {
       }
       this.filterChanged()
     },
+    filterChange(filters) {
+      if (filters.types) {
+        if (filters.types.length > 0) {
+          this.filter.types = filters.types
+        } else {
+          this.filter.types = null
+        }
+      }
+
+      if (filters.priorities) {
+        if (filters.priorities.length > 0) {
+          this.filter.priorities = filters.priorities
+        } else {
+          this.filter.priorities = null
+        }
+      }
+
+      if (filters.ownerIds) {
+        if (filters.ownerIds.length > 0) {
+          this.filter.ownerIds = filters.ownerIds
+        } else {
+          this.filter.ownerIds = null
+        }
+      }
+
+      if (filters.groupIds) {
+        if (filters.groupIds.length > 0) {
+          this.filter.groupIds = filters.groupIds
+        } else {
+          this.filter.groupIds = null
+        }
+      }
+
+      this.filterChanged()
+    },
+    keywordChanged() {
+      // throttle keyword input changes
+      if (this.inputTimeout) {
+        clearTimeout(this.inputTimeout)
+      }
+      this.inputTimeout = setTimeout(() => {
+        this.filterChanged()
+      }, 500)
+    },
     filterChanged() {
       this.filter.page = 1
       this.loadIssues()
@@ -368,8 +534,10 @@ export default {
     },
     pageSizeChanged(size) {
       this.filter.pageSize = size
-      this.$store.set('issueListPageSize', this.filter.pageSize)
       this.filterChanged()
+
+      // Emit event to parent component
+      this.$emit('pageSizeChanged', size)
     },
     newIssue() {
       this.editingIssue = {
@@ -424,6 +592,20 @@ export default {
         this.issueSaved(res.data)
       })
     },
+    moveIssueIntoSprint(issue, sprint) {
+      issue.sprint = sprint
+
+      let issueIds = [issue.id]
+      issueApi.batchMove(sprint.id, issueIds).then((res) => {
+        this.removeIssueFromList(issue)
+
+        ElMessage.success({
+          message: this.$t('backlog.issueMoved', {
+            sprintName: sprint.name
+          })
+        })
+      })
+    },
     issueSaved(issue) {
       let index = utils.indexInArray(this.issues, issue.id)
 
@@ -434,7 +616,7 @@ export default {
         this.totalElements++
       }
     },
-    issueDeleted(issue) {
+    removeIssueFromList(issue) {
       let index = utils.indexInArray(this.issues, issue.id)
 
       if (index >= 0) {
@@ -475,7 +657,7 @@ export default {
     .issue-row {
       .code {
         // min-width: 100px;
-        margin-left: 10px;
+        margin-left: 6px;
         font-weight: bold;
         color: var(--el-color-primary);
         white-space: nowrap;

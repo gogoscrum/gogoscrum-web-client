@@ -78,7 +78,8 @@
           :test-plan="testPlan"
           :issue-filter="issueFilter"
           :show-export-btn="false"
-          :empty-text="$t('test.plan.details.noBugs')" />
+          :empty-text="$t('test.plan.details.noBugs')"
+          @page-size-changed="issueListPageSizeChanged" />
       </el-tab-pane>
       <el-tab-pane lazy :label="$t('test.plan.details.tabReports')" name="reports">
         <TestReportList :showEmptyIcon="false" />
@@ -123,7 +124,8 @@ export default {
       activeTab: 'cases',
       issueFilter: {
         testPlanId: this.$route.params.testPlanId,
-        types: ['BUG']
+        types: ['BUG'],
+        pageSize: this.$store.get('testPlanDetailsPageIssueListSize') || 10
       },
       planEditVisible: false
     }
@@ -190,6 +192,10 @@ export default {
     },
     returnToList() {
       this.$router.push({ name: 'TestPlanList', params: { projectId: this.projectId } })
+    },
+    issueListPageSizeChanged(size) {
+      // Update the local store for issue list size. Don't need to handle the pagination as the IssueList component will handle it.
+      this.$store.set('testPlanDetailsPageIssueListSize', size)
     }
   }
 }

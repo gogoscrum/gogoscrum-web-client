@@ -382,7 +382,8 @@
           :issue-filter="issueFilter"
           hideFilter
           readonly
-          :empty-text="$t('test.report.details.noBugs')" />
+          :empty-text="$t('test.report.details.noBugs')"
+          @page-size-changed="issueListPageSizeChanged" />
       </el-tab-pane>
     </el-tabs>
 
@@ -453,7 +454,8 @@ export default {
       activeTab: 'cases',
       issueFilter: {
         testPlanId: null,
-        types: ['BUG']
+        types: ['BUG'],
+        pageSize: this.$store.get('testReportDetailsPageIssueListSize') || 10
       },
       components: {},
       saving: false,
@@ -911,6 +913,10 @@ export default {
     },
     returnToList() {
       this.$router.push({ name: 'TestReportList', params: { projectId: this.projectId } })
+    },
+    issueListPageSizeChanged(size) {
+      // Update the local store for issue list size. Don't need to handle the pagination as the IssueList component will handle it.
+      this.$store.set('testReportDetailsPageIssueListSize', size)
     }
   }
 }

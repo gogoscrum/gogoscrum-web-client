@@ -524,23 +524,8 @@
     }
   },
   "backlog": {
-    "header": {
-      "new": "New issue",
-      "count": "{count} issues",
-      "search": "Search"
-    },
-    "list": {
-      "name": "Name",
-      "noSprint": "No sprint in project",
-      "emptyMsg": "No issue in backlog"
-    },
-    "msg": {
-      "issueCopied": "Issue \"{issueName}\" copied",
-      "issueMoved": "Issue moved into \"{sprintName}\"",
-      "delConfirmTitle": "Delete issue",
-      "delConfirmMsg": "You are about to delete issue <strong class=\"red\">\"{issueName}\"</strong>, which cannot be recovered. Are you sure to proceed?",
-      "delSuccess": "Issue deleted"
-    }
+    "noSprint": "No sprint in project",
+    "issueMoved": "Issue moved into \"{sprintName}\""
   },
   "burndown": {
     "title": "Sprint burndown chart",
@@ -584,6 +569,7 @@
     "list": {
       "code": "Code",
       "name": "Name",
+      "storyPoints": "Points",
       "priority": "Priority",
       "owner": "Owner",
       "status": "Status",
