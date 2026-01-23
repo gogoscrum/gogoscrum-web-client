@@ -142,9 +142,8 @@
         <el-table-column
           v-if="columns.includes('sprint')"
           :label="$t('issueList.list.sprint')"
-          prop="sprint.name"
           sortable="custom"
-          sort-by="sprint.startDate"
+          sort-by="sprint.id"
           column-key="sprintIds"
           :filters="filterColumns.includes('sprint') ? sprintFilters : null"
           :filter-multiple="true"
@@ -154,7 +153,7 @@
             <el-icon class="table-header-filter-icon" :class="{ active: filter.sprintIds?.length }"><Filter /></el-icon>
           </template>
           <template #default="scope">
-            <span v-if="scope.row.sprint">{{ scope.row.sprint.name }}</span>
+            <span v-if="scope.row.sprint && !scope.row.sprint.backlog">{{ scope.row.sprint.name }}</span>
           </template>
         </el-table-column>
         <el-table-column
