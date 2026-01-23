@@ -13,21 +13,23 @@
       value-key="id"
       popper-class="tag-selector">
       <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag">
-        <el-tag size="small" effect="dark" :hit="false" class="no-border tag-option" :color="tag.color || '#999999'">
-          {{ tag.name }}
-        </el-tag>
+        <issue-tag :tag="tag" class="tag-option" />
       </el-option>
       <template #label="{ label, value }">
-        <el-tag size="small" effect="dark" :hit="false" class="no-border" :color="value.color || '#999999'">
-          {{ label }}
-        </el-tag>
+        <issue-tag :tag="value" class="tag-option" />
       </template>
     </el-select>
   </div>
 </template>
 
 <script>
+import IssueTag from '@/components/common/IssueTag.vue'
+
 export default {
+  name: 'TagSelector',
+  components: {
+    IssueTag
+  },
   props: {
     modelValue: {
       type: [Object, Array],
@@ -68,7 +70,6 @@ export default {
       defaut: ''
     }
   },
-  components: {},
   emits: ['update:modelValue', 'change'],
   computed: {
     value: {

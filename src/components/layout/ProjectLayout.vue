@@ -360,15 +360,19 @@ export default {
           dangerouslyUseHTMLString: true,
           draggable: true
         }
-      ).then(() => {
-        issueFilterApi.delete(filter.id).then((res) => {
-          this.issueFilters.splice(index, 1)
-          ElMessage.success({
-            message: this.$t('issueFilter.msg.filterDeleted')
+      )
+        .then(() => {
+          issueFilterApi.delete(filter.id).then((res) => {
+            this.issueFilters.splice(index, 1)
+            ElMessage.success({
+              message: this.$t('issueFilter.msg.filterDeleted')
+            })
+            this.$router.push({ name: 'IssueList', params: { projectId: this.projectId } })
           })
-          this.$router.push({ name: 'IssueList', params: { projectId: this.projectId } })
         })
-      })
+        .catch((err) => {
+          // Cancelled, do nothing
+        })
     }
   }
 }

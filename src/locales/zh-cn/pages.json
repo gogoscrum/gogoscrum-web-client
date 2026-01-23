@@ -196,7 +196,7 @@
       "filterPopover": {
         "mineOnly": "只显示我的任务",
         "dueTimePast": "已截止的任务",
-        "clear": "清空过滤条件"
+        "clear": "清空筛选条件"
       }
     },
     "body": {
@@ -552,25 +552,15 @@
       "newIssue": "新建任务",
       "newBug": "新建缺陷",
       "export": "导出",
-      "expandFilter": "展开过滤",
-      "collapseFilter": "收起过滤",
-      "count": "{count} 个任务",
-      "issueType": "类型",
-      "priority": "优先级",
-      "sprint": "迭代",
-      "status": "状态",
-      "component": "功能模块",
-      "owner": "执行者",
-      "tag": "标签",
-      "search": "查找任务",
-      "clearFilter": "清空过滤",
-      "saveFilter": "保存"
+      "search": "查找任务"
     },
     "list": {
       "code": "编号",
       "name": "名称",
+      "component": "功能模块",
       "storyPoints": "故事点",
       "priority": "优先级",
+      "sprint": "迭代",
       "owner": "执行者",
       "status": "状态",
       "assignee": "执行者",
@@ -588,26 +578,29 @@
     }
   },
   "issueFilter": {
+    "title": "任务筛选器",
     "allIssues": "全部任务",
+    "keyword": "关键字",
     "actions": {
+      "clear": "清空筛选",
       "rename": "重命名",
       "copy": "复制",
       "delete": "删除",
       "saveAs": "另存为..."
     },
     "edit": {
-      "titleNew": "创建过滤",
-      "titleEdit": "修改过滤",
+      "titleNew": "创建筛选器",
+      "titleEdit": "修改筛选器",
       "name": "名称"
     },
     "msg": {
-      "nameMissing": "请输入过滤器名称",
-      "filterSaved": "过滤条件保存成功",
-      "filterUpdated": "过滤条件更新成功",
-      "filterCopied": "过滤条件复制成功",
-      "filterDeleted": "过滤条件已删除",
-      "delConfirmTitle": "删除过滤条件",
-      "delConfirmMsg": "您即将删除过滤条件 <strong class=\"red\">\"{name}\"</strong>，删除后无法恢复，是否继续？"
+      "nameMissing": "请输入筛选器名称",
+      "filterSaved": "筛选器保存成功",
+      "filterUpdated": "筛选器更新成功",
+      "filterCopied": "筛选器复制成功",
+      "filterDeleted": "筛选器已删除",
+      "delConfirmTitle": "删除筛选器",
+      "delConfirmMsg": "您即将删除筛选器 <strong class=\"red\">\"{name}\"</strong>，删除后无法恢复，是否继续？"
     }
   },
   "fileList": {

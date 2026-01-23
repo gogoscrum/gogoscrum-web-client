@@ -14,7 +14,7 @@
           >{{ inTesting ? $t('issueList.header.newBug') : $t('issueList.header.newIssue') }}</el-button
         >
         <el-button
-          v-if="showExportBtn && project.isDeveloper && issues?.length"
+          v-if="issues?.length && showExportBtn && project.isDeveloper && issues?.length"
           :disabled="loading"
           :loading="exporting"
           text
@@ -24,6 +24,7 @@
           icon="Download"
           >{{ $t('issueList.header.export') }}</el-button
         >
+        <slot name="extraActionBtns"></slot>
       </div>
       <div class="right-part">
         <div class="summary-info">
@@ -33,11 +34,7 @@
           <el-icon v-else @click="loadIssues" class="refresh-btn">
             <Refresh />
           </el-icon>
-          <span class="item-count">{{
-            filter.keyword
-              ? $t('common.filter.matchedResults', { count: totalElements })
-              : $t('issueList.header.count', { count: totalElements })
-          }}</span>
+          <span class="item-count">{{ $t('common.filter.matchedResults', { count: totalElements }) }}</span>
         </div>
         <el-form-item class="mb-0!">
           <el-input
@@ -66,6 +63,7 @@
           :label="$t('issueList.list.code')"
           prop="code"
           sortable="custom"
+          sort-by="code"
           column-key="types"
           :filters="filterColumns.includes('type') ? issueTypeFilters : null"
           :filter-multiple="true"
@@ -88,19 +86,27 @@
           prop="name"
           show-overflow-tooltip
           sortable="custom"
-          min-width="120">
+          sort-by="name"
+          min-width="300">
           <template #default="scope">
             <span v-html="scope.row.nameHighlightLabel || scope.row.name"></span>
+            <span v-if="showTags && scope.row.tags?.length" class="issue-tags">
+              <issue-tag v-for="tag in scope.row.tags" :key="tag.id" :tag="tag" />
+            </span>
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('storyPoints')"
-          :label="$t('issueList.list.storyPoints')"
-          prop="storyPoints"
+          v-if="columns.includes('component')"
+          :label="$t('issueList.list.component')"
+          prop="componentName"
           sortable="custom"
-          min-width="30">
+          sort-by="component.name"
+          show-overflow-tooltip
+          min-width="130">
           <template #default="scope">
-            <story-point v-if="scope.row.storyPoints != null" :value="scope.row.storyPoints" />
+            <el-tag v-if="scope.row.componentName" effect="plain" round>
+              <div class="component-tag">{{ scope.row.componentName }}</div></el-tag
+            >
           </template>
         </el-table-column>
         <el-table-column
@@ -108,10 +114,11 @@
           :label="$t('issueList.list.priority')"
           prop="priority"
           sortable="custom"
+          sort-by="priority"
           column-key="priorities"
           :filters="filterColumns.includes('priority') ? priorityFilters : null"
           :filter-multiple="true"
-          min-width="35">
+          min-width="120">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.priorities?.length }"
               ><Filter
@@ -122,14 +129,64 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-if="columns.includes('storyPoints')"
+          :label="$t('issueList.list.storyPoints')"
+          prop="storyPoints"
+          sortable="custom"
+          sort-by="storyPoints"
+          min-width="100">
+          <template #default="scope">
+            <story-point v-if="scope.row.storyPoints != null" :value="scope.row.storyPoints" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('sprint')"
+          :label="$t('issueList.list.sprint')"
+          prop="sprint.name"
+          sortable="custom"
+          sort-by="sprint.startDate"
+          column-key="sprintIds"
+          :filters="filterColumns.includes('sprint') ? sprintFilters : null"
+          :filter-multiple="true"
+          show-overflow-tooltip
+          min-width="120">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.sprintIds?.length }"><Filter /></el-icon>
+          </template>
+          <template #default="scope">
+            <span v-if="scope.row.sprint">{{ scope.row.sprint.name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('status')"
+          :label="$t('issueList.list.status')"
+          prop="issueGroup.name"
+          sortable="custom"
+          sort-by="issueGroup.seq"
+          column-key="groupIds"
+          :filters="filterColumns.includes('status') ? groupFilters : null"
+          :filter-multiple="true"
+          min-width="110">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.groupIds?.length }"><Filter /></el-icon>
+          </template>
+          <template #default="scope">
+            <status-tag
+              v-if="scope.row.issueGroup"
+              :status="scope.row.issueGroup.status"
+              :label="scope.row.issueGroup.label" />
+          </template>
+        </el-table-column>
+        <el-table-column
           v-if="columns.includes('owner')"
-          :label="$t('issueList.list.owner')"
+          :label="$t('issueList.list.assignee')"
           prop="owner.nickname"
           sortable="custom"
+          sort-by="owner.nickname"
           column-key="ownerIds"
           :filters="filterColumns.includes('owner') ? ownerFilters : null"
           :filter-multiple="true"
-          min-width="30">
+          min-width="120">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.ownerIds?.length }"><Filter /></el-icon>
           </template>
@@ -143,26 +200,8 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('status')"
-          :label="$t('issueList.list.status')"
-          prop="issueGroup.seq"
-          sortable="custom"
-          column-key="groupIds"
-          :filters="filterColumns.includes('status') ? groupFilters : null"
-          :filter-multiple="true"
-          min-width="30">
-          <template #filter-icon>
-            <el-icon class="table-header-filter-icon" :class="{ active: filter.groupIds?.length }"><Filter /></el-icon>
-          </template>
-          <template #default="scope">
-            <status-tag
-              v-if="scope.row.issueGroup"
-              :status="scope.row.issueGroup.status"
-              :label="scope.row.issueGroup.label" />
-          </template>
-        </el-table-column>
-        <el-table-column
           v-if="columns.includes('actions') && project.isDeveloper && !readonly"
+          fixed="right"
           :label="$t('common.actions')"
           :width="80"
           class-name="actions-column">
@@ -296,6 +335,7 @@ import { saveAs } from 'file-saver'
 import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import IssueTypeIcon from '@/components/common/IssueTypeIcon.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
+import IssueTag from '@/components/common/IssueTag.vue'
 import StoryPoint from '@/components/common/StoryPoint.vue'
 
 export default {
@@ -306,6 +346,7 @@ export default {
     IssueTypeIcon,
     PriorityIcon,
     StatusTag,
+    IssueTag,
     StoryPoint
   },
   props: {
@@ -348,11 +389,15 @@ export default {
     },
     columns: {
       type: Array,
-      default: () => ['code', 'name', 'priority', 'owner', 'status', 'actions']
+      default: () => ['code', 'name', 'component', 'storyPoints', 'priority', 'sprint', 'owner', 'status', 'actions']
+    },
+    showTags: {
+      type: Boolean,
+      default: true
     },
     filterColumns: {
       type: Array,
-      default: () => ['priority', 'owner', 'status']
+      default: () => ['type', 'priority', 'owner', 'status', 'sprint']
     },
     issueFilter: {
       type: Object,
@@ -367,7 +412,7 @@ export default {
       default: false
     }
   },
-  emits: ['pageSizeChanged'],
+  emits: ['pageSizeChanged', 'issueFilterChanged'],
   data() {
     return {
       isInMobile: utils.isInMobile(),
@@ -385,7 +430,8 @@ export default {
       issueTypeFilters: [],
       priorityFilters: [],
       ownerFilters: [],
-      groupFilters: []
+      groupFilters: [],
+      sprintFilters: []
     }
   },
   computed: {
@@ -393,7 +439,19 @@ export default {
       return this.testPlan?.id || this.testCase?.id
     }
   },
-  watch: {},
+  watch: {
+    issueFilter: {
+      handler: function (newValue, oldValue) {
+        this.filter = JSON.parse(JSON.stringify(newValue))
+        this.filter.projectId = this.projectId
+        if (!this.filter.pageSize) {
+          this.filter.pageSize = 10
+        }
+        this.loadIssues()
+      },
+      deep: true
+    }
+  },
   created() {
     this.filter.projectId = this.projectId
     this.project = this.$store.get('project')
@@ -433,6 +491,11 @@ export default {
         text: group.label,
         value: group.id
       }))
+
+      this.sprintFilters = this.project.sprints.map((sprint) => ({
+        text: sprint.name,
+        value: sprint.id
+      }))
     },
     newFilter() {
       return {
@@ -443,7 +506,7 @@ export default {
         priorities: [],
         componentIds: [],
         ownerIds: [],
-        groupIds: [],
+        sprintIds: [],
         tagIds: [],
         page: 1,
         pageSize: 10
@@ -470,11 +533,15 @@ export default {
         })
     },
     sortChange(event) {
+      console.log('sort changed:', event)
+
       // Only support single column sorting
       this.filter.orders = []
-      if (event.prop && event.order) {
+      if (!event.column.sortBy) {
+        console.error('Column sort-by value not set', event)
+      } else if (event.order) {
         this.filter.orders.push({
-          property: event.prop,
+          property: event.column.sortBy,
           direction: event.order === 'ascending' ? 'ASC' : 'DESC'
         })
       }
@@ -513,6 +580,14 @@ export default {
         }
       }
 
+      if (filters.sprintIds) {
+        if (filters.sprintIds.length > 0) {
+          this.filter.sprintIds = filters.sprintIds
+        } else {
+          this.filter.sprintIds = null
+        }
+      }
+
       this.filterChanged()
     },
     keywordChanged() {
@@ -527,6 +602,7 @@ export default {
     filterChanged() {
       this.filter.page = 1
       this.loadIssues()
+      this.$emit('issueFilterChanged', this.filter)
     },
     pageChanged(page) {
       this.filter.page = page
@@ -661,6 +737,13 @@ export default {
         font-weight: bold;
         color: var(--el-color-primary);
         white-space: nowrap;
+      }
+
+      .issue-tags {
+        margin-left: 8px;
+        .issue-tag {
+          margin: 0 2px;
+        }
       }
     }
   }

@@ -32,7 +32,6 @@
         row-class-name="sprint-row clickable"
         :show-header="true"
         @row-click="editSprint"
-        @sort-change="sortChange"
         empty-text="No data">
         <el-table-column prop="name" :label="$t('sprintList.list.name')" show-overflow-tooltip min-width="60">
           <template #default="scope">

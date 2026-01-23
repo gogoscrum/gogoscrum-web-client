@@ -4,7 +4,6 @@
       :project-id="projectId"
       :issue-filter="filter"
       :columns="columns"
-      :filter-columns="['type', 'priority', 'owner', 'status']"
       @page-size-changed="pageSizeChanged" />
   </div>
 </template>
@@ -25,15 +24,7 @@ export default {
         keyword: null,
         pageSize: this.$store.get('backlogPageSize') || 10
       },
-      columns: this.$store.get('backlogColumns') || [
-        'code',
-        'name',
-        'storyPoints',
-        'priority',
-        'owner',
-        'status',
-        'actions'
-      ]
+      columns: ['code', 'name', 'component', 'storyPoints', 'priority', 'owner', 'status', 'actions']
     }
   },
   created() {

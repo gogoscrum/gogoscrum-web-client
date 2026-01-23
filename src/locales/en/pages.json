@@ -298,7 +298,7 @@
     "remark": "Description",
     "remarkPlaceholder": "Please describe the issue in more detail",
     "markdownSupported": "Markdown syntax is supported",
-    "assignee": "Assigned to",
+    "assignee": "Assignee",
     "createdBy": "Reported by",
     "createdTime": "Created at",
     "assigneePlaceholder": "Select assignee",
@@ -552,28 +552,18 @@
       "newIssue": "New issue",
       "newBug": "New bug",
       "export": "Export",
-      "expandFilter": "Show filter",
-      "collapseFilter": "Hide filter",
-      "count": "{count} issues",
-      "issueType": "Issue type",
-      "priority": "Priority",
-      "sprint": "Sprint",
-      "status": "Status",
-      "component": "Component",
-      "owner": "Owner",
-      "tag": "Tag",
-      "search": "Search",
-      "clearFilter": "Clear filter",
-      "saveFilter": "Save"
+      "search": "Search"
     },
     "list": {
       "code": "Code",
       "name": "Name",
+      "component": "Component",
       "storyPoints": "Points",
       "priority": "Priority",
+      "sprint": "Sprint",
       "owner": "Owner",
       "status": "Status",
-      "assignee": "Assigned to",
+      "assignee": "Assignee",
       "assignToMe": "Assign to me",
       "unassign": "Unassign",
       "emptyMsg": "No issue in project"
@@ -588,8 +578,11 @@
     }
   },
   "issueFilter": {
+    "title": "Issue filter ",
     "allIssues": "All issues",
+    "keyword": "Keyword",
     "actions": {
+      "clear": "Clear filter",
       "rename": "Rename",
       "copy": "Duplicate",
       "delete": "Delete",
