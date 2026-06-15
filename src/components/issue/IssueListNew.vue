@@ -84,15 +84,33 @@
           v-if="columns.includes('name')"
           :label="$t('issueList.list.name')"
           prop="name"
-          show-overflow-tooltip
+          :show-overflow-tooltip="false"
           sortable="custom"
           sort-by="name"
-          min-width="300">
+          min-width="400">
           <template #default="scope">
             <span v-html="scope.row.nameHighlightLabel || scope.row.name"></span>
             <span v-if="showTags && scope.row.tags?.length" class="issue-tags">
               <issue-tag v-for="tag in scope.row.tags" :key="tag.id" :tag="tag" />
             </span>
+            <el-icon
+              v-if="scope.row.filesCount"
+              :title="$t('issueList.list.filesCount', { count: scope.row.filesCount })"
+              class="items-count-icon"
+              ><Paperclip
+            /></el-icon>
+            <el-icon
+              v-if="scope.row.commentsCount"
+              :title="$t('issueList.list.commentsCount', { count: scope.row.commentsCount })"
+              class="items-count-icon"
+              ><ChatLineRound
+            /></el-icon>
+            <el-icon
+              v-if="scope.row.linksCount"
+              :title="$t('issueList.list.linksCount', { count: scope.row.linksCount })"
+              class="items-count-icon"
+              ><Connection
+            /></el-icon>
           </template>
         </el-table-column>
         <el-table-column
@@ -744,33 +762,13 @@ export default {
           margin: 0 2px;
         }
       }
+
+      .items-count-icon {
+        margin-left: 4px;
+        height: 16px;
+        vertical-align: text-bottom;
+      }
     }
   }
 }
-// .assgin-to-me {
-//   margin-left: 8px;
-// }
-
-// .assignee-candidates {
-//   max-height: 350px;
-//   overflow: scroll;
-// }
-
-// .issue-group-option {
-//   display: flex;
-//   align-items: center;
-// }
-
-// .user-select-option {
-//   display: flex;
-
-//   .user-avatar {
-//     display: flex;
-//     align-items: center;
-//   }
-
-//   .username {
-//     margin-left: 10px;
-//   }
-// }
 </style>

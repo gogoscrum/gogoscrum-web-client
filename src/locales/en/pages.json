@@ -557,6 +557,9 @@
     "list": {
       "code": "Code",
       "name": "Name",
+      "filesCount": "{count} attachments",
+      "commentsCount": "{count} comments",
+      "linksCount": "{count} links",
       "component": "Component",
       "storyPoints": "Points",
       "priority": "Priority",

@@ -557,6 +557,9 @@
     "list": {
       "code": "编号",
       "name": "名称",
+      "filesCount": "{count} 个附件",
+      "commentsCount": "{count} 条评论",
+      "linksCount": "{count} 个关联",
       "component": "功能模块",
       "storyPoints": "故事点",
       "priority": "优先级",
