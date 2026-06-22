@@ -13,18 +13,26 @@
       :remote-method="searchTestPlan"
       :loading="searching"
       :no-data-text="$t('common.filter.noMatch')">
-      <el-option v-if="totalElements > filter.pageSize" value="" class="too-many-match-warning">
-        <el-icon class="mr-2"><WarningFilled /></el-icon>
-        <span>{{ $t('common.filter.tooManyMatches') }}</span>
-      </el-option>
+      <template #header v-if="totalElements > filter.pageSize">
+        <div class="too-many-match-warning">
+          <el-icon class="mr-2"><WarningFilled /></el-icon>
+          <span>{{ $t('common.filter.tooManyMatches') }}</span>
+        </div>
+      </template>
       <el-option v-for="testPlan in testPlans" :key="testPlan.id" :value="testPlan" :label="testPlan.name">
         <div class="test-plan-row">
           <div class="name" :title="testPlan.name">{{ testPlan.name }}</div>
+          <el-icon class="link-icon" :title="$t('common.details')" @click.stop="showPlanDetails(testPlan.id)"
+            ><Link
+          /></el-icon>
         </div>
       </el-option>
       <template #label="{ label, value }">
         <div class="test-plan-row">
           <div class="name">{{ value.name }}</div>
+          <el-icon class="link-icon" :title="$t('common.details')" @click.stop="showPlanDetails(value.id)"
+            ><Link
+          /></el-icon>
         </div>
       </template>
     </el-select>
@@ -94,6 +102,13 @@ export default {
         .finally(() => {
           this.searching = false
         })
+    },
+    showPlanDetails(testPlanId) {
+      const url = this.$router.resolve({
+        name: 'TestPlanDetails',
+        params: { projectId: this.projectId, testPlanId }
+      }).href
+      window.open(url, '_blank')
     }
   }
 }
@@ -114,6 +129,21 @@ export default {
       overflow: hidden;
       white-space: nowrap;
     }
+
+    .link-icon {
+      visibility: hidden;
+      margin-left: 10px;
+
+      &:hover {
+        color: var(--el-color-primary);
+      }
+    }
+
+    &:hover {
+      .link-icon {
+        visibility: visible;
+      }
+    }
   }
 }
 </style>
@@ -122,6 +152,10 @@ export default {
   .el-select-dropdown__wrap {
     max-height: 70vh;
     overflow-y: auto;
+  }
+
+  .el-select__placeholder {
+    z-index: 0;
   }
 }
 </style>

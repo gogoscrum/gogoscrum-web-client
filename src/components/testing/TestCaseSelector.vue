@@ -12,24 +12,32 @@
       :remote-method="searchTestCase"
       :loading="searching"
       :no-data-text="$t('common.filter.noMatch')">
-      <el-option v-if="totalElements > filter.pageSize" value="" class="too-many-match-warning">
-        <el-icon class="mr-2"><WarningFilled /></el-icon>
-        <span>{{ $t('common.filter.tooManyMatches') }}</span>
-      </el-option>
+      <template #header v-if="totalElements > filter.pageSize">
+        <div class="too-many-match-warning">
+          <el-icon class="mr-2"><WarningFilled /></el-icon>
+          <span>{{ $t('common.filter.tooManyMatches') }}</span>
+        </div>
+      </template>
       <el-option
         v-for="testCase in testCases"
         :key="testCase.id"
         :value="testCase"
         :label="`TC-${testCase.code} ${testCase.details.name}`">
         <div class="test-case-row">
-          <el-tag type="info" class="code">TC-{{ testCase.code }}</el-tag>
+          <span class="code">TC-{{ testCase.code }}</span>
           <div class="name" :title="testCase.details.name">{{ testCase.details.name }}</div>
+          <el-icon class="link-icon" :title="$t('common.details')" @click.stop="showCaseDetails(testCase.id)"
+            ><Link
+          /></el-icon>
         </div>
       </el-option>
       <template v-if="value?.code" #label="{ label, value }">
         <div class="test-case-row">
-          <el-tag type="info" class="code">TC-{{ value.code }}</el-tag>
+          <span class="code">TC-{{ value.code }}</span>
           <div class="name">{{ value.details?.name }}</div>
+          <el-icon class="link-icon" :title="$t('common.details')" @click.stop="showCaseDetails(value.id)"
+            ><Link
+          /></el-icon>
         </div>
       </template>
     </el-select>
@@ -95,6 +103,16 @@ export default {
         .finally(() => {
           this.searching = false
         })
+    },
+    showCaseDetails(testCaseId) {
+      console.log('Show details for test case ID:', testCaseId)
+
+      // Open the test case details in a new tab
+      const url = this.$router.resolve({
+        name: 'TestCaseDetails',
+        params: { projectId: this.projectId, testCaseId }
+      }).href
+      window.open(url, '_blank')
     }
   }
 }
@@ -103,6 +121,7 @@ export default {
 <style lang="less" scoped>
 .test-case-selector {
   width: 100%;
+  display: flex;
 
   .test-case-row {
     display: flex;
@@ -110,6 +129,7 @@ export default {
     cursor: pointer;
 
     .code {
+      color: #666666;
       font-weight: bold;
       white-space: nowrap;
     }
@@ -121,6 +141,21 @@ export default {
       overflow: hidden;
       white-space: nowrap;
     }
+
+    .link-icon {
+      visibility: hidden;
+      margin-left: 10px;
+
+      &:hover {
+        color: var(--el-color-primary);
+      }
+    }
+
+    &:hover {
+      .link-icon {
+        visibility: visible;
+      }
+    }
   }
 }
 </style>
@@ -129,6 +164,10 @@ export default {
   .el-select-dropdown__wrap {
     max-height: 70vh;
     overflow-y: auto;
+  }
+
+  .el-select__placeholder {
+    z-index: 0;
   }
 }
 </style>
