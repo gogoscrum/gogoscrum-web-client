@@ -380,6 +380,7 @@
           :project-id="projectId"
           :test-plan="report.testPlan"
           :issue-filter="issueFilter"
+          :filter-columns="bugListFilterColumns"
           hideFilter
           readonly
           :empty-text="$t('test.report.details.noBugs')"
@@ -457,6 +458,7 @@ export default {
         types: ['BUG'],
         pageSize: this.$store.get('testReportDetailsPageIssueListSize') || 10
       },
+      bugListFilterColumns: ['priority', 'owner', 'status', 'sprint'],
       components: {},
       saving: false,
       rules: {

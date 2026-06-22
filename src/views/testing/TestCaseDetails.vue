@@ -51,6 +51,7 @@
           :project-id="projectId"
           :test-case="testCase"
           :issue-filter="issueFilter"
+          :filter-columns="bugListFilterColumns"
           :show-export-btn="false"
           :empty-text="$t('test.case.details.noBugs')"
           @page-size-changed="issueListPageSizeChanged" />
@@ -86,7 +87,8 @@ export default {
         testCaseId: this.$route.params.testCaseId,
         types: ['BUG'],
         pageSize: this.$store.get('testCaseDetailsPageIssueListSize') || 10
-      }
+      },
+      bugListFilterColumns: ['priority', 'owner', 'status', 'sprint']
     }
   },
   computed: {

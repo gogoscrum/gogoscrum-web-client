@@ -77,6 +77,7 @@
           :project-id="projectId"
           :test-plan="testPlan"
           :issue-filter="issueFilter"
+          :filter-columns="bugListFilterColumns"
           :show-export-btn="false"
           :empty-text="$t('test.plan.details.noBugs')"
           @page-size-changed="issueListPageSizeChanged" />
@@ -127,6 +128,7 @@ export default {
         types: ['BUG'],
         pageSize: this.$store.get('testPlanDetailsPageIssueListSize') || 10
       },
+      bugListFilterColumns: ['priority', 'owner', 'status', 'sprint'],
       planEditVisible: false
     }
   },
