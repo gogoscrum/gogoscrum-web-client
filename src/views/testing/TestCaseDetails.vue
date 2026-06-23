@@ -65,6 +65,7 @@ import { testCaseApi } from '@/api/testing.js'
 import TestCaseBasics from './TestCaseBasics.vue'
 import TestRunList from './TestRunList.vue'
 import IssueListNew from '@/components/issue/IssueListNew.vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
   name: 'TestCaseDetails',
