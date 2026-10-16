@@ -40,13 +40,13 @@
             <el-checkbox v-model="loginForm.rememberMe" class="remember-me" @change="handleRememberMeChange">{{
               $t('signin.rememberme')
             }}</el-checkbox>
-            <div class="register">
+            <div v-if="signupAllowed" class="register">
               <router-link :to="{ name: 'Register' }">{{ $t('signin.signup') }}</router-link>
             </div>
           </div>
         </el-form-item>
       </el-form>
-      <OauthLogins />
+      <OauthLogins v-if="signupAllowed" />
     </div>
   </div>
 </template>
@@ -55,7 +55,6 @@
 import qs from 'qs'
 import utils from '@/utils/util.js'
 import { userApi } from '@/api/user'
-import store from '@/modules/store.js'
 import OauthLogins from '@/components/user/OauthLogins.vue'
 
 export default {
@@ -87,12 +86,25 @@ export default {
           }
         ]
       },
-      submitting: false
+      submitting: false,
+      signupAllowed: false
     }
   },
-  created() {},
+  created() {
+    this.fetchSignupAllowed()
+  },
   mounted() {},
   methods: {
+    fetchSignupAllowed() {
+      userApi
+        .isSignupAllowed()
+        .then((res) => {
+          this.signupAllowed = res.data
+        })
+        .catch((error) => {
+          console.error('failed to fetch signup setting', error)
+        })
+    },
     handleRememberMeChange() {
       console.log('Remember me flag changed: ', this.loginForm.rememberMe)
       this.$store.set('loginPageRememberMeFlag', this.loginForm.rememberMe)

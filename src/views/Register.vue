@@ -1,56 +1,64 @@
 <template>
   <div class="register-form-container">
-    <el-form
-      :model="registerForm"
-      :rules="rules"
-      size="large"
-      ref="registerForm"
-      class="register-form"
-      @keyup.enter.native="register()">
-      <div class="title">
-        <router-link :to="{ name: 'Homepage' }">
-          <div class="logo-container">
-            <img src="../assets/images/logo-black.png" class="logo" />
-          </div>
-        </router-link>
-        <span>{{ $t('signup.title') }}</span>
-      </div>
-      <el-form-item prop="username">
-        <el-input v-model="registerForm.username" :placeholder="$t('signup.username')" clearable></el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input
-          type="password"
-          v-model="registerForm.password"
-          :placeholder="$t('signup.password')"
-          clearable></el-input>
-      </el-form-item>
-      <el-form-item prop="repeatPassword">
-        <el-input
-          type="password"
-          v-model="registerForm.repeatPassword"
-          :placeholder="$t('signup.repeat')"
-          clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button class="register-button" type="primary" size="large" :loading="submitting" @click="register()">{{
-          $t('signup.btn')
-        }}</el-button>
-      </el-form-item>
-      <el-form-item class="higher-row">
-        <div class="terms-and-login small-text w-full">
-          <div class="terms">
-            <span>{{ $t('signup.agreeTerms') }}</span>
-            <a @click="termsOfServiceDialogVisible = true" class="ml-1">{{ $t('signup.termsOfService') }}</a>
-          </div>
-          <div class="flex justify-between">
-            <span>{{ $t('signup.alreadyHasAccount') }}</span>
-            <a class="signin-link" @click="goLogin">{{ $t('signup.signin') }}</a>
-          </div>
+    <div v-if="signupAllowedFlagReady">
+      <el-form
+        v-if="signupAllowed"
+        :model="registerForm"
+        :rules="rules"
+        size="large"
+        ref="registerForm"
+        class="register-form"
+        @keyup.enter="register()">
+        <div class="title">
+          <router-link :to="{ name: 'Homepage' }">
+            <div class="logo-container">
+              <img src="../assets/images/logo-black.png" class="logo" />
+            </div>
+          </router-link>
+          <span>{{ $t('signup.title') }}</span>
         </div>
-      </el-form-item>
-      <OauthLogins />
-    </el-form>
+        <el-form-item prop="username">
+          <el-input v-model="registerForm.username" :placeholder="$t('signup.username')" clearable></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input
+            type="password"
+            v-model="registerForm.password"
+            :placeholder="$t('signup.password')"
+            clearable></el-input>
+        </el-form-item>
+        <el-form-item prop="repeatPassword">
+          <el-input
+            type="password"
+            v-model="registerForm.repeatPassword"
+            :placeholder="$t('signup.repeat')"
+            clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button class="register-button" type="primary" size="large" :loading="submitting" @click="register()">{{
+            $t('signup.btn')
+          }}</el-button>
+        </el-form-item>
+        <el-form-item class="higher-row">
+          <div class="terms-and-login small-text w-full">
+            <div class="terms">
+              <span>{{ $t('signup.agreeTerms') }}</span>
+              <a @click="termsOfServiceDialogVisible = true" class="ml-1">{{ $t('signup.termsOfService') }}</a>
+            </div>
+            <div class="flex justify-between">
+              <span>{{ $t('signup.alreadyHasAccount') }}</span>
+              <a class="signin-link" @click="goLogin">{{ $t('signup.signin') }}</a>
+            </div>
+          </div>
+        </el-form-item>
+        <OauthLogins />
+      </el-form>
+      <el-result v-else icon="warning" :title="$t('signup.disabledTitle')" :sub-title="$t('signup.disabledDesc')">
+        <template #extra>
+          <el-button type="primary" @click="goLogin">{{ $t('signup.signin') }}</el-button>
+        </template>
+      </el-result>
+    </div>
     <el-dialog v-model="termsOfServiceDialogVisible" width="860px" top="3vh">
       <div class="terms-of-service-popup">
         <div class="title">{{ $t('signup.termsDialogTitle') }}</div>
@@ -125,18 +133,39 @@ export default {
         ]
       },
       submitting: false,
+      signupAllowed: true,
+      signupAllowedFlagReady: false,
       termsOfServiceDocMap: {
         cn: cnTermsOfServiceDoc,
         en: enTermsOfServiceDoc
       }
     }
   },
-  mounted() {},
+  mounted() {
+    this.fetchSignupAllowed()
+  },
   methods: {
+    fetchSignupAllowed() {
+      userApi
+        .isSignupAllowed()
+        .then((res) => {
+          this.signupAllowed = !!res.data
+          this.signupAllowedFlagReady = true
+        })
+        .catch((error) => {
+          console.error('failed to fetch signup setting', error)
+        })
+    },
     goLogin() {
       this.$router.push({ name: 'Login' })
     },
     register() {
+      if (!this.signupAllowed) {
+        ElMessage.warning({
+          message: this.$t('signup.disabledDesc')
+        })
+        return
+      }
       this.$refs['registerForm'].validate((valid) => {
         if (valid) {
           this.submitting = true

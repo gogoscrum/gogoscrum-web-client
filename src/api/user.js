@@ -12,6 +12,7 @@ export const userApi = {
   login: (form, params) => post('/api/login', form, params),
   logout: () => post('/api/logout'),
   csrf: () => get('/api/csrf'),
+  isSignupAllowed: () => get('/api/settings/signup'),
 
   // OAuth APIs
   getOauthProviders: () => get('/api/users/oauth/providers'),

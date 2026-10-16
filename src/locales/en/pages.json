@@ -149,6 +149,8 @@
     "agreeTerms": "By signing up, you agree to our",
     "termsOfService": "Terms of Service",
     "termsDialogTitle": "gogoscrum User Service Terms",
+    "disabledTitle": "Sign up is currently disabled",
+    "disabledDesc": "Self-service sign up is disabled. Please contact your administrator for an account.",
     "msg": {
       "pwdNotTheSame": "Repeated password is not the same",
       "missingUsername": "Please input your user name",

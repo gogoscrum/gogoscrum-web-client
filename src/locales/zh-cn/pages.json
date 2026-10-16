@@ -149,6 +149,8 @@
     "agreeTerms": "注册即表示同意",
     "termsOfService": "《用户服务条款》",
     "termsDialogTitle": "gogoscrum 用户服务条款",
+    "disabledTitle": "暂不开放用户注册",
+    "disabledDesc": "当前系统已关闭自助注册，请联系管理员开通账号。",
     "msg": {
       "pwdNotTheSame": "两次输入密码不一致",
       "missingUsername": "请输入用户名",
