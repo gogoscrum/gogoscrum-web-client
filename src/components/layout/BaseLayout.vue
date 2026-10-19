@@ -270,6 +270,9 @@
               <el-dropdown-item command="UserInfo" icon="User">
                 {{ $t('baseLayout.header.profile') }}
               </el-dropdown-item>
+              <el-dropdown-item v-if="currentUser.admin" command="AdminConsole" icon="Monitor" divided>
+                {{ $t('baseLayout.header.adminConsole') }}
+              </el-dropdown-item>
               <el-dropdown-item v-if="lang === 'cn'" divided @click.prevent>
                 <el-dropdown placement="left">
                   <div class="flex items-center">
@@ -656,6 +659,9 @@ export default {
     userDropCommand(command) {
       if (command == 'UserInfo') {
         this.userInfoDialogVisible = true
+      } else if (command == 'AdminConsole') {
+        // Open the Admin Console in a new tab or window
+        window.open('/admin/', '_blank')
       } else {
         this.$router.push({ name: command })
       }

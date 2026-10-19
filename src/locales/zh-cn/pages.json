@@ -194,6 +194,7 @@
       "projectDetails": "项目详情",
       "myProjects": "我的项目",
       "profile": "个人设置",
+      "adminConsole": "管理后台",
       "signout": "退出登录",
       "filterPopover": {
         "mineOnly": "只显示我的任务",

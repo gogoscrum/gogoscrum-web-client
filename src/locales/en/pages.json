@@ -194,6 +194,7 @@
       "projectDetails": "Project details",
       "myProjects": "My projects",
       "profile": "My account",
+      "adminConsole": "Admin console",
       "signout": "Sign out",
       "filterPopover": {
         "mineOnly": "Only show my tasks",
