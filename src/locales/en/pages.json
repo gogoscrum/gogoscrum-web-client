@@ -87,11 +87,11 @@
     },
     "file": {
       "title": "Sharing Files",
-      "intro": "Create folders and upload files to share with the team"
+      "intro": "Upload prototypes, design drafts to manage all types of project materials in one place."
     },
     "doc": {
-      "title": "Documents",
-      "intro": "Record important information and then team members can check up at anytime"
+      "title": "Wiki Pages",
+      "intro": "Record project requirements, meeting notes and other Wiki content to share information at any time"
     },
     "chart": {
       "title": "Various Charts",
