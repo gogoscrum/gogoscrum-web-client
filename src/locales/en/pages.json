@@ -97,6 +97,10 @@
       "title": "Various Charts",
       "intro": "Show Burndown chart by story point, Velocity and Cumulative flow chart of each sprint"
     },
+    "testing": {
+      "title": "Testing Management",
+      "intro": "Complete testing management process, from test cases to test plan execution, ensuring high-quality software delivery."
+    },
     "startnow": {
       "title": "Start to use gogoscrum now",
       "intro": "Ease scrum team's work by this easy-to-use scrum tool"

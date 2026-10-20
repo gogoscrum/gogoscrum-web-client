@@ -101,6 +101,21 @@
       </el-row>
     </div>
     <div class="section-outter">
+      <el-row type="flex" align="middle" class="section">
+        <el-col :xs="24" :sm="6" class="intro">
+          <div class="sub-title center">
+            {{ $t('homepage.testing.title') }}
+          </div>
+          <div class="content">
+            {{ $t('homepage.testing.intro') }}
+          </div>
+        </el-col>
+        <el-col :xs="{ span: 24, offset: 0 }" :sm="{ span: 17, offset: 1 }">
+          <img :src="`/${lang}/testing.png`" class="screenshot-img live" />
+        </el-col>
+      </el-row>
+    </div>
+    <div class="section-outter stripped">
       <el-row type="flex" justify="center" align="middle" class="section higher">
         <div :span="24" class="intro">
           <div class="title">{{ $t('homepage.startnow.title') }}</div>

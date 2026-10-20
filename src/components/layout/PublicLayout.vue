@@ -142,6 +142,7 @@ export default {
 
   .body {
     min-height: calc(100vh - 100px);
+    padding: 0;
   }
 
   .footer {
