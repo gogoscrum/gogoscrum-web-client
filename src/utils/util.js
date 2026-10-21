@@ -231,8 +231,6 @@ const getTextareaLineCount = (textarea) => {
 }
 
 const getSortOrders = (event) => {
-  console.log('table sorting event:', event)
-
   const sortBy = event.column.sortBy || event.prop
 
   if (!sortBy) {
