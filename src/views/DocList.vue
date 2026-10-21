@@ -20,6 +20,10 @@
           <el-icon v-else @click="loadDocs" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="docListColumns"></column-selector>
           <span class="item-count">{{
             filter.keyword
               ? $t('common.filter.matchedResults', { count: totalElements })
@@ -46,34 +50,26 @@
         @row-click="docClicked">
         <el-table-column
           :label="$t('docList.list.name')"
-          :min-width="isInMobile ? 150 : 200"
+          :min-width="isInMobile ? 150 : 320"
           class-name="icon-name-column">
           <template #default="scope">
-            <div class="doc-name-container">
+            <div class="doc-name-container flex">
               <span
                 class="doc-name"
                 :data-index="scope.$index"
                 v-html="scope.row.nameHighlightLabel || scope.row.name" />
+              <DocPublicAccessPop v-if="scope.row.publicAccess" :doc="scope.row" class="ml-2">
+                <template #reference>
+                  <el-tag type="success" effect="dark" size="small">{{ $t('docList.list.public') }}</el-tag>
+                </template>
+              </DocPublicAccessPop>
             </div>
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" prop="publicAccess" :label="$t('docList.list.publicAccess')" min-width="50">
-          <template #default="scope">
-            <DocPublicAccessPop v-if="scope.row.publicAccess" :doc="scope.row">
-              <template #reference>
-                <el-tag type="success" effect="dark" size="small">{{ $t('docList.list.public') }}</el-tag>
-              </template>
-            </DocPublicAccessPop>
-            <span v-else></span>
-          </template>
-        </el-table-column>
         <el-table-column
-          v-if="!isInMobile"
-          prop="createdTimeFormatted"
-          :label="$t('docList.list.createdTime')"
-          min-width="80">
-        </el-table-column>
-        <el-table-column v-if="!isInMobile" :label="$t('docList.list.creator')" min-width="50">
+          v-if="columns.includes('creator') && !isInMobile"
+          :label="$t('docList.list.creator')"
+          min-width="100">
           <template #default="scope">
             <avatar
               :name="scope.row.createdBy.nickname"
@@ -82,8 +78,17 @@
               showName></avatar>
           </template>
         </el-table-column>
-
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+        <el-table-column
+          v-if="columns.includes('createdTime') && !isInMobile"
+          prop="createdTimeFormatted"
+          :label="$t('docList.list.createdTime')"
+          min-width="130">
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('actions') && project.isDeveloper"
+          :label="$t('common.actions')"
+          width="80"
+          align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -91,10 +96,8 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="Edit" @click.native="editDoc(scope.row)">{{
-                    $t('common.edit')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item icon="Delete" @click.native="deleteDoc(scope.$index, scope.row)">{{
+                  <el-dropdown-item icon="Edit" @click="editDoc(scope.row)">{{ $t('common.edit') }}</el-dropdown-item>
+                  <el-dropdown-item icon="Delete" @click="deleteDoc(scope.$index, scope.row)">{{
                     $t('common.delete')
                   }}</el-dropdown-item>
                 </el-dropdown-menu>
@@ -130,6 +133,7 @@
 
 <script>
 import Avatar from '@/components/common/Avatar.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 import DocPublicAccessPop from '@/components/doc/DocPublicAccessPop.vue'
 import { docApi } from '@/api/doc.js'
 import highlight from '@/utils/highlight.js'
@@ -140,9 +144,18 @@ export default {
   name: 'DocList',
   components: {
     Avatar,
-    DocPublicAccessPop
+    DocPublicAccessPop,
+    ColumnSelector
   },
   data() {
+    const availableColumns = [
+      { key: 'name', labelKey: 'docList.list.name', default: true, readonly: true },
+      { key: 'createdTime', labelKey: 'docList.list.createdTime', default: true },
+      { key: 'creator', labelKey: 'docList.list.creator', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       isInMobile: utils.isInMobile(),
       projectId: null,
@@ -156,7 +169,9 @@ export default {
       },
       totalElements: 0,
       totalPages: 0,
-      loading: false
+      loading: false,
+      columns: this.$store.get('docListColumns') || defaultColumns,
+      availableColumns
     }
   },
   created() {

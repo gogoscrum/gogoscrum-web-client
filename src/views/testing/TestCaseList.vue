@@ -47,6 +47,10 @@
           <el-icon v-else @click="loadCases" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="testCaseListColumns"></column-selector>
           <span class="item-count">{{
             filter.keyword
               ? $t('common.filter.matchedResults', { count: totalElements })
@@ -91,19 +95,20 @@
           prop="details.name"
           show-overflow-tooltip
           sortable="custom"
-          min-width="120">
+          min-width="300">
           <template #default="scope">
             <span class="case-name" v-html="scope.row['details.nameHighlightLabel'] || scope.row.details.name" />
           </template>
         </el-table-column>
         <el-table-column
+          v-if="columns.includes('type')"
           :label="$t('test.case.list.header.type')"
           prop="details.type"
           sortable="custom"
           column-key="types"
           :filters="testTypeFilters"
           :filter-multiple="true"
-          min-width="40">
+          min-width="100">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.types?.length }"><Filter /></el-icon>
           </template>
@@ -114,13 +119,14 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-if="columns.includes('priority')"
           :label="$t('test.case.list.header.priority')"
           prop="details.priority"
           sortable="custom"
           column-key="priorities"
           :filters="priorityFilters"
           :filter-multiple="true"
-          min-width="35">
+          min-width="100">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.priorities?.length }"
               ><Filter
@@ -133,13 +139,43 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-if="columns.includes('creator')"
+          :label="$t('common.createdBy')"
+          prop="createdBy.nickname"
+          sortable="custom"
+          column-key="creators"
+          :filters="userFilters"
+          :filter-multiple="true"
+          min-width="100"
+          class-name="owner-column">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
+          </template>
+          <template #default="scope">
+            <avatar
+              :name="scope.row.createdBy.nickname"
+              :size="22"
+              :src="scope.row.createdBy.avatarUrl"
+              showName></avatar>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('createdTime')"
+          prop="createdTimeFormatted"
+          :label="$t('common.createdTime')"
+          sortable="custom"
+          sort-by="createdTime"
+          min-width="180">
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('owner')"
           :label="$t('test.case.list.header.owner')"
           prop="details.owner.nickname"
           sortable="custom"
           column-key="owners"
           :filters="userFilters"
           :filter-multiple="true"
-          min-width="35"
+          min-width="100"
           class-name="owner-column">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.owners?.length }"><Filter /></el-icon>
@@ -154,14 +190,14 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="!pickerMode"
+          v-if="columns.includes('latestRunStatus') && !pickerMode"
           :label="$t('test.case.list.header.latestRunStatus')"
           prop="latestRun.status"
           sortable="custom"
           column-key="runStatuses"
           :filters="runStatusFilters"
           :filter-multiple="true"
-          min-width="35"
+          min-width="120"
           class-name="run-status-column">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.latestRunStatus?.length }"
@@ -182,7 +218,11 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+        <el-table-column
+          v-if="columns.includes('actions') && project.isDeveloper"
+          :label="$t('common.actions')"
+          width="80"
+          align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -190,27 +230,21 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item
-                    v-if="!pickerMode"
-                    icon="VideoPlay"
-                    @click.native="runCase(scope.$index, scope.row)"
-                    >{{ $t('test.case.list.table.run') }}</el-dropdown-item
-                  >
-                  <el-dropdown-item icon="Edit" @click.native="editCase(scope.row)">{{
+                  <el-dropdown-item v-if="!pickerMode" icon="VideoPlay" @click="runCase(scope.$index, scope.row)">{{
+                    $t('test.case.list.table.run')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item icon="Edit" @click="editCase(scope.row)">{{
                     pickerMode ? $t('common.details') : $t('common.edit')
                   }}</el-dropdown-item>
                   <el-dropdown-item
                     v-if="!pickerMode"
                     icon="DocumentCopy"
-                    @click.native="cloneCase(scope.$index, scope.row)"
+                    @click="cloneCase(scope.$index, scope.row)"
                     >{{ $t('common.copy') }}</el-dropdown-item
                   >
-                  <el-dropdown-item
-                    v-if="!pickerMode"
-                    icon="Delete"
-                    @click.native="deleteCase(scope.$index, scope.row)"
-                    >{{ $t('common.delete') }}</el-dropdown-item
-                  >
+                  <el-dropdown-item v-if="!pickerMode" icon="Delete" @click="deleteCase(scope.$index, scope.row)">{{
+                    $t('common.delete')
+                  }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -260,6 +294,7 @@ import PriorityIcon from '@/components/common/PriorityIcon.vue'
 import TestRunStatusIcon from '@/components/testing/TestRunStatusIcon.vue'
 import TestCaseImporter from '@/components/testing/TestCaseImporter.vue'
 import TestRunEdit from './TestRunEdit.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 import { saveAs } from 'file-saver'
 
 export default {
@@ -269,7 +304,8 @@ export default {
     PriorityIcon,
     TestRunStatusIcon,
     TestCaseImporter,
-    TestRunEdit
+    TestRunEdit,
+    ColumnSelector
   },
   emits: ['caseSelected'],
   props: {
@@ -283,6 +319,19 @@ export default {
     }
   },
   data() {
+    const availableColumns = [
+      { key: 'code', labelKey: 'test.case.list.header.code', default: true, readonly: true },
+      { key: 'name', labelKey: 'test.case.list.header.name', default: true, readonly: true },
+      { key: 'type', labelKey: 'test.case.list.header.type' },
+      { key: 'priority', labelKey: 'test.case.list.header.priority', default: true },
+      { key: 'creator', labelKey: 'common.createdBy' },
+      { key: 'createdTime', labelKey: 'common.createdTime' },
+      { key: 'owner', labelKey: 'test.case.list.header.owner', default: true },
+      { key: 'latestRunStatus', labelKey: 'test.case.list.header.latestRunStatus', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       dict: dict,
       projectId: this.$route.params.projectId,
@@ -305,7 +354,9 @@ export default {
       userFilters: [],
       runStatusFilters: [],
       editingCaseId: null,
-      importDialogVisible: false
+      importDialogVisible: false,
+      columns: this.$store.get('testCaseListColumns') || defaultColumns,
+      availableColumns
     }
   },
   created() {
@@ -382,14 +433,7 @@ export default {
       this.$emit('caseSelected', this.pickedCases)
     },
     sortChange(event) {
-      // Only support single column sorting
-      this.filter.orders = []
-      if (event.prop && event.order) {
-        this.filter.orders.push({
-          property: event.prop,
-          direction: event.order === 'ascending' ? 'ASC' : 'DESC'
-        })
-      }
+      this.filter.orders = utils.getSortOrders(event)
       this.filterChanged()
     },
     filterChange(filters) {

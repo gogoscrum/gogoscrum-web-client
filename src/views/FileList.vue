@@ -39,6 +39,10 @@
           <el-icon v-else @click="refreshFileList" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="fileListColumns"></column-selector>
           <span class="item-count">{{
             filter.keyword
               ? $t('common.filter.matchedResults', { count: totalElements })
@@ -68,7 +72,7 @@
           <el-table-column
             :label="$t('fileList.list.name')"
             show-overflow-tooltip
-            :min-width="isInMobile ? 150 : 220"
+            :min-width="isInMobile ? 150 : 300"
             class-name="icon-name-column">
             <template #default="scope">
               <div
@@ -105,7 +109,7 @@
                     @keyup.enter="finishEditingFile"
                     @keyup.esc="discardEditingFile"
                     @blur="finishEditingFile"
-                    @click.native.stop />
+                    @click.stop />
                   <span
                     v-else
                     class="file-name"
@@ -116,15 +120,9 @@
             </template>
           </el-table-column>
           <el-table-column
-            v-if="!isInMobile"
-            prop="createdTimeFormatted"
-            :label="$t('fileList.list.createdTime')"
-            min-width="80">
-          </el-table-column>
-          <el-table-column
-            v-if="!isInMobile"
-            :label="$t('fileList.list.creator')"
-            min-width="50"
+            v-if="columns.includes('creator') && !isInMobile"
+            :label="$t('common.createdBy')"
+            min-width="120"
             class-name="owner-column">
             <template #default="scope">
               <avatar
@@ -134,9 +132,24 @@
                 showName></avatar>
             </template>
           </el-table-column>
-          <el-table-column prop="sizeFormatted" :label="$t('fileList.list.size')" min-width="40" align="right">
+          <el-table-column
+            v-if="columns.includes('createdTime') && !isInMobile"
+            prop="createdTimeFormatted"
+            :label="$t('common.createdTime')"
+            min-width="130">
           </el-table-column>
-          <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+          <el-table-column
+            v-if="columns.includes('size')"
+            prop="sizeFormatted"
+            :label="$t('fileList.list.size')"
+            width="120"
+            align="right">
+          </el-table-column>
+          <el-table-column
+            v-if="columns.includes('actions') && project.isDeveloper"
+            :label="$t('common.actions')"
+            width="80"
+            align="center">
             <template #default="scope">
               <el-dropdown trigger="click" placement="bottom">
                 <div class="more-action-icon" @click.stop>
@@ -218,6 +231,7 @@ import { fileApi } from '@/api/file.js'
 import uploader from '@/utils/uploader.js'
 import highlight from '@/utils/highlight.js'
 import FileIcon from '@/components/common/FileIcon.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 import { filesize } from 'filesize'
 import { ElMessageBox } from 'element-plus'
 import utils from '@/utils/util.js'
@@ -232,11 +246,21 @@ export default {
   components: {
     Avatar,
     Breadcrumb,
+    ColumnSelector,
     FileIcon,
     OfficeViewer,
     PdfViewer
   },
   data() {
+    const availableColumns = [
+      { key: 'name', labelKey: 'fileList.list.name', default: true, readonly: true },
+      { key: 'createdTime', labelKey: 'fileList.list.createdTime', default: true },
+      { key: 'creator', labelKey: 'fileList.list.creator', default: true },
+      { key: 'size', labelKey: 'fileList.list.size', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       isInMobile: utils.isInMobile(),
       projectId: null,
@@ -267,7 +291,9 @@ export default {
       videoDialogVisible: false,
       officeFile: null,
       pdfFile: null,
-      fileIdUrlMap: {}
+      fileIdUrlMap: {},
+      columns: this.$store.get('fileListColumns') || defaultColumns,
+      availableColumns
     }
   },
   created() {

@@ -3,11 +3,25 @@ import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'url'
 import UnoCSS from 'unocss/vite'
 import serveStatic from 'serve-static'
+import { writeFileSync } from 'fs'
+import { resolve } from 'path'
+
+function formatVersion(date = new Date()) {
+  const pad = (n) => String(n).padStart(2, '0')
+  return (
+    date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate()) + pad(date.getHours()) + pad(date.getMinutes())
+  )
+}
+
+const APP_VERSION = process.env.APP_VERSION || formatVersion()
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
 
   return {
+    define: {
+      __APP_VERSION__: JSON.stringify(APP_VERSION)
+    },
     plugins: [
       vue(),
       UnoCSS(),
@@ -21,6 +35,17 @@ export default defineConfig(({ mode }) => {
               index: false // Disable directory listing
             })
           )
+        }
+      },
+      {
+        name: 'generate-version-json',
+        apply: 'build',
+        closeBundle() {
+          const content = JSON.stringify({
+            version: APP_VERSION,
+            buildTime: new Date().toISOString()
+          })
+          writeFileSync(resolve(__dirname, 'dist/version.json'), content, 'utf-8')
         }
       }
     ],

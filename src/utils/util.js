@@ -230,6 +230,24 @@ const getTextareaLineCount = (textarea) => {
   return lines
 }
 
+const getSortOrders = (event) => {
+  console.log('table sorting event:', event)
+
+  const sortBy = event.column.sortBy || event.prop
+
+  if (!sortBy) {
+    console.error('Column sort-by or prop value not set', event)
+  } else if (event.order) {
+    // Support multi-column sorting by allowing comma-separated sortBy values, e.g. "project.code, code"
+    return sortBy.split(',').map((s) => {
+      return {
+        property: s.trim(),
+        direction: event.order === 'ascending' ? 'ASC' : 'DESC'
+      }
+    })
+  }
+}
+
 export default {
   indexInArray,
   toggleFullscreen,
@@ -247,5 +265,6 @@ export default {
   isLocalhost,
   toFullUrl,
   getTextareaLineCount,
-  afterLogin
+  afterLogin,
+  getSortOrders
 }

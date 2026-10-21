@@ -25,6 +25,8 @@
     "ok": "确定",
     "done": "完成",
     "actions": "操作",
+    "selectAll": "全选",
+    "restoreDefault": "默认",
     "move": "移至",
     "expand": "展开",
     "collapse": "收起",

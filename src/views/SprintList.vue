@@ -20,6 +20,10 @@
           <el-icon v-else @click="loadProject" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="sprintListColumns"></column-selector>
           <span class="item-count">{{ $t('sprintList.header.count', { count: sprints.length }) }}</span>
         </div>
       </div>
@@ -33,29 +37,37 @@
         :show-header="true"
         @row-click="editSprint"
         empty-text="No data">
-        <el-table-column prop="name" :label="$t('sprintList.list.name')" show-overflow-tooltip min-width="60">
+        <el-table-column prop="name" :label="$t('sprintList.list.name')" show-overflow-tooltip min-width="250">
           <template #default="scope">
             <span v-html="scope.row.nameHighlightLabel || scope.row.name" class="sprint-name"></span>
           </template>
         </el-table-column>
         <el-table-column
-          v-if="!isInMobile"
+          v-if="columns.includes('goal') && !isInMobile"
           prop="goal"
           :label="$t('sprintList.list.goal')"
           show-overflow-tooltip
-          min-width="100">
+          min-width="250">
           <template #default="scope">
             <span v-if="scope.row.goal" v-html="scope.row.goalHighlightLabel || scope.row.goal"></span>
           </template>
         </el-table-column>
-        <el-table-column v-if="!isInMobile" prop="startDate" :label="$t('sprintList.list.startDate')" min-width="40">
-        </el-table-column>
-        <el-table-column v-if="!isInMobile" prop="endDate" :label="$t('sprintList.list.endDate')" min-width="40">
+        <el-table-column
+          v-if="columns.includes('startDate') && !isInMobile"
+          prop="startDate"
+          :label="$t('sprintList.list.startDate')"
+          min-width="130">
         </el-table-column>
         <el-table-column
-          v-if="!isInMobile"
+          v-if="columns.includes('endDate') && !isInMobile"
+          prop="endDate"
+          :label="$t('sprintList.list.endDate')"
+          min-width="130">
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('progress') && !isInMobile"
           :label="$t('sprintList.list.progress')"
-          min-width="40"
+          min-width="130"
           class-name="progress-column">
           <template #default="scope">
             <el-tooltip
@@ -69,7 +81,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('sprintList.list.status')" :min-width="isInMobile ? 60 : 30">
+        <el-table-column v-if="columns.includes('status')" :label="$t('sprintList.list.status')" min-width="130">
           <template #default="scope">
             <status-tag
               v-if="scope.row.status"
@@ -77,8 +89,11 @@
               :label="$t(`sprintStatuses.${scope.row.status}`)" />
           </template>
         </el-table-column>
-
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+        <el-table-column
+          v-if="columns.includes('actions') && project.isDeveloper"
+          :label="$t('common.actions')"
+          width="80"
+          align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -86,13 +101,13 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="Edit" @click.native="editSprint(scope.row)">
+                  <el-dropdown-item icon="Edit" @click="editSprint(scope.row)">
                     {{ $t('common.edit') }}</el-dropdown-item
                   >
                   <el-dropdown-item
                     icon="Delete"
                     :disabled="scope.row.backlog"
-                    @click.native="deleteSprint(scope.$index, scope.row)">
+                    @click="deleteSprint(scope.$index, scope.row)">
                     {{ $t('common.delete') }}</el-dropdown-item
                   >
                 </el-dropdown-menu>
@@ -125,6 +140,7 @@ import { sprintApi } from '@/api/sprint.js'
 import utils from '@/utils/util.js'
 import SprintEdit from '@/components/sprint/SprintEdit.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -132,16 +148,30 @@ export default {
   name: 'SprintList',
   components: {
     SprintEdit,
-    StatusTag
+    StatusTag,
+    ColumnSelector
   },
   data() {
+    const availableColumns = [
+      { key: 'name', labelKey: 'sprintList.list.name', default: true, readonly: true },
+      { key: 'goal', labelKey: 'sprintList.list.goal' },
+      { key: 'startDate', labelKey: 'sprintList.list.startDate', default: true },
+      { key: 'endDate', labelKey: 'sprintList.list.endDate', default: true },
+      { key: 'progress', labelKey: 'sprintList.list.progress', default: true },
+      { key: 'status', labelKey: 'sprintList.list.status', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       projectId: null,
       project: {},
       sprints: [],
       loading: false,
       editingSprint: null,
-      isInMobile: utils.isInMobile()
+      isInMobile: utils.isInMobile(),
+      columns: this.$store.get('sprintListColumns') || defaultColumns,
+      availableColumns
     }
   },
   mounted() {

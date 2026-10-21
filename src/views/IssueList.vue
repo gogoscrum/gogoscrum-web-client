@@ -4,6 +4,7 @@
       v-if="filter"
       :project-id="projectId"
       :issue-filter="filter"
+      column-selector-store-key="issueListColumns"
       :filter-columns="[]"
       @page-size-changed="pageSizeChanged"
       @issue-filter-changed="filterChanged">

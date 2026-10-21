@@ -22,6 +22,10 @@
           <el-icon v-else @click="loadRuns" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="testRunListColumns"></column-selector>
           <span class="item-count">{{
             filter.keyword
               ? $t('common.filter.matchedResults', { count: totalElements })
@@ -52,12 +56,11 @@
       @sort-change="sortChange"
       @row-click="showRunEdit">
       <el-table-column
-        v-if="!filter.caseId"
+        v-if="columns.includes('code') && !filter.caseId"
         :label="$t('test.case.list.header.code')"
         prop="testCase.code"
         sortable="custom"
-        width="85"
-        align="center">
+        width="90">
         <template #default="scope">
           <el-tag type="info"
             >TC-<span v-html="scope.row['testCase.codeHighlightLabel'] || scope.row.testCase.code"
@@ -65,29 +68,35 @@
         </template>
       </el-table-column>
       <el-table-column
-        v-if="!filter.caseId"
+        v-if="columns.includes('caseName') && !filter.caseId"
         :label="$t('test.run.list.caseName')"
         prop="testCase.details.name"
         show-overflow-tooltip
         sortable="custom"
-        min-width="100">
+        min-width="250">
         <template #default="scope">
           <span v-html="scope.row['testCase.details.nameHighlightLabel'] || scope.row.testCase.details.name" />
         </template>
       </el-table-column>
-      <el-table-column :label="$t('test.run.list.createdTime')" prop="createdTime" sortable="custom" min-width="60">
+      <el-table-column
+        v-if="columns.includes('createdTime')"
+        :label="$t('test.run.list.createdTime')"
+        prop="createdTime"
+        sortable="custom"
+        min-width="150">
         <template #default="scope">
           {{ scope.row.createdTimeFormatted }}
         </template>
       </el-table-column>
       <el-table-column
+        v-if="columns.includes('createdBy')"
         :label="$t('test.run.list.createdBy')"
         prop="createdBy.nickname"
         sortable="custom"
         column-key="creators"
         :filters="userFilters"
         :filter-multiple="true"
-        width="130">
+        width="120">
         <template #filter-icon>
           <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
         </template>
@@ -100,6 +109,7 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="columns.includes('planName')"
         :label="$t('test.run.list.planName')"
         prop="testPlan.name"
         show-overflow-tooltip
@@ -107,7 +117,7 @@
         column-key="planIds"
         :filters="planFilters"
         :filter-multiple="true"
-        min-width="70">
+        min-width="130">
         <template #filter-icon>
           <el-icon class="table-header-filter-icon" :class="{ active: filter.planIds?.length }"><Filter /></el-icon>
         </template>
@@ -115,15 +125,15 @@
           {{ scope.row.testPlan?.name }}
         </template>
       </el-table-column>
-
       <el-table-column
+        v-if="columns.includes('status')"
         :label="$t('test.run.list.status')"
         prop="status"
         sortable="custom"
         column-key="statuses"
         :filters="runStatusFilters"
         :filter-multiple="true"
-        min-width="40">
+        min-width="100">
         <template #filter-icon>
           <el-icon class="table-header-filter-icon" :class="{ active: filter.statuses?.length }"><Filter /></el-icon>
         </template>
@@ -131,7 +141,11 @@
           <TestRunStatusIcon :status="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+      <el-table-column
+        v-if="columns.includes('actions') && project.isDeveloper"
+        :label="$t('common.actions')"
+        width="80"
+        align="center">
         <template #default="scope">
           <el-dropdown trigger="click" placement="bottom">
             <div class="more-action-icon" @click.stop>
@@ -139,10 +153,10 @@
             </div>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item icon="ZoomIn" @click.native="showRunEdit(scope.row)">{{
+                <el-dropdown-item icon="ZoomIn" @click="showRunEdit(scope.row)">{{
                   $t('common.details')
                 }}</el-dropdown-item>
-                <el-dropdown-item icon="Delete" @click.native="deleteRun(scope.$index, scope.row)">{{
+                <el-dropdown-item icon="Delete" @click="deleteRun(scope.$index, scope.row)">{{
                   $t('common.delete')
                 }}</el-dropdown-item>
               </el-dropdown-menu>
@@ -187,13 +201,15 @@ import dict from '@/locales/zh-cn/dict.json'
 import TestRunStatusIcon from '@/components/testing/TestRunStatusIcon.vue'
 import Avatar from '@/components/common/Avatar.vue'
 import TestRunEdit from './TestRunEdit.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 
 export default {
   name: 'TestRunList',
   components: {
     TestRunStatusIcon,
     Avatar,
-    TestRunEdit
+    TestRunEdit,
+    ColumnSelector
   },
   props: {
     showEmptyIcon: {
@@ -202,6 +218,17 @@ export default {
     }
   },
   data() {
+    const availableColumns = [
+      { key: 'code', labelKey: 'test.case.list.header.code', default: true, readonly: true },
+      { key: 'caseName', labelKey: 'test.run.list.caseName', default: true, readonly: true },
+      { key: 'createdTime', labelKey: 'test.run.list.createdTime', default: true },
+      { key: 'createdBy', labelKey: 'test.run.list.createdBy', default: true },
+      { key: 'planName', labelKey: 'test.run.list.planName', default: false },
+      { key: 'status', labelKey: 'test.run.list.status', default: true, readonly: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       projectId: this.$route.params.projectId,
       project: {},
@@ -220,7 +247,9 @@ export default {
       editingRunCaseId: null,
       userFilters: [],
       runStatusFilters: [],
-      planFilters: []
+      planFilters: [],
+      columns: this.$store.get('testRunListColumns') || defaultColumns,
+      availableColumns
     }
   },
   computed: {},
@@ -337,14 +366,7 @@ export default {
       this.totalElements--
     },
     sortChange(event) {
-      // Only support single column sorting
-      this.filter.orders = []
-      if (event.prop && event.order) {
-        this.filter.orders.push({
-          property: event.prop,
-          direction: event.order === 'ascending' ? 'ASC' : 'DESC'
-        })
-      }
+      this.filter.orders = utils.getSortOrders(event)
       this.filterChanged()
     },
     filterChange(filters) {

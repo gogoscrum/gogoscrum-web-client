@@ -20,6 +20,10 @@
           <el-icon v-else @click="loadInvitations" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="invitationListColumns"></column-selector>
           <span class="item-count">{{
             filter.code
               ? $t('common.filter.matchedResults', { count: totalElements })
@@ -35,17 +39,6 @@
             :placeholder="$t('invitationList.header.search')"
             @input="inputChanged"></el-input>
         </el-form-item>
-        <el-form-item class="ml-5px mb-0!">
-          <el-select
-            v-model="filter.active"
-            :placeholder="$t('invitationList.header.status')"
-            class="w-100px"
-            clearable
-            @change="keywordChanged">
-            <el-option :label="$t('invitationList.header.active')" :value="true" />
-            <el-option :label="$t('invitationList.header.inactive')" :value="false" />
-          </el-select>
-        </el-form-item>
       </div>
     </div>
     <div class="main">
@@ -54,22 +47,44 @@
         v-loading="loading"
         class="invitation-list"
         row-class-name="invitation-row"
-        :show-header="true">
-        <el-table-column prop="code" :label="$t('invitationList.list.code')" min-width="60">
+        :show-header="true"
+        @filterChange="filterChange"
+        @sort-change="sortChange">
+        <el-table-column prop="code" :label="$t('invitationList.list.code')" sortable="custom" min-width="180">
           <template #default="scope">
             <span v-html="scope.row.codeHighlightLabel || scope.row.code"></span>
           </template>
         </el-table-column>
         <el-table-column
-          v-if="!isInMobile"
+          v-if="columns.includes('invitationType') && !isInMobile"
           prop="invitationType"
           :label="$t('invitationList.list.invitationType')"
-          min-width="30">
+          sortable="custom"
+          column-key="invitationTypes"
+          :filters="invitationTypeFilters"
+          :filter-multiple="true"
+          min-width="100">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.invitationTypes?.length }"
+              ><Filter
+            /></el-icon>
+          </template>
           <template #default="scope">
             <span v-if="scope.row.invitationType">{{ $t(`invitationTypes.${scope.row.invitationType}`) }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('invitationList.list.status')" min-width="30">
+        <el-table-column
+          v-if="columns.includes('status')"
+          :label="$t('invitationList.list.status')"
+          sortable="custom"
+          sort-by="enabled"
+          column-key="actives"
+          :filters="activeFilters"
+          :filter-multiple="false"
+          min-width="100">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.active !== null }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <el-tag v-if="!scope.row.enabled" type="info" effect="plain" size="small">{{
               $t('invitationList.list.disabled')
@@ -81,10 +96,11 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="!isInMobile"
+          v-if="columns.includes('joinCount') && !isInMobile"
           prop="joinCount"
           :label="$t('invitationList.list.joinCount')"
-          min-width="30"
+          sortable="custom"
+          min-width="100"
           align="center">
           <template #default="scope">
             <span
@@ -97,21 +113,17 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="!isInMobile"
-          prop="createdTimeFormatted"
-          :label="$t('invitationList.list.createdTime')"
-          min-width="50">
-        </el-table-column>
-        <el-table-column
-          v-if="!isInMobile"
-          prop="expireTime"
-          :label="$t('invitationList.list.expireTime')"
-          min-width="50">
-          <template #default="scope">
-            <span>{{ scope.row.expireTime || $t('invitationList.list.neverExpire') }}</span>
+          v-if="columns.includes('creator') && !isInMobile"
+          :label="$t('invitationList.list.creator')"
+          prop="createdBy.nickname"
+          sortable="custom"
+          column-key="creators"
+          :filters="userFilters"
+          :filter-multiple="true"
+          min-width="100">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
           </template>
-        </el-table-column>
-        <el-table-column v-if="!isInMobile" :label="$t('invitationList.list.creator')" min-width="30">
           <template #default="scope">
             <avatar
               :name="scope.row.createdBy.nickname"
@@ -120,9 +132,28 @@
               showName></avatar>
           </template>
         </el-table-column>
-
         <el-table-column
-          v-if="project.isDeveloper"
+          v-if="columns.includes('createdTime') && !isInMobile"
+          prop="createdTime"
+          :label="$t('invitationList.list.createdTime')"
+          sortable="custom"
+          min-width="150">
+          <template #default="scope">
+            {{ scope.row.createdTimeFormatted }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('expireTime') && !isInMobile"
+          prop="expireTime"
+          :label="$t('invitationList.list.expireTime')"
+          sortable="custom"
+          min-width="150">
+          <template #default="scope">
+            <span>{{ scope.row.expireTime || $t('invitationList.list.neverExpire') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('actions') && project.isDeveloper"
           :label="$t('common.actions')"
           width="80"
           class-name="actions-column">
@@ -136,21 +167,18 @@
                   <el-dropdown-item
                     v-if="scope.row.enabled && !scope.row.expired"
                     icon="CopyDocument"
-                    @click.native="copyInvitationUrl(scope.row)"
+                    @click="copyInvitationUrl(scope.row)"
                     >{{ $t('invitationList.list.actions.copyUrl') }}</el-dropdown-item
                   >
                   <el-dropdown-item
                     v-if="scope.row.enabled"
                     icon="CircleClose"
-                    @click.native="disableInvitation(scope.$index, scope.row)"
+                    @click="disableInvitation(scope.$index, scope.row)"
                     >{{ $t('invitationList.list.actions.disable') }}</el-dropdown-item
                   >
-                  <el-dropdown-item
-                    v-else
-                    icon="CircleCheck"
-                    @click.native="enableInvitation(scope.$index, scope.row)"
-                    >{{ $t('invitationList.list.actions.enable') }}</el-dropdown-item
-                  >
+                  <el-dropdown-item v-else icon="CircleCheck" @click="enableInvitation(scope.$index, scope.row)">{{
+                    $t('invitationList.list.actions.enable')
+                  }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -199,9 +227,22 @@ import dayjs from 'dayjs'
 import utils from '@/utils/util.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import InvitedMembers from '@/components/user/InvitedMembers.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 
 export default {
   data() {
+    const availableColumns = [
+      { key: 'code', labelKey: 'invitationList.list.code', default: true, readonly: true },
+      { key: 'invitationType', labelKey: 'invitationList.list.invitationType', default: true },
+      { key: 'status', labelKey: 'invitationList.list.status', default: true, readonly: true },
+      { key: 'joinCount', labelKey: 'invitationList.list.joinCount', default: true },
+      { key: 'creator', labelKey: 'invitationList.list.creator', default: true },
+      { key: 'createdTime', labelKey: 'invitationList.list.createdTime', default: true },
+      { key: 'expireTime', labelKey: 'invitationList.list.expireTime', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       isInMobile: utils.isInMobile(),
       invitations: [],
@@ -209,6 +250,7 @@ export default {
         projectId: null,
         code: null,
         active: null,
+        orders: [],
         page: 1,
         pageSize: this.$store.get('invitationListPageSize') || 10
       },
@@ -216,21 +258,42 @@ export default {
       totalPages: 0,
       loading: true,
       project: {},
-      invitationId: null
+      invitationId: null,
+      userFilters: [],
+      invitationTypeFilters: [],
+      activeFilters: [],
+      columns: this.$store.get('invitationListColumns') || defaultColumns,
+      availableColumns
     }
   },
   components: {
     Avatar,
-    InvitedMembers
+    InvitedMembers,
+    ColumnSelector
   },
   name: 'InvitationList',
   created() {
     this.project = this.$store.get('project')
     this.filter.projectId = this.$route.params.projectId
+    this.initColumnFilters()
     this.loadInvitations()
   },
   mounted() {},
   methods: {
+    initColumnFilters() {
+      this.userFilters = (this.project.projectMembers || []).map((member) => ({
+        text: member.user.nickname,
+        value: member.user.id
+      }))
+      this.invitationTypeFilters = ['DEVELOPER', 'GUEST'].map((type) => ({
+        text: this.$t(`invitationTypes.${type}`),
+        value: type
+      }))
+      this.activeFilters = [
+        { text: this.$t('invitationList.header.active'), value: true },
+        { text: this.$t('invitationList.header.inactive'), value: false }
+      ]
+    },
     loadInvitations() {
       this.loading = true
 
@@ -278,6 +341,28 @@ export default {
       }, 500)
     },
     keywordChanged() {
+      this.filterChanged()
+    },
+    sortChange(event) {
+      this.filter.orders = utils.getSortOrders(event) || []
+      this.filterChanged()
+    },
+    filterChange(filters) {
+      if (filters.creators) {
+        this.filter.creators = filters.creators.length > 0 ? filters.creators : null
+      }
+
+      if (filters.invitationTypes) {
+        this.filter.invitationTypes = filters.invitationTypes.length > 0 ? filters.invitationTypes : null
+      }
+
+      if (filters.actives) {
+        this.filter.active = filters.actives.length > 0 ? filters.actives[0] : null
+      }
+
+      this.filterChanged()
+    },
+    filterChanged() {
       this.filter.page = 1
       this.loadInvitations()
     },
@@ -287,9 +372,8 @@ export default {
     },
     pageSizeChanged(size) {
       this.filter.pageSize = size
-      this.filter.page = 1
       this.$store.set('invitationListPageSize', this.filter.pageSize)
-      this.loadInvitations()
+      this.filterChanged()
     },
     disableInvitation: function (index, row) {
       ElMessageBox.confirm(

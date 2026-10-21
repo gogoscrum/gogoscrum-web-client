@@ -20,6 +20,10 @@
           <el-icon v-else @click="loadTags" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="tagListColumns"></column-selector>
           <span class="item-count">{{
             filter.keyword
               ? $t('common.filter.matchedResults', { count: totalElements })
@@ -44,24 +48,32 @@
         class="tag-list"
         row-class-name="tag-row"
         :show-header="true"
+        @filterChange="filterChange"
+        @sort-change="sortChange"
         @row-click="editTag"
         empty-text="No data">
         <el-table-column
           prop="name"
           :label="$t('tagList.list.name')"
-          :min-width="isInMobile ? 120 : 150"
+          sortable="custom"
+          :min-width="isInMobile ? 120 : 300"
           class-name="clickable">
           <template #default="scope">
             <el-tag :color="scope.row.color || '#999999'" effect="dark" class="no-border">{{ scope.row.name }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
-          v-if="!isInMobile"
-          prop="updatedTimeFormatted"
-          :label="$t('tagList.list.updatedTime')"
-          min-width="80">
-        </el-table-column>
-        <el-table-column v-if="!isInMobile" :label="$t('tagList.list.creator')" min-width="50">
+          v-if="columns.includes('creator') && !isInMobile"
+          :label="$t('tagList.list.creator')"
+          prop="createdBy.nickname"
+          sortable="custom"
+          column-key="creators"
+          :filters="userFilters"
+          :filter-multiple="true"
+          min-width="120">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <avatar
               :name="scope.row.createdBy.nickname"
@@ -70,7 +82,31 @@
               showName></avatar>
           </template>
         </el-table-column>
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+        <el-table-column
+          v-if="columns.includes('createdTime') && !isInMobile"
+          prop="createdTime"
+          :label="$t('common.createdTime')"
+          sortable="custom"
+          min-width="150">
+          <template #default="scope">
+            {{ scope.row.createdTimeFormatted }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('updatedTime') && !isInMobile"
+          prop="updatedTime"
+          :label="$t('common.updatedTime')"
+          sortable="custom"
+          min-width="150">
+          <template #default="scope">
+            {{ scope.row.updatedTimeFormatted }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('actions') && project.isDeveloper"
+          :label="$t('common.actions')"
+          width="80"
+          align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -78,13 +114,11 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="Edit" @click.native="editTag(scope.row)">{{
-                    $t('common.edit')
-                  }}</el-dropdown-item>
+                  <el-dropdown-item icon="Edit" @click="editTag(scope.row)">{{ $t('common.edit') }}</el-dropdown-item>
                   <el-dropdown-item
                     icon="Delete"
                     :disabled="scope.row.backlog"
-                    @click.native="deleteTag(scope.$index, scope.row)">
+                    @click="deleteTag(scope.$index, scope.row)">
                     {{ $t('common.delete') }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -129,15 +163,26 @@ import { tagApi } from '@/api/tag.js'
 import utils from '@/utils/util.js'
 import TagEdit from '@/components/tag/TagEdit.vue'
 import Avatar from '@/components/common/Avatar.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
   name: 'TagList',
   components: {
     TagEdit,
-    Avatar
+    Avatar,
+    ColumnSelector
   },
   data() {
+    const availableColumns = [
+      { key: 'name', labelKey: 'tagList.list.name', default: true, readonly: true },
+      { key: 'creator', labelKey: 'tagList.list.creator', default: true },
+      { key: 'createdTime', labelKey: 'common.createdTime', default: true },
+      { key: 'updatedTime', labelKey: 'common.updatedTime', default: false },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       project: {},
       isInMobile: utils.isInMobile(),
@@ -145,18 +190,23 @@ export default {
       filter: {
         projectId: null,
         keyword: null,
+        orders: [],
         page: 1,
         pageSize: this.$store.get('tagListPageSize') || 10
       },
       totalElements: 0,
       totalPages: 0,
       loading: true,
-      editingTag: null
+      editingTag: null,
+      userFilters: [],
+      columns: this.$store.get('tagListColumns') || defaultColumns,
+      availableColumns
     }
   },
   created() {
     this.filter.projectId = this.$route.params.projectId
     this.project = this.$store.get('project')
+    this.initColumnFilters()
     this.loadTags()
   },
   mounted() {},
@@ -175,6 +225,12 @@ export default {
         }, 200)
       })
     },
+    initColumnFilters() {
+      this.userFilters = (this.project.projectMembers || []).map((member) => ({
+        text: member.user.nickname,
+        value: member.user.id
+      }))
+    },
     formatTag(tag) {
       return utils.formatCreateUpdateTime(tag)
     },
@@ -188,6 +244,23 @@ export default {
       }, 500)
     },
     keywordChanged() {
+      this.filterChanged()
+    },
+    sortChange(event) {
+      this.filter.orders = utils.getSortOrders(event) || []
+      this.filterChanged()
+    },
+    filterChange(filters) {
+      if (filters.creators) {
+        if (filters.creators.length > 0) {
+          this.filter.creators = filters.creators
+        } else {
+          this.filter.creators = null
+        }
+      }
+      this.filterChanged()
+    },
+    filterChanged() {
       this.filter.page = 1
       this.loadTags()
     },
@@ -197,9 +270,8 @@ export default {
     },
     pageSizeChanged(size) {
       this.filter.pageSize = size
-      this.filter.page = 1
       this.$store.set('tagListPageSize', this.filter.pageSize)
-      this.loadTags()
+      this.filterChanged()
     },
     newTag() {
       this.editingTag = {}

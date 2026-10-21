@@ -25,6 +25,8 @@
     "ok": "OK",
     "done": "Done",
     "actions": "Actions",
+    "selectAll": "All",
+    "restoreDefault": "Restore",
     "move": "Move to",
     "expand": "Expand",
     "collapse": "Collapse",

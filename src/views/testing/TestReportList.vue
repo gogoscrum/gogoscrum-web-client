@@ -22,6 +22,10 @@
           <el-icon v-else @click="loadReports" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="testReportListColumns"></column-selector>
           <span class="item-count">{{
             filter.keyword
               ? $t('common.filter.matchedResults', { count: totalElements })
@@ -56,12 +60,13 @@
         prop="name"
         show-overflow-tooltip
         sortable="custom"
-        min-width="100">
+        min-width="300">
         <template #default="scope">
           <span v-html="scope.row['nameHighlightLabel'] || scope.row.name" />
         </template>
       </el-table-column>
       <el-table-column
+        v-if="columns.includes('planName')"
         :label="$t('test.report.list.header.planName')"
         prop="testPlan.name"
         show-overflow-tooltip
@@ -69,7 +74,7 @@
         column-key="planIds"
         :filters="!filter.planId ? planFilters : null"
         :filter-multiple="true"
-        min-width="70">
+        min-width="150">
         <template #filter-icon>
           <el-icon class="table-header-filter-icon" :class="{ active: filter.planIds?.length }"><Filter /></el-icon>
         </template>
@@ -78,15 +83,17 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="columns.includes('createdTime')"
         :label="$t('test.report.list.header.createdTime')"
         prop="createdTime"
         sortable="custom"
-        min-width="60">
+        min-width="150">
         <template #default="scope">
           {{ scope.row.createdTimeFormatted }}
         </template>
       </el-table-column>
       <el-table-column
+        v-if="columns.includes('createdBy')"
         :label="$t('test.report.list.header.createdBy')"
         prop="createdBy.nickname"
         sortable="custom"
@@ -105,7 +112,11 @@
             :src="scope.row.createdBy.avatarUrl"></Avatar>
         </template>
       </el-table-column>
-      <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+      <el-table-column
+        v-if="columns.includes('actions') && project.isDeveloper"
+        :label="$t('common.actions')"
+        width="80"
+        align="center">
         <template #default="scope">
           <el-dropdown trigger="click" placement="bottom">
             <div class="more-action-icon" @click.stop>
@@ -155,11 +166,13 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import utils from '@/utils/util.js'
 import highlight from '@/utils/highlight.js'
 import Avatar from '@/components/common/Avatar.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 
 export default {
   name: 'TestReportList',
   components: {
-    Avatar
+    Avatar,
+    ColumnSelector
   },
   props: {
     showEmptyIcon: {
@@ -168,6 +181,15 @@ export default {
     }
   },
   data() {
+    const availableColumns = [
+      { key: 'name', labelKey: 'test.report.list.header.name', default: true, readonly: true },
+      { key: 'planName', labelKey: 'test.report.list.header.planName', default: false },
+      { key: 'createdTime', labelKey: 'test.report.list.header.createdTime', default: true },
+      { key: 'createdBy', labelKey: 'test.report.list.header.createdBy', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       projectId: this.$route.params.projectId,
       project: {},
@@ -183,7 +205,9 @@ export default {
       totalPages: 0,
       loading: false,
       userFilters: [],
-      planFilters: []
+      planFilters: [],
+      columns: this.$store.get('testReportListColumns') || defaultColumns,
+      availableColumns
     }
   },
   computed: {},
@@ -269,14 +293,7 @@ export default {
         })
     },
     sortChange(event) {
-      // Only support single column sorting
-      this.filter.orders = []
-      if (event.prop && event.order) {
-        this.filter.orders.push({
-          property: event.prop,
-          direction: event.order === 'ascending' ? 'ASC' : 'DESC'
-        })
-      }
+      this.filter.orders = utils.getSortOrders(event)
       this.filterChanged()
     },
     filterChange(filters) {

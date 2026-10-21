@@ -35,6 +35,10 @@
             <el-icon v-else @click="loadIssues" class="refresh-btn">
               <Refresh />
             </el-icon>
+            <column-selector
+              v-model="columns"
+              :available-columns="availableColumns"
+              store-key="issueListOldColumns"></column-selector>
             <span class="item-count">{{ $t('issueList.header.count', { count: totalElements }) }}</span>
           </div>
         </div>
@@ -168,13 +172,17 @@
         row-class-name="issue-row"
         :show-header="false"
         @row-click="editIssue">
-        <el-table-column :label="$t('issueList.list.name')" min-width="250" class-name="clickable">
+        <el-table-column
+          v-if="columns.includes('name')"
+          :label="$t('issueList.list.name')"
+          min-width="250"
+          class-name="clickable">
           <template #default="scope">
             <issue-row :issueDetails="scope.row" />
           </template>
         </el-table-column>
         <el-table-column
-          v-if="project.isDeveloper"
+          v-if="columns.includes('actions') && project.isDeveloper"
           :label="$t('common.actions')"
           :width="isInMobile ? 35 : 50"
           class-name="actions-column">
@@ -288,6 +296,7 @@ import MemberSelector from '@/components/common/MemberSelector.vue'
 import TagSelector from '@/components/common/TagSelector.vue'
 import Avatar from '@/components/common/Avatar.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import dicts from '@/locales/zh-cn/dict.json'
 import { saveAs } from 'file-saver'
@@ -303,9 +312,16 @@ export default {
     IssueRow,
     IssueEdit,
     IssueFilterEdit,
-    StatusTag
+    StatusTag,
+    ColumnSelector
   },
   data() {
+    const availableColumns = [
+      { key: 'name', labelKey: 'issueList.list.name', default: true, readonly: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       isInMobile: utils.isInMobile(),
       currentUser: this.$store.get('user'),
@@ -334,7 +350,9 @@ export default {
         emitPath: false,
         checkStrictly: true,
         expandTrigger: 'hover'
-      }
+      },
+      columns: this.$store.get('issueListOldColumns') || defaultColumns,
+      availableColumns
     }
   },
   watch: {

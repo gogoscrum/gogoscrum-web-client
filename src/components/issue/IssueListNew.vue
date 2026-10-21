@@ -34,6 +34,11 @@
           <el-icon v-else @click="loadIssues" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="selectedColumns"
+            :available-columns="availableColumns"
+            :store-key="columnSelectorStoreKey"
+            @update:model-value="columnsChanged"></column-selector>
           <span class="item-count">{{ $t('common.filter.matchedResults', { count: totalElements }) }}</span>
         </div>
         <el-form-item class="mb-0!">
@@ -59,7 +64,6 @@
         @filter-change="filterChange"
         @row-click="editIssue">
         <el-table-column
-          v-if="columns.includes('code')"
           :label="$t('issueList.list.code')"
           prop="code"
           sortable="custom"
@@ -81,7 +85,6 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('name')"
           :label="$t('issueList.list.name')"
           prop="name"
           :show-overflow-tooltip="false"
@@ -114,7 +117,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('component')"
+          v-if="selectedColumns.includes('component')"
           :label="$t('issueList.list.component')"
           prop="componentName"
           sortable="custom"
@@ -128,7 +131,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('priority')"
+          v-if="selectedColumns.includes('priority')"
           :label="$t('issueList.list.priority')"
           prop="priority"
           sortable="custom"
@@ -147,7 +150,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('storyPoints')"
+          v-if="selectedColumns.includes('storyPoints')"
           :label="$t('issueList.list.storyPoints')"
           prop="storyPoints"
           sortable="custom"
@@ -158,7 +161,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('sprint')"
+          v-if="selectedColumns.includes('sprint')"
           :label="$t('issueList.list.sprint')"
           sortable="custom"
           sort-by="sprint.id"
@@ -166,7 +169,7 @@
           :filters="filterColumns.includes('sprint') ? sprintFilters : null"
           :filter-multiple="true"
           show-overflow-tooltip
-          min-width="120">
+          min-width="130">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.sprintIds?.length }"><Filter /></el-icon>
           </template>
@@ -175,7 +178,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('status')"
+          v-if="selectedColumns.includes('status')"
           :label="$t('issueList.list.status')"
           prop="issueGroup.name"
           sortable="custom"
@@ -195,7 +198,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('owner')"
+          v-if="selectedColumns.includes('owner')"
           :label="$t('issueList.list.assignee')"
           prop="owner.nickname"
           sortable="custom"
@@ -217,7 +220,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('actions') && project.isDeveloper && !readonly"
+          v-if="selectedColumns.includes('actions') && project.isDeveloper && !readonly"
           fixed="right"
           :label="$t('common.actions')"
           :width="80"
@@ -229,14 +232,14 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="DocumentCopy" @click.native="cloneIssue(scope.$index, scope.row)">{{
+                  <el-dropdown-item icon="DocumentCopy" @click="cloneIssue(scope.$index, scope.row)">{{
                     $t('common.copy')
                   }}</el-dropdown-item>
                   <el-dropdown-item
                     divided
                     icon="Delete"
                     :disabled="scope.row.backlog"
-                    @click.native="deleteIssue(scope.$index, scope.row)">
+                    @click="deleteIssue(scope.$index, scope.row)">
                     {{ $t('common.delete') }}
                   </el-dropdown-item>
                   <el-dropdown-item>
@@ -250,12 +253,12 @@
                       <template #dropdown>
                         <el-dropdown-menu class="assignee-candidates">
                           <div v-show="scope.row.owner">
-                            <el-dropdown-item icon="Close" @click.native="unassign(scope.row)">
+                            <el-dropdown-item icon="Close" @click="unassign(scope.row)">
                               <span class="assgin-to-me">{{ $t('issueList.list.unassign') }}</span>
                             </el-dropdown-item>
                           </div>
                           <div v-show="!scope.row.owner">
-                            <el-dropdown-item icon="Check" @click.native="assignIssueToUser(scope.row, currentUser)">
+                            <el-dropdown-item icon="Check" @click="assignIssueToUser(scope.row, currentUser)">
                               <span class="assgin-to-me">{{ $t('issueList.list.assignToMe') }}</span>
                             </el-dropdown-item>
                           </div>
@@ -263,7 +266,7 @@
                             v-for="(member, index) in project.projectMembers"
                             :divided="index === 0"
                             :key="member.id"
-                            @click.native="assignIssueToUser(scope.row, member.user)">
+                            @click="assignIssueToUser(scope.row, member.user)">
                             <div class="user-select-option">
                               <avatar
                                 :name="member.user.nickname"
@@ -292,7 +295,7 @@
                               v-for="sprint in project.sprints"
                               :key="sprint.id"
                               :disabled="scope.row.sprint && scope.row.sprint.id === sprint.id"
-                              @click.native="moveIssueIntoSprint(scope.row, sprint)"
+                              @click="moveIssueIntoSprint(scope.row, sprint)"
                               >{{ sprint.name }}</el-dropdown-item
                             >
                           </template>
@@ -354,6 +357,7 @@ import IssueTypeIcon from '@/components/common/IssueTypeIcon.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
 import IssueTag from '@/components/common/IssueTag.vue'
 import StoryPoint from '@/components/common/StoryPoint.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 
 export default {
   name: 'IssueList',
@@ -364,7 +368,8 @@ export default {
     PriorityIcon,
     StatusTag,
     IssueTag,
-    StoryPoint
+    StoryPoint,
+    ColumnSelector
   },
   props: {
     projectId: {
@@ -406,7 +411,11 @@ export default {
     },
     columns: {
       type: Array,
-      default: () => ['code', 'name', 'component', 'storyPoints', 'priority', 'sprint', 'owner', 'status', 'actions']
+      default: () => []
+    },
+    columnSelectorStoreKey: {
+      type: String,
+      default: 'issueListColumns'
     },
     showTags: {
       type: Boolean,
@@ -429,8 +438,28 @@ export default {
       default: false
     }
   },
-  emits: ['pageSizeChanged', 'issueFilterChanged'],
+  emits: ['pageSizeChanged', 'issueFilterChanged', 'columnsChanged'],
   data() {
+    const availableColumns = [
+      { key: 'code', labelKey: 'issueList.list.code', default: true, readonly: true },
+      { key: 'name', labelKey: 'issueList.list.name', default: true, readonly: true },
+      { key: 'component', labelKey: 'issueList.list.component' },
+      { key: 'priority', labelKey: 'issueList.list.priority', default: true },
+      { key: 'storyPoints', labelKey: 'issueList.list.storyPoints', default: true },
+      { key: 'sprint', labelKey: 'issueList.list.sprint', default: true },
+      { key: 'status', labelKey: 'issueList.list.status', default: true },
+      { key: 'owner', labelKey: 'issueList.list.assignee', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+    const storedColumns = this.$store.get(this.columnSelectorStoreKey)
+    const selectedColumns =
+      Array.isArray(storedColumns) && storedColumns.length
+        ? storedColumns
+        : this.columns?.length
+          ? this.columns
+          : defaultColumns
+
     return {
       isInMobile: utils.isInMobile(),
       currentUser: this.$store.get('user'),
@@ -448,7 +477,9 @@ export default {
       priorityFilters: [],
       ownerFilters: [],
       groupFilters: [],
-      sprintFilters: []
+      sprintFilters: [],
+      availableColumns,
+      selectedColumns
     }
   },
   computed: {
@@ -467,6 +498,27 @@ export default {
         this.loadIssues()
       },
       deep: true
+    },
+    columns: {
+      handler: function (newValue) {
+        if (newValue?.length) {
+          this.selectedColumns = newValue
+        }
+      },
+      deep: true
+    },
+    columnSelectorStoreKey: {
+      handler: function (newValue) {
+        const storedColumns = this.$store.get(newValue)
+        if (Array.isArray(storedColumns) && storedColumns.length) {
+          this.selectedColumns = storedColumns
+          return
+        }
+
+        if (this.columns?.length) {
+          this.selectedColumns = this.columns
+        }
+      }
     }
   },
   created() {
@@ -550,18 +602,7 @@ export default {
         })
     },
     sortChange(event) {
-      console.log('sort changed:', event)
-
-      // Only support single column sorting
-      this.filter.orders = []
-      if (!event.column.sortBy) {
-        console.error('Column sort-by value not set', event)
-      } else if (event.order) {
-        this.filter.orders.push({
-          property: event.column.sortBy,
-          direction: event.order === 'ascending' ? 'ASC' : 'DESC'
-        })
-      }
+      this.filter.orders = utils.getSortOrders(event)
       this.filterChanged()
     },
     filterChange(filters) {
@@ -631,6 +672,9 @@ export default {
 
       // Emit event to parent component
       this.$emit('pageSizeChanged', size)
+    },
+    columnsChanged(columns) {
+      this.$emit('columnsChanged', columns)
     },
     newIssue() {
       this.editingIssue = {

@@ -1,6 +1,6 @@
 <template>
   <div class="doc-public-access-pop">
-    <el-popover :width="doc.publicAccess ? '450px' : 'auto'" placement="bottom-end">
+    <el-popover :width="doc.publicAccess ? '450px' : 'auto'" placement="top">
       <template #reference>
         <slot name="reference"></slot>
       </template>

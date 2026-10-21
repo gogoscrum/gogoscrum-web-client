@@ -1,23 +1,31 @@
 <template>
   <div class="component-tree-page page">
-    <div class="header">
-      <el-button
-        :disabled="readonly"
-        text
-        type="primary"
-        @click="create"
-        class="text-icon-btn"
-        icon="CirclePlusFilled"
-        >{{ $t('componentList.header.new') }}</el-button
-      >
-      <el-button
-        text
-        type="primary"
-        @click="toggleExpandAll"
-        class="text-icon-btn"
-        :icon="expandAll ? 'Folder' : 'FolderOpened'"
-        >{{ expandAll ? $t('componentList.header.collapse') : $t('componentList.header.expand') }}</el-button
-      >
+    <div class="filter-row">
+      <div class="left-part">
+        <el-button
+          :disabled="readonly"
+          text
+          type="primary"
+          @click="create"
+          class="text-icon-btn"
+          icon="CirclePlusFilled"
+          >{{ $t('componentList.header.new') }}</el-button
+        >
+        <el-button
+          text
+          type="primary"
+          @click="toggleExpandAll"
+          class="text-icon-btn"
+          :icon="expandAll ? 'Folder' : 'FolderOpened'"
+          >{{ expandAll ? $t('componentList.header.collapse') : $t('componentList.header.expand') }}</el-button
+        >
+      </div>
+      <div class="right-part">
+        <column-selector
+          v-model="columns"
+          :available-columns="availableColumns"
+          store-key="componentListColumns"></column-selector>
+      </div>
     </div>
     <div class="main">
       <el-table
@@ -32,7 +40,7 @@
             <el-tag effect="plain" round class="component-tag"> {{ scope.row.name }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('componentList.list.creator')" min-width="50">
+        <el-table-column v-if="columns.includes('creator')" :label="$t('componentList.list.creator')" min-width="50">
           <template #default="scope">
             <el-tooltip
               v-if="scope.row.createdBy"
@@ -47,7 +55,11 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column v-if="!readonly" :label="$t('common.actions')" width="80" class-name="actions-column">
+        <el-table-column
+          v-if="columns.includes('actions') && !readonly"
+          :label="$t('common.actions')"
+          width="80"
+          class-name="actions-column">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -87,13 +99,21 @@
 import { componentApi } from '@/api/component.js'
 import ComponentEdit from '@/components/component/ComponentEdit.vue'
 import Avatar from '@/components/common/Avatar.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import utils from '@/utils/util.js'
 
 export default {
   name: 'ComponentList',
-  components: { ComponentEdit, Avatar },
+  components: { ComponentEdit, Avatar, ColumnSelector },
   data() {
+    const availableColumns = [
+      { key: 'name', labelKey: 'componentList.list.name', default: true, readonly: true },
+      { key: 'creator', labelKey: 'componentList.list.creator', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       projectId: null,
       loading: true,
@@ -101,7 +121,9 @@ export default {
       components: [],
       readonly: false,
       editingComponent: null,
-      expandAll: false
+      expandAll: false,
+      columns: this.$store.get('componentListColumns') || defaultColumns,
+      availableColumns
     }
   },
   created() {

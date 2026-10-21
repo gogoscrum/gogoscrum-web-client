@@ -20,6 +20,10 @@
           <el-icon v-else @click="loadPlans" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="testPlanListColumns"></column-selector>
           <span class="item-count">{{
             filter.keyword
               ? $t('common.filter.matchedResults', { count: totalElements })
@@ -51,19 +55,20 @@
           prop="name"
           show-overflow-tooltip
           sortable="custom"
-          min-width="110">
+          min-width="300">
           <template #default="scope">
             <span class="plan-name" v-html="scope.row.nameHighlightLabel || scope.row.name" />
           </template>
         </el-table-column>
         <el-table-column
+          v-if="columns.includes('type')"
           :label="$t('test.plan.list.header.type')"
           prop="type"
           sortable="custom"
           column-key="types"
           :filters="testTypeFilters"
           :filter-multiple="true"
-          min-width="40">
+          min-width="150">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.types?.length }"><Filter /></el-icon>
           </template>
@@ -74,14 +79,14 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="!isInMobile"
+          v-if="columns.includes('owner')"
           :label="$t('test.plan.list.header.owner')"
           prop="owner.nickname"
           sortable="custom"
           column-key="owners"
           :filters="userFilters"
           :filter-multiple="true"
-          min-width="40"
+          min-width="120"
           class-name="owner-column">
           <template #filter-icon>
             <el-icon class="table-header-filter-icon" :class="{ active: filter.owners?.length }"><Filter /></el-icon>
@@ -95,7 +100,10 @@
               showName />
           </template>
         </el-table-column>
-        <el-table-column :label="$t('test.plan.list.header.progress')" min-width="40">
+        <el-table-column
+          v-if="columns.includes('progress')"
+          :label="$t('test.plan.list.header.progress')"
+          min-width="150">
           <template #default="scope">
             <el-popover class="box-item" content="Top Left prompts info" placement="left" effect="dark" width="180">
               <template #reference>
@@ -115,7 +123,11 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column v-if="project.isDeveloper" :label="$t('common.actions')" width="80" align="center">
+        <el-table-column
+          v-if="columns.includes('actions') && project.isDeveloper"
+          :label="$t('common.actions')"
+          width="80"
+          align="center">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -183,18 +195,28 @@ import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import TestPlanEdit from './TestPlanEdit.vue'
 import TestPlanStatistics from './TestPlanStatistics.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 
 export default {
   name: 'TestPlanList',
   components: {
     Avatar,
     TestPlanEdit,
-    TestPlanStatistics
+    TestPlanStatistics,
+    ColumnSelector
   },
   data() {
+    const availableColumns = [
+      { key: 'name', labelKey: 'test.plan.list.header.name', default: true, readonly: true },
+      { key: 'type', labelKey: 'test.plan.list.header.type', default: false },
+      { key: 'owner', labelKey: 'test.plan.list.header.owner', default: true },
+      { key: 'progress', labelKey: 'test.plan.list.header.progress', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       dict: dict,
-      isInMobile: utils.isInMobile(),
       projectId: this.$route.params.projectId,
       project: {},
       testPlans: [],
@@ -210,7 +232,9 @@ export default {
       loading: false,
       editingTestPlan: null,
       testTypeFilters: [],
-      userFilters: []
+      userFilters: [],
+      columns: this.$store.get('testPlanListColumns') || defaultColumns,
+      availableColumns
     }
   },
   created() {
@@ -259,14 +283,7 @@ export default {
       return utils.formatCreateUpdateTime(testPlan)
     },
     sortChange(event) {
-      // Only support single column sorting
-      this.filter.orders = []
-      if (event.prop && event.order) {
-        this.filter.orders.push({
-          property: event.prop,
-          direction: event.order === 'ascending' ? 'ASC' : 'DESC'
-        })
-      }
+      this.filter.orders = utils.getSortOrders(event)
       this.filterChanged()
     },
     filterChange(filters) {

@@ -4,6 +4,7 @@
       :project-id="projectId"
       :issue-filter="filter"
       :columns="columns"
+      column-selector-store-key="backlogListColumns"
       @page-size-changed="pageSizeChanged" />
   </div>
 </template>
@@ -24,7 +25,7 @@ export default {
         keyword: null,
         pageSize: this.$store.get('backlogPageSize') || 10
       },
-      columns: ['code', 'name', 'component', 'storyPoints', 'priority', 'owner', 'status', 'actions']
+      columns: ['code', 'name', 'storyPoints', 'priority', 'owner', 'status', 'actions']
     }
   },
   created() {

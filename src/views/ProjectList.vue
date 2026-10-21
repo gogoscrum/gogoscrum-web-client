@@ -14,6 +14,10 @@
           <el-icon v-else @click="loadProjects" class="refresh-btn">
             <Refresh />
           </el-icon>
+          <column-selector
+            v-model="columns"
+            :available-columns="availableColumns"
+            store-key="projectListColumns"></column-selector>
           <span class="item-count">{{ $t('projectList.header.projectCount', { count: totalElements }) }}</span>
         </div>
         <el-form-item class="mb-0!">
@@ -35,7 +39,7 @@
         row-class-name="project-row clickable"
         :show-header="false"
         @row-click="goToBoard">
-        <el-table-column :label="$t('projectList.list.name')" min-width="200">
+        <el-table-column v-if="columns.includes('name')" :label="$t('projectList.list.name')" min-width="200">
           <template #default="scope">
             <div class="flex items-center">
               <Avatar
@@ -58,7 +62,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('projectList.list.owner')" min-width="50" class-name="avatar-column not-clickable">
+        <el-table-column
+          v-if="columns.includes('owner')"
+          :label="$t('projectList.list.owner')"
+          min-width="50"
+          class-name="avatar-column not-clickable">
           <template #default="scope">
             <el-tooltip
               v-if="scope.row.owner"
@@ -72,7 +80,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('common.actions')" width="60" class-name="actions-column">
+        <el-table-column v-if="columns.includes('actions')" :label="$t('common.actions')" width="60" class-name="actions-column">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -163,6 +171,7 @@ import highlight from '@/utils/highlight.js'
 import ProjectEdit from '@/components/project/ProjectEdit.vue'
 import TransferProjectDialog from '@/components/project/TransferProject.vue'
 import Avatar from '@/components/common/Avatar.vue'
+import ColumnSelector from '@/components/common/ColumnSelector.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
@@ -170,9 +179,17 @@ export default {
   components: {
     ProjectEdit,
     TransferProjectDialog,
-    Avatar
+    Avatar,
+    ColumnSelector
   },
   data() {
+    const availableColumns = [
+      { key: 'name', labelKey: 'projectList.list.name', default: true, readonly: true },
+      { key: 'owner', labelKey: 'projectList.list.owner', default: true },
+      { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
+    ]
+    const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
+
     return {
       currentUser: {},
       projects: [],
@@ -185,7 +202,9 @@ export default {
       loading: true,
       editingProject: null,
       transferringProject: null,
-      isInMobile: utils.isInMobile()
+      isInMobile: utils.isInMobile(),
+      columns: this.$store.get('projectListColumns') || defaultColumns,
+      availableColumns
     }
   },
   created() {
