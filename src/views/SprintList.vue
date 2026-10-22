@@ -67,7 +67,7 @@
         <el-table-column
           v-if="columns.includes('progress') && !isInMobile"
           :label="$t('sprintList.list.progress')"
-          min-width="130"
+          min-width="150"
           class-name="progress-column">
           <template #default="scope">
             <el-tooltip
@@ -77,11 +77,11 @@
                   totalIssueCount: scope.row.totalIssueCount
                 })
               ">
-              <el-progress :percentage="Math.round(scope.row.progress * 100)" />
+              <el-progress :percentage="Math.round(scope.row.progress * 100)" class="sprint-progress-bar" />
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column v-if="columns.includes('status')" :label="$t('sprintList.list.status')" min-width="130">
+        <el-table-column v-if="columns.includes('status')" :label="$t('sprintList.list.status')" min-width="100">
           <template #default="scope">
             <status-tag
               v-if="scope.row.status"
@@ -300,6 +300,10 @@ export default {
   .sprint-row {
     .sprint-name {
       font-weight: 500;
+    }
+
+    .sprint-progress-bar {
+      max-width: 130px;
     }
   }
 }
