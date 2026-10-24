@@ -4,17 +4,23 @@
       <div class="title">{{ doc.name }}</div>
     </div>
     <div class="body" v-html="doc.content"></div>
-    <div class="desc">{{ lastSavedTip }}</div>
+    <div v-if="doc.updatedBy" class="desc flex items-center">
+      <Avatar :name="doc.updatedBy.nickname" :size="20" :src="doc.updatedBy.avatarUrl"></Avatar>
+      <span class="ml-2">{{ lastSavedTip }}</span>
+    </div>
   </div>
 </template>
 
 <script>
 import { docApi } from '@/api/doc.js'
 import utils from '@/utils/util'
+import Avatar from '@/components/common/Avatar.vue'
 
 export default {
   name: 'DocView',
-  components: {},
+  components: {
+    Avatar
+  },
   data() {
     return {
       doc: {
@@ -59,7 +65,7 @@ export default {
 .doc-view-page {
   width: 90%;
   max-width: 960px;
-  margin: 0 auto;
+  margin: 20px auto;
 
   .header {
     .title {

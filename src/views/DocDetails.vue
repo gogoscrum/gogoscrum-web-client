@@ -15,14 +15,7 @@
           {{ $t('docView.header.edit') }}
         </el-button>
       </div>
-      <span v-if="doc.updatedBy" class="desc ml-32px">
-        {{
-          $t('docView.header.lastEdit', {
-            updatedBy: doc.updatedBy.nickname,
-            updatedTime: doc.updatedTimeFormatted
-          })
-        }}
-      </span>
+
       <div class="flex items-center right-part">
         <DocPublicAccessPop :doc="doc">
           <template #reference>
@@ -61,6 +54,17 @@
           <span>{{ doc.name }}</span>
         </div>
         <div v-html="doc.content"></div>
+        <div v-if="doc.updatedBy" class="desc flex items-center mt-32px">
+          <Avatar :name="doc.updatedBy.nickname" :size="20" :src="doc.updatedBy.avatarUrl"></Avatar>
+          <span class="ml-2">
+            {{
+              $t('docView.header.lastEdit', {
+                updatedBy: doc.updatedBy.nickname,
+                updatedTime: doc.updatedTimeFormatted
+              })
+            }}
+          </span>
+        </div>
       </div>
     </div>
     <div v-if="editing" class="footer">
@@ -87,12 +91,14 @@ import Tinymce from '@/components/common/Tinymce.vue'
 import { ElNotification } from 'element-plus'
 import utils from '@/utils/util'
 import DocPublicAccessPop from '@/components/doc/DocPublicAccessPop.vue'
+import Avatar from '@/components/common/Avatar.vue'
 
 export default {
   name: 'DocDetails',
   components: {
     Tinymce,
-    DocPublicAccessPop
+    DocPublicAccessPop,
+    Avatar
   },
   data() {
     return {
