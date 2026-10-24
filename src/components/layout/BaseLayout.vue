@@ -426,6 +426,12 @@ export default {
         } else {
           this.selectSprint(sprintId)
         }
+      } else {
+        // If projectId in new router is different from current projectId, select the new project in the dropdown list
+        let projectId = this.$route.params.projectId
+        if (projectId && projectId !== this.projectId) {
+          this.selectProject(projectId)
+        }
       }
     }
   },

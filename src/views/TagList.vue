@@ -92,7 +92,7 @@
             {{ scope.row.createdTimeFormatted }}
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           v-if="columns.includes('updatedTime') && !isInMobile"
           prop="updatedTime"
           :label="$t('common.updatedTime')"
@@ -101,7 +101,7 @@
           <template #default="scope">
             {{ scope.row.updatedTimeFormatted }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           v-if="columns.includes('actions') && project.isDeveloper"
           :label="$t('common.actions')"
@@ -178,7 +178,6 @@ export default {
       { key: 'name', labelKey: 'tagList.list.name', default: true, readonly: true },
       { key: 'creator', labelKey: 'tagList.list.creator', default: true },
       { key: 'createdTime', labelKey: 'common.createdTime', default: true },
-      { key: 'updatedTime', labelKey: 'common.updatedTime', default: false },
       { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
     ]
     const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)

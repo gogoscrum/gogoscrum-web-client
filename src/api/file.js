@@ -12,6 +12,6 @@ export const fileApi = {
     }
   },
   delete: (id) => del(`/api/files/${id}`),
-  search: (filter) => get('/api/files', { params: filter }),
+  search: (filter) => post('/api/files/search', filter),
   getFileBlob: (url) => get(url, { responseType: 'blob' })
 }

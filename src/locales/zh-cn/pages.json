@@ -660,6 +660,7 @@
       "creator": "创建者",
       "creatorTip": "创建者: {nickname}",
       "createdTime": "创建时间",
+      "length": "长度",
       "noDocInProject": "项目中还没有任何文档"
     },
     "msg": {
@@ -761,9 +762,12 @@
       "search": "查找项目"
     },
     "list": {
-      "name": "名称",
+      "name": "项目名称",
+      "code": "代码",
       "owner": "所有者",
-      "ownerTip": "所有者: {nickname}",
+      "lastIssueSeq": "任务数",
+      "fileCount": "文件数",
+      "totalFileSize": "总存储",
       "details": "详情",
       "transfer": "移交",
       "quit": "退出",

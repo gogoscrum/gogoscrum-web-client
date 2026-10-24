@@ -247,8 +247,10 @@ export default {
           url: this.invitation.url
         })
         if (this.invitation.expireTime) {
+          // format the expiration time with current timezone
+          const expiryDate = new Date(this.invitation.expireTime)
           this.invitation.msg += this.$t('userPicker.msg.expire', {
-            expiry: this.invitation.expireTime
+            expiry: expiryDate.toLocaleString()
           })
         } else {
           this.invitation.msg += this.$t('userPicker.msg.neverExpire')

@@ -37,9 +37,15 @@
         v-loading="loading"
         class="project-list"
         row-class-name="project-row clickable"
-        :show-header="false"
+        :show-header="true"
+        @sort-change="sortChange"
         @row-click="goToBoard">
-        <el-table-column v-if="columns.includes('name')" :label="$t('projectList.list.name')" min-width="200">
+        <el-table-column
+          prop="name"
+          sortable="custom"
+          sort-by="name, createdTime"
+          :label="$t('projectList.list.name')"
+          min-width="300">
           <template #default="scope">
             <div class="flex items-center">
               <Avatar
@@ -63,24 +69,100 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="columns.includes('owner')"
-          :label="$t('projectList.list.owner')"
-          min-width="50"
-          class-name="avatar-column not-clickable">
+          v-if="columns.includes('code')"
+          prop="code"
+          sortable="custom"
+          sort-by="code, createdTime"
+          :label="$t('projectList.list.code')"
+          min-width="130">
           <template #default="scope">
-            <el-tooltip
-              v-if="scope.row.owner"
-              :content="
-                $t('projectList.list.ownerTip', {
-                  nickname: scope.row.owner.nickname
-                })
-              "
-              placement="left">
-              <avatar :name="scope.row.owner.nickname" :size="24" :src="scope.row.owner.avatarUrl"></avatar>
+            <span v-html="scope.row.codeHighlightLabel || scope.row.code"></span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('creator')"
+          :label="$t('common.createdBy')"
+          prop="createdBy.nickname"
+          sortable="custom"
+          sort-by="createdBy.nickname, createdTime"
+          min-width="130">
+          <template #default="scope">
+            <el-tooltip v-if="scope.row.createdBy" :content="scope.row.createdBy.nickname" placement="left">
+              <avatar
+                :name="scope.row.createdBy.nickname"
+                :size="24"
+                :src="scope.row.createdBy.avatarUrl"
+                showName></avatar>
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column v-if="columns.includes('actions')" :label="$t('common.actions')" width="60" class-name="actions-column">
+        <el-table-column
+          v-if="columns.includes('createdTime')"
+          prop="createdTime"
+          sortable="custom"
+          sort-by="createdTime"
+          :label="$t('common.createdTime')"
+          min-width="180">
+          <template #default="scope">
+            {{ scope.row.createdTimeFormatted }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('owner')"
+          :label="$t('projectList.list.owner')"
+          prop="owner.nickname"
+          sortable="custom"
+          sort-by="owner.nickname, createdTime"
+          min-width="130">
+          <template #default="scope">
+            <avatar :name="scope.row.owner.nickname" :size="24" :src="scope.row.owner.avatarUrl" showName></avatar>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('lastIssueSeq')"
+          prop="lastIssueSeq"
+          sortable="custom"
+          sort-by="lastIssueSeq, createdTime"
+          :label="$t('projectList.list.lastIssueSeq')"
+          min-width="100"
+          align="right">
+          <template #default="scope">
+            <router-link :to="{ name: 'IssueList', params: { projectId: scope.row.id } }" @click.stop>
+              {{ scope.row.lastIssueSeq }}
+            </router-link>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('fileCount')"
+          prop="fileCount"
+          sortable="custom"
+          sort-by="fileCount, createdTime"
+          :label="$t('projectList.list.fileCount')"
+          min-width="100"
+          align="right">
+          <template #default="scope">
+            <router-link :to="{ name: 'FileList', params: { projectId: scope.row.id } }" @click.stop>
+              {{ scope.row.fileCount }}
+            </router-link>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('totalFileSize')"
+          prop="totalFileSize"
+          sortable="custom"
+          sort-by="totalFileSize, createdTime"
+          :label="$t('projectList.list.totalFileSize')"
+          min-width="100"
+          align="right">
+          <template #default="scope">
+            {{ scope.row.totalFileSizeFormatted }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('actions')"
+          :label="$t('common.actions')"
+          width="80"
+          class-name="actions-column">
           <template #default="scope">
             <el-dropdown trigger="click" placement="bottom">
               <div class="more-action-icon" @click.stop>
@@ -88,36 +170,36 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="Setting" @click.native="projectDetails(scope.row)">{{
+                  <el-dropdown-item icon="Setting" @click="projectDetails(scope.row)">{{
                     $t('projectList.list.details')
                   }}</el-dropdown-item>
                   <el-dropdown-item
                     v-if="scope.row.owner.id == currentUser.id"
                     icon="Right"
-                    @click.native="transferProject(scope.row)"
+                    @click="transferProject(scope.row)"
                     >{{ $t('projectList.list.transfer') }}</el-dropdown-item
                   >
-                  <el-dropdown-item v-else icon="CircleClose" @click.native="quitProject(scope.row)">{{
+                  <el-dropdown-item v-else icon="CircleClose" @click="quitProject(scope.row)">{{
                     $t('projectList.list.quit')
                   }}</el-dropdown-item>
                   <el-dropdown-item
                     v-if="!scope.row.archived"
                     icon="FolderChecked"
                     :disabled="scope.row.owner.id != currentUser.id"
-                    @click.native="archiveProject(scope.row)"
+                    @click="archiveProject(scope.row)"
                     >{{ $t('projectList.list.archive') }}</el-dropdown-item
                   >
                   <el-dropdown-item
                     v-else
                     :disabled="scope.row.owner.id != currentUser.id"
                     icon="FolderRemove"
-                    @click.native="unarchiveProject(scope.row)"
+                    @click="unarchiveProject(scope.row)"
                     >{{ $t('projectList.list.unarchive') }}</el-dropdown-item
                   >
                   <el-dropdown-item
                     icon="Delete"
                     :disabled="scope.row.owner.id != currentUser.id"
-                    @click.native="deleteProject(scope.$index, scope.row)"
+                    @click="deleteProject(scope.$index, scope.row)"
                     >{{ $t('common.delete') }}</el-dropdown-item
                   >
                 </el-dropdown-menu>
@@ -173,6 +255,7 @@ import TransferProjectDialog from '@/components/project/TransferProject.vue'
 import Avatar from '@/components/common/Avatar.vue'
 import ColumnSelector from '@/components/common/ColumnSelector.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { filesize } from 'filesize'
 
 export default {
   name: 'ProjectList',
@@ -185,7 +268,13 @@ export default {
   data() {
     const availableColumns = [
       { key: 'name', labelKey: 'projectList.list.name', default: true, readonly: true },
+      { key: 'code', labelKey: 'projectList.list.code' },
+      { key: 'creator', labelKey: 'common.createdBy' },
+      { key: 'createdTime', labelKey: 'common.createdTime' },
       { key: 'owner', labelKey: 'projectList.list.owner', default: true },
+      { key: 'lastIssueSeq', labelKey: 'projectList.list.lastIssueSeq' },
+      { key: 'fileCount', labelKey: 'projectList.list.fileCount' },
+      { key: 'totalFileSize', labelKey: 'projectList.list.totalFileSize' },
       { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
     ]
     const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
@@ -195,6 +284,8 @@ export default {
       projects: [],
       filter: {
         keyword: null,
+        orders: [],
+        page: 1,
         pageSize: this.$store.get('myProjectListPageSize') || 10
       },
       totalElements: 0,
@@ -218,7 +309,9 @@ export default {
       projectApi
         .search(this.filter)
         .then((res) => {
-          this.projects = highlight.highlight(res.data.results, this.filter.keyword, 'code', 'name')
+          this.projects = highlight
+            .highlight(res.data.results, this.filter.keyword, 'code', 'name')
+            .map((project) => this.formatProject(project))
           this.totalElements = res.data.totalElements
           this.totalPages = res.data.totalPages
         })
@@ -229,6 +322,14 @@ export default {
         })
     },
     keywordChanged() {
+      this.reloadList()
+    },
+    sortChange(event) {
+      this.filter.orders = utils.getSortOrders(event) || []
+      this.reloadList()
+    },
+    reloadList() {
+      this.filter.page = 1
       this.loadProjects()
     },
     pageChanged: function (page) {
@@ -239,7 +340,7 @@ export default {
       this.filter.pageSize = size
       this.filter.page = 1
       this.$store.set('myProjectListPageSize', this.filter.pageSize)
-      this.loadProjects()
+      this.reloadList()
     },
     goToBoard(row) {
       this.$router.push({
@@ -286,6 +387,7 @@ export default {
       })
     },
     projectSaved(project) {
+      this.formatProject(project)
       let index = utils.indexInArray(this.projects, project.id)
 
       if (index >= 0) {
@@ -294,6 +396,23 @@ export default {
         this.projects.unshift(project)
       }
       this.$bus.$emit('projectUpdated', project)
+    },
+    formatProject(project) {
+      if (!project.lastIssueSeq || project.lastIssueSeq == 0) {
+        project.lastIssueSeq = ''
+      }
+
+      if (!project.fileCount || project.fileCount == 0) {
+        project.fileCount = ''
+      }
+
+      if (!project.totalFileSize || project.totalFileSize == 0) {
+        project.totalFileSizeFormatted = ''
+      } else {
+        project.totalFileSizeFormatted = filesize(project.totalFileSize, { round: 1 })
+      }
+
+      return utils.formatCreateUpdateTime(project)
     },
     projectQuit(project) {
       this.projectDeleted(project)

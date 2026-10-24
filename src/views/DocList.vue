@@ -47,11 +47,21 @@
         v-loading="loading"
         row-class-name="doc-row clickable"
         :show-header="true"
+        @sort-change="sortChange"
+        @filterChange="filterChange"
         @row-click="docClicked">
         <el-table-column
           :label="$t('docList.list.name')"
+          sortable="custom"
+          sort-by="name, createdTime"
+          column-key="otherFlags"
+          :filters="otherFlags"
+          :filter-multiple="true"
           :min-width="isInMobile ? 150 : 320"
           class-name="icon-name-column">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.publicAccess }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <div class="doc-name-container flex">
               <span
@@ -69,7 +79,15 @@
         <el-table-column
           v-if="columns.includes('creator') && !isInMobile"
           :label="$t('docList.list.creator')"
+          sortable="custom"
+          sort-by="createdBy.nickname, createdTime"
+          column-key="creators"
+          :filters="userFilters"
+          :filter-multiple="true"
           min-width="100">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
+          </template>
           <template #default="scope">
             <avatar
               :name="scope.row.createdBy.nickname"
@@ -82,7 +100,18 @@
           v-if="columns.includes('createdTime') && !isInMobile"
           prop="createdTimeFormatted"
           :label="$t('docList.list.createdTime')"
+          sortable="custom"
+          sort-by="createdTime"
           min-width="130">
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('length') && !isInMobile"
+          prop="contentLengthFormatted"
+          :label="$t('docList.list.length')"
+          sortable="custom"
+          sort-by="size, createdTime"
+          width="100"
+          align="right">
         </el-table-column>
         <el-table-column
           v-if="columns.includes('actions') && project.isDeveloper"
@@ -138,6 +167,7 @@ import DocPublicAccessPop from '@/components/doc/DocPublicAccessPop.vue'
 import { docApi } from '@/api/doc.js'
 import highlight from '@/utils/highlight.js'
 import utils from '@/utils/util.js'
+import { filesize } from 'filesize'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
@@ -152,6 +182,7 @@ export default {
       { key: 'name', labelKey: 'docList.list.name', default: true, readonly: true },
       { key: 'createdTime', labelKey: 'docList.list.createdTime', default: true },
       { key: 'creator', labelKey: 'docList.list.creator', default: true },
+      { key: 'length', labelKey: 'docList.list.length', default: false },
       { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
     ]
     const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
@@ -164,12 +195,17 @@ export default {
       filter: {
         projectId: null,
         keyword: null,
+        publicAccess: null,
+        creators: null,
+        orders: [],
         page: 1,
         pageSize: this.$store.get('docListPageSize') || 10
       },
       totalElements: 0,
       totalPages: 0,
       loading: false,
+      otherFlags: [{ text: this.$t('docList.list.public'), value: 'PUBLIC' }],
+      userFilters: [],
       columns: this.$store.get('docListColumns') || defaultColumns,
       availableColumns
     }
@@ -178,6 +214,7 @@ export default {
     this.projectId = this.$route.params.projectId
     this.filter.projectId = this.projectId
     this.project = this.$store.get('project')
+    this.initColumnFilters()
   },
   mounted() {
     this.loadDocs()
@@ -201,7 +238,14 @@ export default {
         })
     },
     formatDoc(doc) {
+      doc.contentLengthFormatted = doc.size ? filesize(doc.size, { round: 1 }) : '--'
       return utils.formatCreateUpdateTime(doc)
+    },
+    initColumnFilters() {
+      this.userFilters = (this.project.projectMembers || []).map((member) => ({
+        text: member.user.nickname,
+        value: member.user.id
+      }))
     },
     inputChanged() {
       // throttle keyword input changes
@@ -213,8 +257,24 @@ export default {
       }, 500)
     },
     keywordChanged() {
+      this.reloadList()
+    },
+    reloadList() {
       this.filter.page = 1
       this.loadDocs()
+    },
+    sortChange(event) {
+      this.filter.orders = utils.getSortOrders(event) || []
+      this.reloadList()
+    },
+    filterChange(filters) {
+      if (filters.otherFlags) {
+        this.filter.publicAccess = filters.otherFlags.includes('PUBLIC') ? true : null
+      }
+      if (filters.creators) {
+        this.filter.creators = filters.creators.length > 0 ? filters.creators : null
+      }
+      this.reloadList()
     },
     pageChanged: function (page) {
       this.filter.page = page

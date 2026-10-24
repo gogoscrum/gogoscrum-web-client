@@ -198,13 +198,41 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-if="selectedColumns.includes('creator')"
+          :label="$t('common.createdBy')"
+          sortable="custom"
+          sort-by="createdBy.nickname, createdTime"
+          column-key="creators"
+          :filters="userFilters"
+          :filter-multiple="true"
+          min-width="120">
+          <template #filter-icon>
+            <el-icon class="table-header-filter-icon" :class="{ active: filter.creators?.length }"><Filter /></el-icon>
+          </template>
+          <template #default="scope">
+            <avatar
+              :name="scope.row.createdBy.nickname"
+              :size="22"
+              :src="scope.row.createdBy.avatarUrl"
+              showName></avatar>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="selectedColumns.includes('createdTime')"
+          prop="createdTimeFormatted"
+          :label="$t('common.createdTime')"
+          sortable="custom"
+          sort-by="createdTime"
+          min-width="180">
+        </el-table-column>
+        <el-table-column
           v-if="selectedColumns.includes('owner')"
           :label="$t('issueList.list.assignee')"
           prop="owner.nickname"
           sortable="custom"
           sort-by="owner.nickname"
           column-key="ownerIds"
-          :filters="filterColumns.includes('owner') ? ownerFilters : null"
+          :filters="filterColumns.includes('owner') ? userFilters : null"
           :filter-multiple="true"
           min-width="120">
           <template #filter-icon>
@@ -448,6 +476,8 @@ export default {
       { key: 'storyPoints', labelKey: 'issueList.list.storyPoints', default: true },
       { key: 'sprint', labelKey: 'issueList.list.sprint', default: true },
       { key: 'status', labelKey: 'issueList.list.status', default: true },
+      { key: 'creator', labelKey: 'common.createdBy' },
+      { key: 'createdTime', labelKey: 'common.createdTime' },
       { key: 'owner', labelKey: 'issueList.list.assignee', default: true },
       { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
     ]
@@ -475,7 +505,7 @@ export default {
       editingIssue: null,
       issueTypeFilters: [],
       priorityFilters: [],
-      ownerFilters: [],
+      userFilters: [],
       groupFilters: [],
       sprintFilters: [],
       availableColumns,
@@ -551,7 +581,7 @@ export default {
         value: key
       }))
 
-      this.ownerFilters = this.project.projectMembers.map((member) => ({
+      this.userFilters = this.project.projectMembers.map((member) => ({
         text: member.user.nickname,
         value: member.user.id
       }))
@@ -575,6 +605,7 @@ export default {
         priorities: [],
         componentIds: [],
         ownerIds: [],
+        creators: [],
         sprintIds: [],
         tagIds: [],
         page: 1,
@@ -590,7 +621,7 @@ export default {
       issueApi
         .searchIssues(this.filter)
         .then((res) => {
-          this.issues = highlight.highlight(res.data.results, this.filter.keyword, 'code', 'name')
+          this.issues = highlight.highlight(res.data.results, this.filter.keyword, 'code', 'name').map(this.formatIssue)
           this.totalElements = res.data.totalElements
           this.totalPages = res.data.totalPages
         })
@@ -600,6 +631,9 @@ export default {
             this.loading = false
           }, 200)
         })
+    },
+    formatIssue(issue) {
+      return utils.formatCreateUpdateTime(issue)
     },
     sortChange(event) {
       this.filter.orders = utils.getSortOrders(event)
@@ -627,6 +661,14 @@ export default {
           this.filter.ownerIds = filters.ownerIds
         } else {
           this.filter.ownerIds = null
+        }
+      }
+
+      if (filters.creators) {
+        if (filters.creators.length > 0) {
+          this.filter.creators = filters.creators
+        } else {
+          this.filter.creators = null
         }
       }
 
@@ -712,7 +754,7 @@ export default {
           })
         })
         // insert the cloned issue right before the original issue
-        this.issues.splice(index, 0, res.data)
+        this.issues.splice(index, 0, this.formatIssue(res.data))
         this.totalElements++
       })
     },
@@ -744,6 +786,7 @@ export default {
       })
     },
     issueSaved(issue) {
+      issue = this.formatIssue(issue)
       let index = utils.indexInArray(this.issues, issue.id)
 
       if (index >= 0) {

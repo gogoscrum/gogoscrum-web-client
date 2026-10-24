@@ -660,6 +660,7 @@
       "creator": "Created by",
       "creatorTip": "Created by {nickname}",
       "createdTime": "Created time",
+      "length": "Length",
       "noDocInProject": "No document in project"
     },
     "msg": {
@@ -761,9 +762,12 @@
       "search": "Search project"
     },
     "list": {
-      "name": "Name",
+      "name": "Project name",
+      "code": "Code",
       "owner": "Owner",
-      "ownerTip": "Owner {nickname}",
+      "lastIssueSeq": "Issues",
+      "fileCount": "Files",
+      "totalFileSize": "Total size",
       "details": "Details",
       "transfer": "Transfer",
       "quit": "Quit",

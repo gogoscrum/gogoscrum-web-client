@@ -12,5 +12,5 @@ export const docApi = {
     }
   },
   delete: (id) => del(`/api/docs/${id}`),
-  search: (filter) => get('/api/docs', { params: filter })
+  search: (filter) => post('/api/docs/search', filter)
 }

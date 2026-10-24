@@ -33,14 +33,14 @@
         :data="components"
         ref="componentList"
         row-key="id"
-        :show-header="false"
+        :show-header="true"
         :default-expand-all="expandAll">
-        <el-table-column prop="name" :label="$t('componentList.list.name')" min-width="200">
+        <el-table-column prop="name" :label="$t('componentList.list.name')" min-width="300">
           <template #default="scope">
             <el-tag effect="plain" round class="component-tag"> {{ scope.row.name }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="columns.includes('creator')" :label="$t('componentList.list.creator')" min-width="50">
+        <el-table-column v-if="columns.includes('creator')" :label="$t('componentList.list.creator')" min-width="120">
           <template #default="scope">
             <el-tooltip
               v-if="scope.row.createdBy"
@@ -51,9 +51,19 @@
                 })
               "
               placement="left">
-              <avatar :name="scope.row.createdBy.nickname" :size="22" :src="scope.row.createdBy.avatarUrl"></avatar>
+              <avatar
+                :name="scope.row.createdBy.nickname"
+                :size="22"
+                :src="scope.row.createdBy.avatarUrl"
+                showName></avatar>
             </el-tooltip>
           </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columns.includes('createdTime')"
+          prop="createdTimeFormatted"
+          :label="$t('common.createdTime')"
+          min-width="130">
         </el-table-column>
         <el-table-column
           v-if="columns.includes('actions') && !readonly"
@@ -67,16 +77,14 @@
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item icon="Plus" @click.native="create(scope.row)">
+                  <el-dropdown-item icon="Plus" @click="create(scope.row)">
                     {{ $t('componentList.list.newSub') }}</el-dropdown-item
                   >
-                  <el-dropdown-item icon="Edit" @click.native="edit(scope.row)">
-                    {{ $t('common.edit') }}</el-dropdown-item
-                  >
+                  <el-dropdown-item icon="Edit" @click="edit(scope.row)"> {{ $t('common.edit') }}</el-dropdown-item>
                   <el-dropdown-item
                     icon="Delete"
                     :disabled="scope.row.children.length > 0"
-                    @click.native="del(scope.$index, scope.row)">
+                    @click="del(scope.$index, scope.row)">
                     {{ $t('common.delete') }}</el-dropdown-item
                   >
                 </el-dropdown-menu>
@@ -110,6 +118,7 @@ export default {
     const availableColumns = [
       { key: 'name', labelKey: 'componentList.list.name', default: true, readonly: true },
       { key: 'creator', labelKey: 'componentList.list.creator', default: true },
+      { key: 'createdTime', labelKey: 'common.createdTime', default: false },
       { key: 'actions', labelKey: 'common.actions', default: true, readonly: true }
     ]
     const defaultColumns = availableColumns.filter((column) => column.default).map((column) => column.key)
