@@ -14,6 +14,7 @@ app.mount('#gogoscrum-app')
 
 // Handle Vite preload errors (usually caused by network issues or after a new deployment) and reload the page if necessary
 window.addEventListener('vite:preloadError', (event) => {
+  console.error('Vite preload error detected:', event)
   event.preventDefault()
 
   const KEY = 'vite_preload_reloaded'
